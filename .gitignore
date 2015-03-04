@@ -1,0 +1,5 @@
+sites/vendor
+sites/web/node_modules
+sites/web/tmp
+sites/web/css
+bot/node_modules

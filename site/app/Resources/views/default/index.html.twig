@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <div class="playlist">
+    {% for video in playlist %}
+    <div class="item">
+      <div class="title">{{ video.title }}</div>
+      {% if loop.index == 1 %}
+      <div class="video">
+        {{ video.iframe|raw }}
+      </div>
+      {% else %}
+      <div class="image"><img src="{{ video.image }}" /></div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+{% endblock %}

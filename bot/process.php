@@ -10,9 +10,8 @@ $handlers = array(
   new \Handlers\RadioHandler('/.*/i')
 );
 
+// Get php input, decode the json data into an array.
 $json = file_get_contents("php://input");
-file_put_contents('/tmp/hipchat.txt', $json);
-
 $arr = json_decode($json, true);
 
 LogMe($json);
@@ -81,7 +80,7 @@ function sendRoomNotification($room, $msg)
 
 function LogMe($data)
 {
-    file_put_contents("data/log.txt", $data."\n", FILE_APPEND);
+    file_put_contents("data/logs/log.txt", $data."\n", FILE_APPEND);
 }
 
 function getAuth($room)

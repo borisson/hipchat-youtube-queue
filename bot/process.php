@@ -10,7 +10,7 @@ require 'vendor/autoload.php';
 require 'handlers/BadgeHandler.php';
 
 $handlers = array(
-    new \Handlers\BadgeHandler('/badge/i')
+  new \Handlers\BadgeHandler('/badge/i')
 );
 
 $json = file_get_contents("php://input");
@@ -27,17 +27,23 @@ switch ($arr["event"]) {
 
         // check all handlers
         foreach ($handlers as $handler) {
-            if (preg_match($handler->pattern, $arr["item"]["message"]["message"])) {
+            if (preg_match(
+              $handler->pattern,
+              $arr["item"]["message"]["message"]
+            )) {
                 LogMe("Handler matches");
                 $ret = $handler->Process($arr["item"]["message"]);
 
-                LogMe("Handler reply: " . print_r($ret, true));
+                LogMe("Handler reply: ".print_r($ret, true));
 
                 if (isset($ret["action"])) {
                     switch ($ret["action"]) {
                         case 'reply':
                             // send reply to channel
-                            sendRoomNotification($arr["item"]["room"]["id"], $ret["data"]);
+                            sendRoomNotification(
+                              $arr["item"]["room"]["id"],
+                              $ret["data"]
+                            );
                             break;
                     }
                 }
@@ -49,7 +55,8 @@ switch ($arr["event"]) {
         break;
 }
 
-function sendRoomNotification($room, $msg) {
+function sendRoomNotification($room, $msg)
+{
 
     LogMe("Sending message to room $room: $msg");
 
@@ -72,52 +79,65 @@ function sendRoomNotification($room, $msg) {
 
 }
 
-function LogMe($data) {
-    file_put_contents("data/log.txt", $data . "\n", FILE_APPEND);
+function LogMe($data)
+{
+    file_put_contents("data/log.txt", $data."\n", FILE_APPEND);
 }
 
-function getAuth($room) {
+function getAuth($room)
+{
 
     if (file_exists('data/auth/'.$room)) {
-      $authfile = $room;
-   } elseif (file_exists('data/auth/all')) {
-      $authfile = 'all';
-   } else {
-      return false;
-   }
+        $authfile = $room;
+    } elseif (file_exists('data/auth/all')) {
+        $authfile = 'all';
+    } else {
+        return false;
+    }
 
-        $data = file_get_contents('data/auth/'.$authfile);
-        $json = json_decode($data);
-        if ($json->token->expires < time()) {
+    $data = file_get_contents('data/auth/'.$authfile);
+    $json = json_decode($data);
+    if ($json->token->expires < time()) {
 
-            // token expired, request new
-            LogMe("Room $room Token expired, request new");
-            $token = getNewToken($json->install->oauthId, $json->install->oauthSecret);
-            $token->expires = time() + $token->expires_in;
-            $json->token = $token;
+        // token expired, request new
+        LogMe("Room $room Token expired, request new");
+        $token = getNewToken(
+          $json->install->oauthId,
+          $json->install->oauthSecret
+        );
+        $token->expires = time() + $token->expires_in;
+        $json->token = $token;
 
-            LogMe("New Token: " . $json->token->access_token);
+        LogMe("New Token: ".$json->token->access_token);
 
-            file_put_contents('data/auth/'.$authfile, json_encode($json));
+        file_put_contents('data/auth/'.$authfile, json_encode($json));
 
-            return $json->token->access_token;
+        return $json->token->access_token;
 
-        } else {
-            // token valid
-            LogMe("Room $authfile Token still valid");
-            return $json->token->access_token;
-        }
+    } else {
+        // token valid
+        LogMe("Room $authfile Token still valid");
+
+        return $json->token->access_token;
+    }
 
 }
 
-function getNewToken($id, $secret) {
+function getNewToken($id, $secret)
+{
 
     $post = "grant_type=client_credentials&scope=send_notification";
-    $ret = makePost("https://api.hipchat.com/v2/oauth/token", $post, $id, $secret);
+    $ret = makePost(
+      "https://api.hipchat.com/v2/oauth/token",
+      $post,
+      $id,
+      $secret
+    );
 
     LogMe("getNewToken: $ret");
 
     $json = json_decode($ret);
+
     return $json;
 
 }
@@ -144,5 +164,6 @@ function makePost($url, $postData, $user = "", $pass = "")
     $result = curl_exec($ch);
 
     curl_close($ch);
+
     return $result;
 }

@@ -1,0 +1,19 @@
+{
+    "name": "The wizi-radio Bot",
+    "description": "Fetch youtube links from channel, post them to a websites.",
+    "key": "com.intracto.wiziradio",
+    "links": {
+        "homepage": "%url%",
+        "self": "%url%/capabilities"
+    },
+    "capabilities": {
+        "hipchatApiConsumer": {
+            "scopes": [
+                "send_notification"
+            ]
+        },
+        "installable": {
+          "callbackUrl": "%url%/install.php"
+        }
+    }
+}

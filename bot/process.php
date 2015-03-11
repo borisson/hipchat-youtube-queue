@@ -1,16 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Tom
- * Date: 15/12/2014
- * Time: 21:59
- */
 
+require 'config.php';
 require 'vendor/autoload.php';
 require 'handlers/BadgeHandler.php';
+require 'handlers/RadioHandler.php';
 
 $handlers = array(
-  new \Handlers\BadgeHandler('/badge/i')
+  new \Handlers\BadgeHandler('/badge/i'),
+  new \Handlers\RadioHandler('/.*/i')
 );
 
 $json = file_get_contents("php://input");
@@ -32,7 +29,11 @@ switch ($arr["event"]) {
               $arr["item"]["message"]["message"]
             )) {
                 LogMe("Handler matches");
-                $ret = $handler->Process($arr["item"]["message"]);
+                try {
+                    $ret = $handler->Process($arr["item"]["message"]);
+                } catch (Exception $e) {
+                    $ret = ['error' => 'Exception occured: '.$e->getMessage()];
+                }
 
                 LogMe("Handler reply: ".print_r($ret, true));
 
@@ -60,7 +61,6 @@ function sendRoomNotification($room, $msg)
 
     LogMe("Sending message to room $room: $msg");
 
-//    $auth = new GorkaLaucirica\HipchatAPIv2Client\Auth\OAuth2('ZW3ohnCRLv7ZZyqQRbiFBBnUuoedq3fSMLKQlHH0');
     $auth = new GorkaLaucirica\HipchatAPIv2Client\Auth\OAuth2(getAuth($room));
 
     $browserclient = new Buzz\Client\Curl();
@@ -152,7 +152,6 @@ function makePost($url, $postData, $user = "", $pass = "")
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-//    curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
 
     if ($user) {

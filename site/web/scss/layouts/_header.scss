@@ -1,0 +1,31 @@
+.header__logo {
+  @include rem-fallback(font-size, 30);
+  color: $white;
+  //float: left;
+  line-height: 36px;
+  margin: $base-spacing-unit*2 auto;
+  text-transform: uppercase;
+  height: 110px;
+  width: 122px;
+  a {
+    background: image-url('logo_v2.svg') left center no-repeat;
+    background-size: 100%;
+    display: block;
+    height: 100%;
+    width: 100%;
+    @include transition(all .2s ease-in-out);
+    @include animation-play-state(paused);
+    animation-direction: reverse;
+    &:hover {
+      color: $white;
+      text-decoration: none;
+      @include animation(rotate .4s cubic-bezier(0.7, 0, 0.3, 1) both);
+      /*@include animation-play-state(running);*/
+    }
+  }
+  @include media(max-width $phone-small) {
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

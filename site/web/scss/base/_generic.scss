@@ -1,0 +1,25 @@
+*, *:before, *:after {
+  @include box-sizing(border-box);
+}
+
+.clearfix {
+  @include clearfix;
+}
+
+.visible {
+  opacity: 1;
+}
+
+.ir {
+  background-color: transparent;
+  border: 0;
+  overflow: hidden;
+  /* IE 6/7 fallback */
+  *text-indent: -9999px;
+  &::before {
+    content: "";
+    display: block;
+    width: 0;
+    height: 150%;
+  }
+}

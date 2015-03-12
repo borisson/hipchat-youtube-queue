@@ -1,0 +1,36 @@
+.contact__form {
+
+}
+
+.form__input,
+.form__textarea,
+.form__label {
+  display: block;
+  width: 100%;
+}
+
+.form__input,
+.form__textarea {
+  background: #f1f1f1;
+  border-color: #f1f1f1;
+  margin-bottom: $base-spacing-unit;
+}
+
+.form__input {
+  line-height: $base-spacing-unit*1.5;
+}
+
+.form__textarea {
+  height:$base-spacing-unit*8;
+}
+
+.form__label {
+  cursor: pointer;
+  display: block;
+  margin-bottom: $half-spacing-unit;
+  width: 100%;
+}
+
+.form__submit {
+  float: right;
+}

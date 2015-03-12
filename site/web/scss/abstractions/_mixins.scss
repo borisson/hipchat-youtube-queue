@@ -1,0 +1,75 @@
+@mixin vertical-align {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+
+  .lt-ie9 & {
+    top: 10%;
+  }
+}
+
+@mixin vertical-align-parent {
+  -webkit-transform-style: preserve-3d;
+  -moz-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  position: relative;
+}
+@mixin gradient-retina-icon($start-color, $end-color, $filename, $background-size, $positioning-values: center center, $extension: png, $retina-filename: null, $retina-suffix: _2x) {
+  $positioning: $positioning-values;
+  $repeat: no-repeat;
+
+  background-color: $start-color;
+  background-image: url("#{$filename}.#{$extension}");
+  background-repeat: no-repeat;
+  background-position: center center;
+
+  background: url("#{$filename}.#{$extension}") $positioning $repeat, -webkit-linear-gradient($start-color, $end-color);
+  background: url("#{$filename}.#{$extension}") $positioning $repeat, linear-gradient($start-color, $end-color);
+
+  @include hidpi {
+      @if $retina-filename {
+        background: url("#{$retina-filename}#{$retina-suffix}.#{$extension}") $positioning $repeat, -webkit-linear-gradient($start-color, $end-color);
+        background: url("#{$retina-filename}#{$retina-suffix}.#{$extension}") $positioning $repeat, linear-gradient($start-color, $end-color);
+      }
+      @else {
+        background: url("#{$filename}#{$retina-suffix}.#{$extension}") $positioning $repeat, -webkit-linear-gradient($start-color, $end-color);
+        background: url("#{$filename}#{$retina-suffix}.#{$extension}") $positioning $repeat, linear-gradient($start-color, $end-color);
+      }
+    background-size: $background-size, cover;
+  }
+}
+
+/**
+ * SVG background images, with fallback
+ */
+
+@mixin svg-background($filename, $width, $height, $fallback-image: null) {
+  @if $fallback-image {
+    background: url('#{$fallback-image}.png');
+    background-image: url('#{$filename}.svg'), none;
+  }
+  @else {
+    background: url('#{$filename}.png');
+    background-image: url('#{$filename}.svg'), none;
+  }
+  background-repeat: no-repeat;
+  background-size: $width $height;
+  height: $height;
+  width: $width;
+}
+
+
+/**
+ * Reset margin-right from omega-elements with Bourbon
+ */
+
+@mixin omega-reset($nth) {
+  &:nth-child(#{$nth}) {
+    margin-right: flex-gutter();
+  }
+  &:nth-child(#{$nth}+1) {
+    clear: none;
+  }
+}

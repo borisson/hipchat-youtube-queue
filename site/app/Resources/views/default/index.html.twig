@@ -1,18 +1,36 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-  <div class="playlist">
-    {% for video in playlist %}
-    <div class="item">
-      <div class="title">{{ video.title }}</div>
-      {% if loop.index == 1 %}
-      <div class="video">
-        {{ video.iframe|raw }}
-      </div>
-      {% else %}
-      <div class="image"><img src="{{ video.image }}" /></div>
-      {% endif %}
+    <div class="page">
+        <h1 class="header__logo"><a href="" class="ir">Radio Wizi</a></h1>
+        <div class="content-wrapper content--centered">
+            <div class="player">
+                {% for video in playlist %}
+                    <div class="player__media">
+                        {% if loop.index == 1 %}
+                            <div class="player__video">
+                                {{ video.iframe|raw }}
+                            </div>
+                        {% else %}
+                            <div class="player__image"><img src="{{ video.image }}"/></div>
+                        {% endif %}
+                    </div>
+                    <div class="player__detail">
+                        <h3>Now playing</h3>
+
+                        <h2 class="player__title">{{ video.title }}</h2>
+
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="playlist">
+                <h3>Coming up</h3>
+                <ol>
+                    <li>Carly Rae Jepsen - I really like you</li>
+                    <li>Baltimora - Tarzan Boy</li>
+                    <li>ERA - Ameno</li>
+                </ol>
+            </div>
+        </div>
     </div>
-    {% endfor %}
-  </div>
 {% endblock %}

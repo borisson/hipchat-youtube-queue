@@ -1,0 +1,28 @@
+$horz-spacing-unit: 1em;
+$base-spacing-unit: 24px;
+$half-spacing-unit: $base-spacing-unit/2;
+
+/**
+ * Breakpoints
+ */
+
+$desktop-wide:    1440px;
+$desktop-normal:  1280px;
+$desktop-base:    1180px;
+$tab-end:         1024px;
+$tab-width:       768px;
+$phone-big:       640px;
+$phone-width:     480px;
+$phone-small:     320px;
+
+$base-width:      $desktop-base - 80px;
+
+/**
+ * Bourbon variables
+ */
+
+$max-width: 100%;
+$column: 90px;
+$gutter: 30px;
+$grid-columns: 12;
+

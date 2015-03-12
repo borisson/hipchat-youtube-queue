@@ -1,0 +1,131 @@
+/**
+ * $BASE-TYPOGRAPHY
+ */
+html {
+  color: $dark-grey;
+  font-family: $base-font;
+  font-size: $base-font-size;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/**
+ * $LINKS
+ */
+
+a {
+  border-bottom: 1px solid transparent;
+  color: $link-color;
+  text-decoration: none;
+  @include transition(all 0.2s ease-in);
+  &:hover {
+    text-decoration: none;
+    border-color: $link-color;
+  }
+}
+
+p {
+  color: $text-color;
+  font-family: $serif-font;
+  //font-family: $title-font;
+}
+/**
+ * $HEADINGS
+ */
+h1, .alpha,
+h2, .beta,
+h3, .gamma,
+h4, .delta,
+h5, .epsilon,
+h6, .zeta {
+  color: $black;
+  -webkit-font-smoothing: antialiased;
+  font-family: $title-font;
+  //font-family: $serif-font;
+
+  a,
+  a:visited {
+    color: inherit;
+    text-decoration: none;
+  }
+  a:hover {
+    color: $link-color;
+  }
+}
+
+h1, .alpha {
+  @include font-size(40px);
+  font-weight: 400;
+}
+h2, .beta {
+  @include font-size(32px);
+  font-weight: 400;
+}
+h3, .gamma {
+  @include font-size(24px);
+  font-weight: 400;
+}
+h4, .delta {
+  @include font-size(16px);
+  font-weight: 400;
+  margin: 0;
+}
+h5, .epsilon{
+  @include font-size(16px);
+  font-weight: 400;
+}
+h6, .zeta {
+  @include font-size(14px);
+}
+
+/**
+ * $PARAGRAPHS
+ */
+p,
+%p {
+  //margin: 0;
+}
+p + img {
+  float: left;
+  margin-right: $horz-spacing-unit;
+}
+
+p {
+  @include rem-fallback(line-height, 36);
+  margin-top: 0;
+}
+
+/**
+ * $QUOTES
+ */
+blockquote {
+  @extend %p;
+  padding: 0 1.5em;
+
+  border-color: $link-color;
+  margin-left: 2em;
+  p {
+    margin: 0;
+  }
+}
+
+q {
+  font-style: italic;
+}
+
+/**
+ * $MARKS
+ */
+mark,
+.marker {
+  padding: 0.1em 0.5em;
+  background: $light-grey;
+  color: #fff;
+  @include font-size(12px);
+  text-transform: capitalize;
+
+}
+
+.text--centered {
+  text-align: center;
+}

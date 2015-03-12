@@ -1,0 +1,59 @@
+input:not([type]),
+input[type="color"],
+input[type="email"],
+input[type="number"],
+input[type="password"],
+input[type="tel"],
+input[type="url"],
+input[type="text"],
+select,
+textarea{
+  padding: 5px 6px;
+}
+
+input,textarea,select {
+  border: 1px solid #ccc;
+  border-radius: 0;
+  line-height: $base-line-height;
+  &.error {
+    border: 2px solid $red;
+    border: 1px solid #ccc;
+  }
+}
+.messages-inline {
+  border: 0;
+  padding: 0;
+  &.error {
+    color: $red;
+  }
+  &.status {
+    color: $green;
+  }
+  &.warning {
+
+  }
+}
+
+.form-item {
+  margin-bottom: $half-spacing-unit;
+}
+
+.form-select {
+  //background: transparent;
+  height: 36px;
+  line-height: 36px;
+}
+
+.form-submit {
+  @include linear-gradient($blue-alt, darken($blue-alt, 5%));
+  border: none;
+  border-radius: 3px;
+  box-shadow: 0 3px 3px #d4d4d4;
+  color: $white;
+  font-weight: 400;
+  padding: $half-spacing-unit $base-spacing-unit*1.5;
+  @include transition(all .2s ease-in);
+  &:hover {
+    @include linear-gradient(darken($blue-alt, 5%), darken($blue-alt, 10%));
+  }
+}

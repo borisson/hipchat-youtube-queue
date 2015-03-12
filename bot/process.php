@@ -2,11 +2,9 @@
 
 require 'config.php';
 require 'vendor/autoload.php';
-require 'handlers/BadgeHandler.php';
 require 'handlers/RadioHandler.php';
 
 $handlers = array(
-  new \Handlers\BadgeHandler('/badge/i'),
   new \Handlers\RadioHandler('/.*/i')
 );
 

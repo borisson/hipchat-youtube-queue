@@ -6,7 +6,7 @@ namespace Handlers;
 class RadioHandler
 {
 
-    private $pattern;
+    public $pattern;
 
     public function __construct($pattern = "/.*/")
     {
@@ -24,6 +24,8 @@ class RadioHandler
         makePost($config['radioUrl'] . '/add', [
             'link' => $message['message']
         ]);
+
+        return array("action" => "reply", "data" => 'Added ' . $message['message'] . ' to radio');
 
     }
 }

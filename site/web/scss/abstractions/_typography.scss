@@ -8,7 +8,7 @@
   @return $num / ($num * 0 + 1);
 }
 
-@mixin rem-fallback($property, $values...) {
+@mixin rem($property, $values...) {
   $max: length($values);
   $pxValues: '';
   $remValues: '';

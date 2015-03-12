@@ -91,7 +91,7 @@ p + img {
 }
 
 p {
-  @include rem-fallback(line-height, 36);
+  @include rem(line-height, 36);
   margin-top: 0;
 }
 

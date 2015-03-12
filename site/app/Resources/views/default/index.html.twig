@@ -16,19 +16,27 @@
                         {% endif %}
                     </div>
                     <div class="player__detail">
-                        <h3>Now playing</h3>
+                        <h3 class="player__label">Now playing</h3>
 
                         <h2 class="player__title">{{ video.title }}</h2>
 
+                        <div class="player__controls">
+                            <div class="player__time-indicator">
+
+                            </div>
+                            <div>
+                                1:24
+                            </div>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
-            <div class="playlist">
-                <h3>Coming up</h3>
-                <ol>
-                    <li>Carly Rae Jepsen - I really like you</li>
-                    <li>Baltimora - Tarzan Boy</li>
-                    <li>ERA - Ameno</li>
+            <div class="playlist__wrapper">
+                <h3 class="playlist__title">Coming up</h3>
+                <ol class="playlist">
+                    <li class="playlist__song"><span class="song__title">Carly Rae Jepsen - I really like you</span><span class="song__duration">3:14</span></li>
+                    <li class="playlist__song"><span class="song__title">Baltimora - Tarzan Boy</span><span class="song__duration">3:14</span></li>
+                    <li class="playlist__song"><span class="song__title">ERA - Ameno</span><span class="song__duration">3:14</span></li>
                 </ol>
             </div>
         </div>

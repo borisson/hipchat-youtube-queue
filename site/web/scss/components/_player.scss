@@ -1,0 +1,102 @@
+/**
+ * Players gonna play
+ */
+
+.player {
+  @extend .clearfix;
+  background: $lighter-grey;
+}
+
+.player__media,
+.player__detail {
+  float: left;
+  padding: $base-spacing-unit;
+}
+
+.player__media {
+  width: 40%;
+}
+
+.player__detail {
+  width: 60%;
+}
+
+.player__video {
+  width: 100%;
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  padding-top: 25px;
+  height: 0;
+
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.player__title {
+  @include rem(font-size, 18);
+  font-weight: 700;
+  margin: 0;
+}
+
+.player__label {
+  color: $light-grey;
+  @include rem(font-size, 13);
+  margin: 0;
+}
+
+/**
+ * Playlist stuff
+ */
+
+.playlist__wrapper {
+  padding: $base-spacing-unit;
+  text-align: center;
+}
+
+.playlist__title {
+  border: 2px solid $medium-grey;
+  border-radius: 4px;
+  color: $medium-grey;
+  display: inline-block;
+  @include rem(font-size, 10);
+  font-weight: 700;
+  margin-top: 0;
+  padding: 3px 6px;
+  text-align: center;
+}
+
+.playlist {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  width: 100%;
+
+  li {
+    border-bottom: 1px solid $border-color;
+    display: table;
+    @include rem(font-size, 12);
+    font-weight: 700;
+    margin-bottom: 9px;
+    padding: 0 12px 8px;
+    width: 100%;
+  }
+}
+
+.playlist__song {
+  display: table-row;
+  width: 100%;
+}
+
+.song__title {
+  display: table-cell;
+}
+
+.song__duration {
+  display: table-cell;
+  text-align: right;
+}

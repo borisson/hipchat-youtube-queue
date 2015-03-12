@@ -1,3 +1,9 @@
+
+body {
+  background: image-url('bg-lush.jpg') top center no-repeat;
+  background-size: cover;
+}
+
 .page {
   height: 100%;
 }
@@ -14,47 +20,8 @@
   }
 }
 
-body {
-  background: image-url('bg-lush.jpg') top center no-repeat;
-}
 .content-wrapper {
   background: $white;
   border-radius: 4px;
   overflow: hidden;
-}
-.player {
-  @extend .clearfix;
-  background: $lighter-grey;
-}
-
-.player__media,
-.player__detail {
-  float: left;
-  padding: $base-spacing-unit;
-}
-
-.player__media {
-  width: 40%;
-  padding-right: 0;
-}
-
-.player__detail {
-  width: 60%;
-}
-
-.player__video {
-  width: 100%;
-  margin-right: 2%;
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
-  padding-top: 25px;
-  height: 0;
-
-  iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
 }

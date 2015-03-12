@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use Doctrine\ORM\EntityManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -65,6 +66,11 @@ class DefaultController extends Controller
         $xml = $response->xml();
 
         $yt = new YoutubeMovie($video_id, 100,$xml->title);
+
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($yt);
+        $entityManager->flush();
 
         return new Response("ok \n");
     }

@@ -4,6 +4,8 @@ namespace AppBundle\Entity;
 
 class YoutubeMovie
 {
+    private $id;
+
     private $videoId;
     private $postedTime;
     private $length;

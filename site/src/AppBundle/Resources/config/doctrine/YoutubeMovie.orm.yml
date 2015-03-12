@@ -1,0 +1,41 @@
+AppBundle\Entity\YoutubeMovie:
+    type: entity
+    table: youtube_movies
+    id:
+        id:
+            type: integer
+            nullable: false
+            unsigned: true
+            comment: ''
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        videoId:
+            type: string
+            nullable: false
+            length: 24
+            fixed: false
+            comment: ''
+            default: ''
+            column: video_id
+        postedTime:
+            type: datetime
+            nullable: false
+            comment: ''
+            column: posted_time
+        length:
+            type: integer
+            nullable: true
+            unsigned: false
+            comment: ''
+            column: length
+        title:
+            type: string
+            nullable: true
+            length: 255
+        skipped:
+            type: integer
+            nullable: false
+            length: 3
+            comment: ''

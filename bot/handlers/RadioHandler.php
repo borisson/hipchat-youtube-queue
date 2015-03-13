@@ -21,7 +21,7 @@ class RadioHandler
             throw new \InvalidArgumentException("Doesn't match youtube url");
         }
 
-        makePost($config['radioUrl'] . '/add', [
+        makePost($config['radioUrl'] . 'add', [
             'link' => $message['message']
         ]);
 

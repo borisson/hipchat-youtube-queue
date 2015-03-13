@@ -26,7 +26,7 @@ class DefaultController extends Controller
 
         /** @var EntityRepository $ytRepository */
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
-        $yt = $ytRepository->findOneBy(['played' => 0]);
+        $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0]);
 
         if (is_null($yt)) {
             return $this->render('default/playlist-empty.html.twig');
@@ -46,7 +46,7 @@ class DefaultController extends Controller
 
         /** @var EntityRepository $ytRepository */
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
-        $ytMovies = $ytRepository->findBy(['played' => 0]);
+        $ytMovies = $ytRepository->findBy(['played' => 0, 'skipped' => 0]);
 
         $data = [];
         /** @var YoutubeMovie  $movie */

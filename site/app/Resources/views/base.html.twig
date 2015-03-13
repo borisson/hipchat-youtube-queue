@@ -12,17 +12,40 @@
         <script src="js/html5shiv.min.js"></script>
         <![endif]-->
 
-        <link rel="stylesheet" href="css/normalize.css">
-        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="/css/normalize.css">
+        <link rel="stylesheet" href="/css/main.min.css">
 
     </head>
     <body>
         {% block body %}{% endblock %}
-    {% block javascripts %}
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-    <script src="js/src/main.js"></script>
+        {% block javascripts %}
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+        <script src="/js/src/main.js"></script>
+            <script src="https://www.youtube.com/iframe_api"></script>
+        <script>
+            function ajaxLoadPlaylist() {
+                $.ajax({
+                    url: '/app_dev.php/ajax/load-videos'
+                }).done(function(data) {
+                    $('.playlist').html('');
+                    $.each(data, function(k, value) {
+                        var listItem = '<li class="playlist__song">';
+                        listItem += '<span class="song__title">';
+                        listItem += value.title;
+                        listItem += '</span></li>';
 
-    <script async="async" src="//radiowizi.dev:35729/livereload.js?snipver=1"></script>
+                        $('.playlist').append(listItem);
+                    });
+                });
+            }
+            ajaxLoadPlaylist();
+
+            // 4. The API will call this function when the video player is ready.
+            function onPlayerReady(event) {
+                event.target.playVideo();
+            }
+        </script>
+        {#<script async="async" src="//radiowizi.dev:35729/livereload.js?snipver=1"></script>#}
         {% endblock %}
     </body>
 </html>

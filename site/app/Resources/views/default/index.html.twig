@@ -5,15 +5,8 @@
         <h1 class="header__logo"><a href="" class="ir">Radio Wizi</a></h1>
         <div class="content-wrapper content--centered">
             <div class="player">
-                {% for video in playlist %}
                     <div class="player__media">
-                        {% if loop.index == 1 %}
-                            <div class="player__video">
-                                {{ video.iframe|raw }}
-                            </div>
-                        {% else %}
-                            <div class="player__image"><img src="{{ video.image }}"/></div>
-                        {% endif %}
+                        <div class="player__video" id="player"></div>
                     </div>
                     <div class="player__detail">
                         <h3 class="player__label">Now playing</h3>
@@ -29,16 +22,39 @@
                             </div>
                         </div>
                     </div>
-                {% endfor %}
             </div>
             <div class="playlist__wrapper">
                 <h3 class="playlist__title">Coming up</h3>
-                <ol class="playlist">
-                    <li class="playlist__song"><span class="song__title">Carly Rae Jepsen - I really like you</span><span class="song__duration">3:14</span></li>
-                    <li class="playlist__song"><span class="song__title">Baltimora - Tarzan Boy</span><span class="song__duration">3:14</span></li>
-                    <li class="playlist__song"><span class="song__title">ERA - Ameno</span><span class="song__duration">3:14</span></li>
-                </ol>
+                <ol class="playlist"></ol>
             </div>
         </div>
     </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '390',
+                width: '640',
+                videoId: '{{ video.youtubeKey }}',
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
+        var done = false;
+        function onPlayerStateChange(event) {
+            if (event.data == 0 && !done) {
+                done = true;
+                $.ajax({
+                    url: '/app_dev.php/ajax/set-done/{{ video.id }}'
+                }).done(function() {
+                    window.location = window.location;
+                });
+            }
+        }
+    </script>
 {% endblock %}

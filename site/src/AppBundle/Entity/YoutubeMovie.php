@@ -11,6 +11,7 @@ class YoutubeMovie
     private $length;
     private $title;
     private $skipped = false;
+    private $played = false;
 
     public function __construct($videoId, $length, $title)
     {
@@ -29,6 +30,26 @@ class YoutubeMovie
     public function skipVideo()
     {
         $this->skipped = true;
+    }
+
+    public function isPlayed()
+    {
+        return $this->played;
+    }
+
+    public function setPlayed()
+    {
+        $this->played = true;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getYoutubeKey()
+    {
+        return $this->videoId;
     }
 
     public function getVideo()

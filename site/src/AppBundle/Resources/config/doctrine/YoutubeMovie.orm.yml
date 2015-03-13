@@ -39,3 +39,8 @@ AppBundle\Entity\YoutubeMovie:
             nullable: false
             length: 3
             comment: ''
+        played:
+            type: integer
+            nullable: false
+            length: 3
+            comment: ''

@@ -3,10 +3,12 @@
 namespace AppBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\YoutubeMovie;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use GuzzleHttp\Client as GuzzleClient;
@@ -19,18 +21,59 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        $yt = new YoutubeMovie('2Z4m4lnjxkY', 100, "Trolololo");
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
 
-        return $this->render('default/index.html.twig', ['playlist' => [$yt]]);
+        /** @var EntityRepository $ytRepository */
+        $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
+        $yt = $ytRepository->findOneBy(['played' => 0]);
+
+        if (is_null($yt)) {
+            return $this->render('default/playlist-empty.html.twig');
+        } else {
+            return $this->render('default/index.html.twig', ['video' => $yt]);
+        }
     }
 
     /**
-     * @Route("/ajax/load-video", name="load-more")
+     * @Route("/ajax/load-videos", name="load-more")
      * @Method("GET")
      */
     public function ajaxLoadVideoAction()
     {
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
 
+        /** @var EntityRepository $ytRepository */
+        $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
+        $ytMovies = $ytRepository->findBy(['played' => 0]);
+
+        $data = [];
+        /** @var YoutubeMovie  $movie */
+        foreach ($ytMovies as $k => $movie) {
+            $data[$k]['title'] = $movie->getTitle();
+        }
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/ajax/set-done/{id}")
+     * @Method("GET")
+     */
+    public function ajaxSetVideoDone($id)
+    {
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var EntityRepository $ytRepository */
+        $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
+
+        /** @var YoutubeMovie $youtube */
+        $youtube = $ytRepository->find($id);
+        $youtube->setPlayed();
+
+        $em->flush();
         return new Response();
     }
 

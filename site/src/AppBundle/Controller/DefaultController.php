@@ -20,11 +20,8 @@ class DefaultController extends Controller
     public function indexAction()
     {
         $yt = new YoutubeMovie('2Z4m4lnjxkY', 100, "Trolololo");
-        $yt1 = new YoutubeMovie('mAz50pZn6Ys', 100, "Moskau");
-        $yt2 = new YoutubeMovie('ykwqXuMPsoc', 100, "Narwhals");
-        $yt3 = new YoutubeMovie('ZZ5LpwO-An4', 100, "heya");
 
-        return $this->render('default/index.html.twig', ['playlist' => [$yt, $yt1, $yt2, $yt3]]);
+        return $this->render('default/index.html.twig', ['playlist' => [$yt]]);
     }
 
     /**

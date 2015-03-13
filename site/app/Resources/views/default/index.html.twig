@@ -3,25 +3,26 @@
 {% block body %}
     <div class="page">
         <h1 class="header__logo"><a href="" class="ir">Radio Wizi</a></h1>
+
         <div class="content-wrapper content--centered">
             <div class="player">
-                    <div class="player__media">
-                        <div class="player__video" id="player"></div>
-                    </div>
-                    <div class="player__detail">
-                        <h3 class="player__label">Now playing</h3>
+                <div class="player__media">
+                    <div class="player__video" id="player"></div>
+                </div>
+                <div class="player__detail">
+                    <h3 class="player__label">Now playing</h3>
 
-                        <h2 class="player__title">{{ video.title }}</h2>
+                    <h2 class="player__title">{{ video.title }}</h2>
 
-                        <div class="player__controls">
-                            <div class="player__time-indicator">
+                    <div class="player__controls">
+                        <div class="player__time-indicator">
 
-                            </div>
-                            <div>
-                                1:24
-                            </div>
+                        </div>
+                        <div>
+                            1:24
                         </div>
                     </div>
+                </div>
             </div>
             <div class="playlist__wrapper">
                 <h3 class="playlist__title">Coming up</h3>
@@ -51,7 +52,7 @@
                 done = true;
                 $.ajax({
                     url: '/ajax/set-done/{{ video.id }}'
-                }).done(function() {
+                }).done(function () {
                     window.location = window.location;
                 });
             }

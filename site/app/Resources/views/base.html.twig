@@ -1,50 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Radio Wizi - Instant classics</title>
-        <meta name="description" content="Radio Wizi.">
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+<head>
+    <title>Radio Wizi - Instant classics</title>
+    <meta name="description" content="Radio Wizi.">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% block stylesheets %}{% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}"/>
 
-        <!--[if lt IE 9]>
-        <script src="js/html5shiv.min.js"></script>
-        <![endif]-->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.min.js"></script>
+    <![endif]-->
 
-        <link rel="stylesheet" href="/css/normalize.css">
-        <link rel="stylesheet" href="/css/main.min.css">
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/main.min.css">
 
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-        <script src="/js/src/main.js"></script>
-            <script src="https://www.youtube.com/iframe_api"></script>
-        <script>
-            function ajaxLoadPlaylist() {
-                $.ajax({
-                    url: '/ajax/load-videos'
-                }).done(function(data) {
-                    $('.playlist').html('');
-                    $.each(data, function(k, value) {
-                        var listItem = '<li class="playlist__song">';
-                        listItem += '<span class="song__title">';
-                        listItem += value.title;
-                        listItem += '</span></li>';
+</head>
+<body>
+{% block body %}{% endblock %}
+{% block javascripts %}
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+    <script src="/js/src/main.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        function ajaxLoadPlaylist() {
+            $.ajax({
+                url: '/ajax/load-videos'
+            }).done(function (data) {
+                $('.playlist').html('');
+                $.each(data, function (k, value) {
+                    var listItem = '<li class="playlist__song">';
+                    listItem += '<span class="song__title">';
+                    listItem += value.title;
+                    listItem += '</span></li>';
 
-                        $('.playlist').append(listItem);
-                    });
+                    $('.playlist').append(listItem);
                 });
-            }
-            ajaxLoadPlaylist();
+            });
+        }
+        ajaxLoadPlaylist();
 
-            // 4. The API will call this function when the video player is ready.
-            function onPlayerReady(event) {
-                event.target.playVideo();
-            }
-        </script>
-        {% endblock %}
-    </body>
+        // 4. The API will call this function when the video player is ready.
+        function onPlayerReady(event) {
+            event.target.playVideo();
+        }
+    </script>
+{% endblock %}
+</body>
 </html>

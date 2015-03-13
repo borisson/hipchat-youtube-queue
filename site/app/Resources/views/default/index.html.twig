@@ -50,7 +50,7 @@
             if (event.data == 0 && !done) {
                 done = true;
                 $.ajax({
-                    url: '/app_dev.php/ajax/set-done/{{ video.id }}'
+                    url: '/ajax/set-done/{{ video.id }}'
                 }).done(function() {
                     window.location = window.location;
                 });

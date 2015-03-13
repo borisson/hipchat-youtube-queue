@@ -25,7 +25,7 @@
         <script>
             function ajaxLoadPlaylist() {
                 $.ajax({
-                    url: '/app_dev.php/ajax/load-videos'
+                    url: '/ajax/load-videos'
                 }).done(function(data) {
                     $('.playlist').html('');
                     $.each(data, function(k, value) {
@@ -45,7 +45,6 @@
                 event.target.playVideo();
             }
         </script>
-        {#<script async="async" src="//radiowizi.dev:35729/livereload.js?snipver=1"></script>#}
         {% endblock %}
     </body>
 </html>

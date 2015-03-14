@@ -7,6 +7,10 @@
   background: $lighter-grey;
 }
 
+.player--empty {
+  overflow: auto;
+}
+
 .player__media,
 .player__detail {
   float: left;
@@ -22,11 +26,10 @@
 }
 
 .player__video {
-  width: 100%;
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
-  padding-top: 25px;
   height: 0;
+  padding-bottom: 56.25%; /* 16:9 */
+  position: relative;
+  width: 100%;
 
   .iframe {
     position: absolute;

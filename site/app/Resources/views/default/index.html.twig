@@ -1,9 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="page">
-        <h1 class="header__logo"><a href="" class="ir">Radio Wizi</a></h1>
-
         <div class="content-wrapper content--centered">
             <div class="player">
                 <div class="player__media">
@@ -29,10 +26,13 @@
             </div>
             <div class="playlist__wrapper">
                 <h3 class="playlist__title">Coming up</h3>
-                <ol class="playlist"></ol>
+                <ol class="playlist">
+                    <li class="playlist__song">
+                        <span class="song__title"></span>
+                    </li>
+                </ol>
             </div>
         </div>
-    </div>
 {% endblock %}
 {% block javascripts %}
     {{ parent() }}

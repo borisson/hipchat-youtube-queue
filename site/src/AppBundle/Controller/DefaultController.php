@@ -105,7 +105,11 @@ class DefaultController extends Controller
 
         $xml = $response->xml();
 
-        $yt = new YoutubeMovie($video_id, 100,$xml->title);
+        $seconds = $xml->xpath('//yt:duration[@seconds]');
+        $totalSeconds = (int) $seconds[0]->attributes()->seconds;
+
+        // Create a new YoutubeMovie to be saved in database.
+        $yt = new YoutubeMovie($video_id, $totalSeconds, $xml->title);
 
         /** @var EntityManager $entityManager */
         $entityManager = $this->getDoctrine()->getManager();

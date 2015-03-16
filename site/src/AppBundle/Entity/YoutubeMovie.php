@@ -47,6 +47,11 @@ class YoutubeMovie
         return $this->id;
     }
 
+    public function getDuration()
+    {
+        return $this->length;
+    }
+
     public function getYoutubeKey()
     {
         return $this->videoId;

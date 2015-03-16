@@ -17,8 +17,8 @@
                         <div class="player__time-indicator">
 
                         </div>
-                        <div>
-                            1:24
+                        <div class="player__time-duration">
+                            {{ video.duration }}
                         </div>
                         <div class="player__mute"><a href="javascript: muteToggle();">mute</a></div>
                     </div>
@@ -37,6 +37,9 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
+        $(document).ready(function() {
+            $('.player__time-duration').text($('.player__time-duration').text().toHHMMSS());
+        });
         var player;
         function onYouTubeIframeAPIReady() {
             player = new YT.Player('player', {
@@ -75,6 +78,23 @@
                 player.mute();
             }
 
+        }
+
+        /**
+         * Parse seconds to HH:MM:SS format
+         *
+         * @returns {string}
+         */
+        String.prototype.toHHMMSS = function () {
+            var sec_num = parseInt(this, 10);
+            var hours   = Math.floor(sec_num / 3600);
+            var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+            var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+            if (hours   < 10) {hours   = "0"+hours;}
+            if (minutes < 10) {minutes = "0"+minutes;}
+            if (seconds < 10) {seconds = "0"+seconds;}
+            return hours+':'+minutes+':'+seconds;
         }
     </script>
 {% endblock %}

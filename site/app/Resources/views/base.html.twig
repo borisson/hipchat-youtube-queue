@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Radio Wizi - Instant classics</title>
+    <title>{%  block title %}{% endblock %}Radio Wizi - Instant classics</title>
     <meta name="description" content="Radio Wizi.">
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,14 +30,14 @@
             $.ajax({
                 url: '/ajax/load-videos'
             }).done(function (data) {
-                $('.playlist').html('');
+                $('#coming-up .playlist').html('');
                 $.each(data, function (k, value) {
                     var listItem = '<li class="playlist__song">';
                     listItem += '<span class="song__title">';
                     listItem += value.title;
                     listItem += '</span></li>';
 
-                    $('.playlist').append(listItem);
+                    $('#coming-up .playlist').append(listItem);
                 });
             });
         }

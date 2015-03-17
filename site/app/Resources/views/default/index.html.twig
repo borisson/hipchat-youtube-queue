@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}{{ video.title }} | {% endblock %}
 {% block body %}
         <div class="content-wrapper content--centered">
             <div class="player">
@@ -24,12 +25,23 @@
                     </div>
                 </div>
             </div>
-            <div class="playlist__wrapper">
+            <div class="playlist__wrapper" id="coming-up">
                 <h3 class="playlist__title">Coming up</h3>
                 <ol class="playlist">
                     <li class="playlist__song">
                         <span class="song__title"></span>
                     </li>
+                </ol>
+            </div>
+
+            <div class="playlist__wrapper">
+                <h3 class="playlist__title">Last 10 songs</h3>
+                <ol class="playlist">
+                    {% for song in lastSongs %}
+                        <li class="playlist__song">
+                            <span class="song__title">{{ song.title }}</span>
+                        </li>
+                    {% endfor %}
                 </ol>
             </div>
         </div>

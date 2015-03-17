@@ -28,10 +28,15 @@ class DefaultController extends Controller
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
         $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0]);
 
+        $lastSongs = $ytRepository->findBy(['skipped' => 0, 'played' => 1],['id' => 'DESC'], 10);
+
         if (is_null($yt)) {
             return $this->render('default/playlist-empty.html.twig');
         } else {
-            return $this->render('default/index.html.twig', ['video' => $yt]);
+            return $this->render('default/index.html.twig', [
+              'video' => $yt,
+              'lastSongs' => $lastSongs
+            ]);
         }
     }
 

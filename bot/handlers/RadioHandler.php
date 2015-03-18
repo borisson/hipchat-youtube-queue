@@ -22,7 +22,8 @@ class RadioHandler
         }
 
         makePost($config['radioUrl'] . 'add', [
-            'link' => $message['message']
+            'link' => $message['message'],
+            'requestname' => $message['from']['name'],
         ]);
 
         return array("action" => "reply", "data" => 'Added ' . $message['message'] . ' to radio');

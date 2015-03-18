@@ -93,6 +93,8 @@ class DefaultController extends Controller
             $video_id = $match[1];
         }
 
+        $requestname = $request->get('requestname');
+
         if (!isset($video_id)) {
           return new Response('Invalid url', 422);
         }
@@ -114,7 +116,7 @@ class DefaultController extends Controller
         $totalSeconds = (int) $seconds[0]->attributes()->seconds;
 
         // Create a new YoutubeMovie to be saved in database.
-        $yt = new YoutubeMovie($video_id, $totalSeconds, $xml->title);
+        $yt = new YoutubeMovie($video_id, $totalSeconds, $xml->title, $requestname);
 
         /** @var EntityManager $entityManager */
         $entityManager = $this->getDoctrine()->getManager();

@@ -73,4 +73,9 @@ class YoutubeMovie
     {
       return '<iframe width="800" height="400" src="https://www.youtube.com/embed/'.$this->videoId.'?autoplay=0x&controls=0&showinfo=0&disablekb=1&modestbranding=1" frameborder="0" allowfullscreen></iframe>';
     }
+
+    public function getRequestName()
+    {
+      return $this->requestname;
+    }
 }

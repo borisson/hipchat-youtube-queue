@@ -10,14 +10,16 @@ class YoutubeMovie
     private $postedTime;
     private $length;
     private $title;
+    private $requestname;
     private $skipped = false;
     private $played = false;
 
-    public function __construct($videoId, $length, $title)
+    public function __construct($videoId, $length, $title, $requestname = NULL)
     {
         $this->videoId = $videoId;
         $this->length = $length;
         $this->title = $title;
+        $this->requestname = $requestname;
 
         $this->postedTime = new \DateTime();
     }

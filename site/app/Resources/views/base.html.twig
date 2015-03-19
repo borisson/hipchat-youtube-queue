@@ -94,7 +94,7 @@
             if (event.data == 0) {
                 done = true;
                 $.ajax({
-                    url: '/ajax/set-done/' + $('#video-id').text()
+                    url: '/ajax/set-done/' + $('.player__title').attr('data-video-id')
                 }).done(function () {
                     window.location = window.location;
                 });
@@ -134,7 +134,7 @@
          * @param event
          */
         function onPlayerReady(event) {
-            loadVideoId($('#video-key').text());
+            loadVideoId($('.player__title').attr('data-youtube-id'));
             event.target.playVideo();
         }
     </script>

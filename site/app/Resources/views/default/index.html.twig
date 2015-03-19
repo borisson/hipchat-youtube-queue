@@ -10,11 +10,9 @@
                     </div>
                 </div>
                 <div class="player__detail">
-                    <span id="video-key">{{ video.youtubekey }}</span>
-                    <span id="video-id">{{ video.id }}</span>
                     <h3 class="player__label">Now playing</h3>
 
-                    <h2 class="player__title">{{ video.title }}</h2>
+                    <h2 class="player__title" data-video-id="{{ video.id }}" data-youtube-id="{{ video.youtubekey }}">{{ video.title }}</h2>
 
                     <span class="player__requester-title">Requested by <em>{{ video.requestname }}</em></span>
 

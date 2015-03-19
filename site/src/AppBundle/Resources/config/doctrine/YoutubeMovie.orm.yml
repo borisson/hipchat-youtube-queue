@@ -48,3 +48,8 @@ AppBundle\Entity\YoutubeMovie:
             nullable: false
             length: 3
             comment: ''
+        startedTime:
+            type: datetime
+            nullable: false
+            comment: ''
+            column: started_time

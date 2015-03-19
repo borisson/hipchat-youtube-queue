@@ -82,8 +82,12 @@
         function loadVideoId(videoKey) {
             player.loadVideoById({
                 'videoId': videoKey,
-                'startSeconds': 0,
+                'startSeconds': $('.player__title').data('video-skip'),
                 'suggestedQuality': 'large'
+            });
+            player.playVideo();
+            $.ajax({
+                url: '/app_dev.php/ajax/start-playing/' + $('.player__title').attr('data-video-id')
             });
         }
 
@@ -135,7 +139,6 @@
          */
         function onPlayerReady(event) {
             loadVideoId($('.player__title').attr('data-youtube-id'));
-            event.target.playVideo();
         }
     </script>
 {% endblock %}

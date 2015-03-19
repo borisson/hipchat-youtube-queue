@@ -11,6 +11,7 @@ class YoutubeMovie
     private $length;
     private $title;
     private $requestname;
+    private $startedTime;
     private $skipped = false;
     private $played = false;
 
@@ -42,6 +43,19 @@ class YoutubeMovie
     public function setPlayed()
     {
         $this->played = true;
+    }
+
+    public function startPlaying()
+    {
+        $this->startedTime = new \DateTime();
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getStartedTime()
+    {
+        return $this->startedTime;
     }
 
     public function getId()

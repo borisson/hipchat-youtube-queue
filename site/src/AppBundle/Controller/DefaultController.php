@@ -26,16 +26,24 @@ class DefaultController extends Controller
 
         /** @var EntityRepository $ytRepository */
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
+        /** @var YoutubeMovie $yt */
         $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0]);
 
         $lastSongs = $ytRepository->findBy(['skipped' => 0, 'played' => 1],['id' => 'DESC'], 10);
+
+        $diff = 0;
+        if ($yt instanceof YoutubeMovie && $yt->getStartedTime()->format('Y') !== '-0001') {
+            $now = new \DateTime();
+            $diff = $now->getTimestamp() - $yt->getStartedTime()->getTimestamp();
+        }
 
         if (is_null($yt)) {
             return $this->render('default/playlist-empty.html.twig');
         } else {
             return $this->render('default/index.html.twig', [
               'video' => $yt,
-              'lastSongs' => $lastSongs
+              'lastSongs' => $lastSongs,
+              'startSeconds' => $diff,
             ]);
         }
     }
@@ -77,6 +85,26 @@ class DefaultController extends Controller
         /** @var YoutubeMovie $youtube */
         $youtube = $ytRepository->find($id);
         $youtube->setPlayed();
+
+        $em->flush();
+        return new Response();
+    }
+
+    /**
+     * @Route("/ajax/start-playing/{id}")
+     * @Method("GET")
+     */
+    public function ajaxLoad($id)
+    {
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var EntityRepository $ytRepository */
+        $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
+
+        /** @var YoutubeMovie $youtube */
+        $youtube = $ytRepository->find($id);
+        $youtube->startPlaying();
 
         $em->flush();
         return new Response();

@@ -50,6 +50,6 @@ AppBundle\Entity\YoutubeMovie:
             comment: ''
         startedTime:
             type: datetime
-            nullable: false
+            nullable: true
             comment: ''
             column: started_time

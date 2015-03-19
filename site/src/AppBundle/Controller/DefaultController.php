@@ -32,7 +32,7 @@ class DefaultController extends Controller
         $lastSongs = $ytRepository->findBy(['skipped' => 0, 'played' => 1],['id' => 'DESC'], 10);
 
         $diff = 0;
-        if ($yt instanceof YoutubeMovie && $yt->getStartedTime()->format('Y') !== '-0001') {
+        if ($yt instanceof YoutubeMovie && $yt->getStartedTime() instanceof \DateTime && $yt->getStartedTime()->format('Y') !== '-0001') {
             $now = new \DateTime();
             $diff = $now->getTimestamp() - $yt->getStartedTime()->getTimestamp();
         }

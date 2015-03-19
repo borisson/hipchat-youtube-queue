@@ -47,7 +47,9 @@ class YoutubeMovie
 
     public function startPlaying()
     {
-        $this->startedTime = new \DateTime();
+        if (is_null($this->startedTime)) {
+            $this->startedTime = new \DateTime();
+        }
     }
 
     /**

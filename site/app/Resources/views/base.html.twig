@@ -28,9 +28,15 @@
     <script type="text/javascript">
         var player;
         var done = false;
+        var currenttimeint = 0;
+        var currenttime = '00:00:00';
+        var currentpct = 0;
+        var totaltime = 0;
+        var watchId;
 
         $(document).ready(function() {
-            var $timeDuration = $('.player__time-duration')
+            var $timeDuration = $('.player__time-duration');
+            totaltime = $timeDuration.text();
             $timeDuration.text($timeDuration.text().toHHMMSS());
             ajaxLoadPlaylist();
         });
@@ -77,6 +83,30 @@
         }
 
         /**
+         * Start current player timer.
+         */
+        function startWatch(){
+            watchId = setInterval( function(){
+                if(typeof player.getCurrentTime === 'function' && !isNaN(player.getCurrentTime())) {
+                    currenttimeint = Number(player.getCurrentTime());
+                    currenttime = String(currenttimeint).toHHMMSS();
+                    $('.player__time-timer').text(currenttime);
+
+                    //calculate percentage for css theming?
+                    currentpct = Math.round(100/Number(totaltime)*Number(currenttimeint));
+                    $('.player__time-progress').css({'width':currentpct + '%'});
+                }
+            },10)
+        }
+
+        /**
+         * Stop current player timer.
+         */
+        function stopWatch(){
+            clearTimeout(watchId);
+        }
+
+        /**
          * Load video by youtube key
          */
         function loadVideoId(videoKey) {
@@ -87,7 +117,7 @@
             });
             player.playVideo();
             $.ajax({
-                url: '/app_dev.php/ajax/start-playing/' + $('.player__title').attr('data-video-id')
+                url: '/ajax/start-playing/' + $('.player__title').attr('data-video-id')
             });
         }
 
@@ -95,13 +125,22 @@
          * Youtube player state has changed (pause / play / end)
          */
         function onPlayerStateChange(event) {
-            if (event.data == 0) {
-                done = true;
-                $.ajax({
-                    url: '/ajax/set-done/' + $('.player__title').attr('data-video-id')
-                }).done(function () {
-                    window.location = window.location;
-                });
+            switch (event.data){
+                case 0:
+                    done = true;
+                    stopWatch();
+                    $.ajax({
+                        url: '/ajax/set-done/' + $('.player__title').attr('data-video-id')
+                    }).done(function () {
+                        window.location = window.location;
+                    });
+                    break;
+                case 1:
+                    startWatch();
+                    break;
+                case 2:
+                    stopWatch();
+                    break;
             }
         }
 

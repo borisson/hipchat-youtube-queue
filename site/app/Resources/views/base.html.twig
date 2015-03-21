@@ -19,7 +19,7 @@
 <body>
     <div class="page">
         <h1 class="header__logo"><a href="" class="ir">Radio Wizi</a></h1>
-{% block body %}{% endblock %}
+        {% block body %}{% endblock %}
     </div>
 {% block javascripts %}
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
@@ -94,10 +94,11 @@
                     $('.player__time-timer').text(currenttime);
 
                     //calculate percentage for css theming?
-                    currentpct = Math.round(100/Number(totaltime)*Number(currenttimeint));
+                    currentpct = Math.round((100/Number(totaltime)) * Number(currenttimeint)*100)/100;
+                    console.log(currentpct);
                     $('.player__time-progress').css({'width':currentpct + '%'});
                 }
-            },10)
+            }, 500)
         }
 
         /**

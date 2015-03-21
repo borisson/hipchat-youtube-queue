@@ -110,14 +110,66 @@
   text-align: right;
 }
 
+.player__controls {
+  @extend .clearfix;
+  margin-top: $base-spacing-unit;
+}
+
+.controls--left {
+  float: left;
+  width: 33%;
+}
+
+.controls--middle {
+  float: left;
+  text-align: center;
+  width: 34%;
+}
+
+.controls--right {
+  float: left;
+  text-align: right;
+  width: 33%;
+}
+
+.player__time-timer {
+
+}
+
+.player__time-duration {
+
+}
+
+.player__mute {
+  display: inline-block;
+  height: 24px;
+  width: 36px;
+  a {
+    background: image-url('mute.svg') center center no-repeat;
+    background-size: 100%;
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.player--muted {
+  a {
+    background: image-url('unmute.svg') center center no-repeat;
+  }
+}
+
 .player__time-indicator {
-  background-color: grey;
+  background-color: $border-color;
+  clear: both;
   height:3px;
+  float: left;
+  margin: 6px 0 0;
   width:100%;
 
   .player__time-progress {
     @include transition(width .5s linear);
-    background-color:black;
+    background-color: $grey;
     height: 3px;
     width:0%
   }

@@ -19,16 +19,24 @@
                     <span class="player__requester-title">Requested by <em class="player__requester-name">{{ video.requestname }}</em></span>
 
                     <div class="player__controls">
+                        <div class="controls--left">
+                            <div class="player__time-timer">
+                                00:00:00
+                            </div>
+                        </div>
+                        <div class="controls--middle">
+                            <div class="player__mute">
+                                <a href="javascript: muteToggle();" class="ir">mute</a>
+                            </div>
+                        </div>
+                        <div class="controls--right">
+                            <div class="player__time-duration">
+                                {{ video.duration }}
+                            </div>
+                        </div>
                         <div class="player__time-indicator">
                             <div class="player__time-progress"></div>
                         </div>
-                        <div class="player__time-timer">
-                            00:00:00
-                        </div>
-                        <div class="player__time-duration">
-                            {{ video.duration }}
-                        </div>
-                        <div class="player__mute"><a href="javascript: muteToggle();">mute</a></div>
                     </div>
                 </div>
             </div>

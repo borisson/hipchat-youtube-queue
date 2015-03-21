@@ -152,8 +152,10 @@
         function muteToggle() {
             if (player.isMuted()) {
                 player.unMute();
+                $('.player__mute').removeClass('player--muted');
             } else {
                 player.mute();
+                $('.player__mute').addClass('player--muted');
             }
         }
 

@@ -130,21 +130,36 @@ class DefaultController extends Controller
         $client = new GuzzleClient();
 
         $response = $client->get(
-          'http://gdata.youtube.com/feeds/api/videos/' . $video_id,
+          'http://gdata.youtube.com/feeds/api/videos/' . $video_id . '?v=2&alt=jsonc&prettyprint=true',
           [
-            'headers' => ['Content-Type' => 'text/xml'],
+            'headers' => ['Content-Type' => 'text/json'],
             'verify' => false,
             'timeout' => 5,
           ]
         );
 
-        $xml = $response->xml();
+        $json = $response->json();
+        $jsondata = $json['data'];
+        $totalSeconds = $jsondata['duration'];
 
-        $seconds = $xml->xpath('//yt:duration[@seconds]');
-        $totalSeconds = (int) $seconds[0]->attributes()->seconds;
+        //Check Belgian country check
+        if(isset($jsondata['restrictions'])){
+            foreach($jsondata['restrictions'] as $restriction){
+                if($restriction['type'] == 'country' && $restriction['relationship'] == 'deny'){
+                    if (strpos($restriction['countries'],'BE') !== false) {
+                        return new Response("This video can't be added. Belgium is not allowed. :( \n");
+                    }
+                }
+            }
+        }
+
+        //Embed check
+        if(isset($jsondata['accessControl']['embed']) && $jsondata['accessControl']['embed'] != 'allowed'){
+          return new Response("This video can't be added. The video is not embeddable. :( \n");
+        }
 
         // Create a new YoutubeMovie to be saved in database.
-        $yt = new YoutubeMovie($video_id, $totalSeconds, $xml->title, $requestname);
+        $yt = new YoutubeMovie($video_id, $totalSeconds, $jsondata['title'], $requestname);
 
         /** @var EntityManager $entityManager */
         $entityManager = $this->getDoctrine()->getManager();

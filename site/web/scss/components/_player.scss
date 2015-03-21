@@ -5,6 +5,12 @@
 .player {
   @extend .clearfix;
   background: $lighter-grey;
+
+  img {
+    display: block;
+    height: 146px;
+    max-width: 100%;
+  }
 }
 
 .player--empty {

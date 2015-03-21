@@ -70,7 +70,8 @@
                 width: '640',
                 events: {
                     'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange
+                    'onStateChange': onPlayerStateChange,
+                    'onError': onPlayerError
                 },
                 playerVars: {
                     controls: 0,
@@ -128,13 +129,7 @@
         function onPlayerStateChange(event) {
             switch (event.data){
                 case 0:
-                    done = true;
-                    stopWatch();
-                    $.ajax({
-                        url: '/ajax/set-done/' + $('.player__title').attr('data-video-id')
-                    }).done(function () {
-                        window.location = window.location;
-                    });
+                    skipToNextTrack();
                     break;
                 case 1:
                     startWatch();
@@ -144,6 +139,38 @@
                     stopWatch();
                     break;
             }
+        }
+
+        /**
+         * Skip to next track if an error occures. (100, 101, 150).
+         */
+        function onPlayerError(event){
+            switch(event.data){
+                case 150:
+                    skipToNextTrack();
+                    break;
+                case 100:
+                    skipToNextTrack();
+                    break;
+                case 101:
+                    skipToNextTrack();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /**
+         * Helper function to skip to the next track.
+         */
+        function skipToNextTrack(){
+            done = true;
+            stopWatch();
+            $.ajax({
+                url: '/ajax/set-done/' + $('.player__title').attr('data-video-id')
+            }).done(function () {
+                window.location = window.location;
+            });
         }
 
         /**

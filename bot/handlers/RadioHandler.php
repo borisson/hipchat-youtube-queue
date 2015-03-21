@@ -49,7 +49,7 @@ class RadioHandler
                 if($restriction['type'] == 'country' && $restriction['relationship'] == 'deny'){
                     if (strpos($restriction['countries'],'BE') !== false) {
                         return array("action" => "reply", "data" => array(
-                          'msg' => 'This video is not added. Belgium is not allowed. :(',
+                          'msg' => 'This video is not added. Belgium is not allowed. (traantjes2)',
                           'color' => 'red',
                         ));
                     }
@@ -60,7 +60,7 @@ class RadioHandler
         //Embed check
         if(isset($jsondata['accessControl']['embed']) && $jsondata['accessControl']['embed'] != 'allowed'){
             return array("action" => "reply", "data" => array(
-              'msg' => 'This video is not added. The video is not embeddable. :(',
+              'msg' => 'This video is not added. The video is not embeddable. (traantjes2)',
               'color' => 'red',
             ));
         }

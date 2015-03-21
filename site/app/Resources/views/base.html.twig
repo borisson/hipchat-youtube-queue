@@ -33,6 +33,7 @@
         var currentpct = 0;
         var totaltime = 0;
         var watchId;
+        var notificationShown = false;
 
         $(document).ready(function() {
             var $timeDuration = $('.player__time-duration');
@@ -137,6 +138,7 @@
                     break;
                 case 1:
                     startWatch();
+                    showNotification();
                     break;
                 case 2:
                     stopWatch();
@@ -178,6 +180,37 @@
          */
         function onPlayerReady(event) {
             loadVideoId($('.player__title').attr('data-youtube-id'));
+        }
+
+        function showNotification(){
+            if ('Notification' in window) {
+                Notification.requestPermission(function() {
+                    if(!getNotificationShown()){
+                        var notification = new Notification('Radio Wizi - Now playing', {
+                            body: player.getVideoData().title + '\nRequested by ' + $('.player__requester-name').html(),
+                            icon: 'http://img.youtube.com/vi/' + player.getVideoData().video_id + '/default.jpg'
+                        });
+
+                        setNotificationShown(true);
+
+                        setTimeout(function(){
+                            notification.close();
+                        }, 5000);
+                    }
+                });
+            }
+        }
+
+        function getNotificationShown(){
+            return notificationShown;
+        }
+
+        function setNotificationShown(value){
+            if(typeof value == 'boolean'){
+                notificationShown = value;
+            }
+
+            return notificationShown;
         }
     </script>
 {% endblock %}

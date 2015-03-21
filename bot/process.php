@@ -66,8 +66,12 @@ function sendRoomNotification($room, $msg)
     $client = new GorkaLaucirica\HipchatAPIv2Client\Client($auth, $browser);
 
     $message = new \GorkaLaucirica\HipchatAPIv2Client\Model\Message();
-    $message->setMessage($msg);
+    $message->setMessage($msg['msg']);
     $message->setMessageFormat('text');
+
+    if(isset($msg['color'])){
+      $message->setColor($msg['color']);
+    }
 
     $x = new GorkaLaucirica\HipchatAPIv2Client\API\RoomAPI($client);
     $ret = $x->sendRoomNotification($room, $message);

@@ -45,18 +45,24 @@ class RadioHandler
 
         //Check Belgian country check
         if(isset($jsondata['restrictions'])){
-          foreach($jsondata['restrictions'] as $restriction){
-              if($restriction['type'] == 'country' && $restriction['relationship'] == 'deny'){
-                  if (strpos($restriction['countries'],'BE') !== false) {
-                      return array("action" => "reply", "data" => 'This video is not added. Belgium is not allowed. :(');
-                  }
-              }
-          }
+            foreach($jsondata['restrictions'] as $restriction){
+                if($restriction['type'] == 'country' && $restriction['relationship'] == 'deny'){
+                    if (strpos($restriction['countries'],'BE') !== false) {
+                        return array("action" => "reply", "data" => array(
+                          'msg' => 'This video is not added. Belgium is not allowed. :(',
+                          'color' => 'red',
+                        ));
+                    }
+                }
+            }
         }
 
         //Embed check
         if(isset($jsondata['accessControl']['embed']) && $jsondata['accessControl']['embed'] != 'allowed'){
-            return array("action" => "reply", "data" => 'This video is not added. The video is not embeddable. :(');
+            return array("action" => "reply", "data" => array(
+              'msg' => 'This video is not added. The video is not embeddable. :(',
+              'color' => 'red',
+            ));
         }
 
         makePost($config['radioUrl'] . 'add', [
@@ -64,7 +70,10 @@ class RadioHandler
             'requestname' => $message['from']['name'],
         ]);
 
-        return array("action" => "reply", "data" => 'Added "' . $jsondata['title'] . '" to Radio Wizi');
+        return array("action" => "reply", "data" => array(
+          'msg' => 'Added "' . $jsondata['title'] . '" to Radio Wizi',
+          'color' => 'green',
+        ));
 
     }
 }

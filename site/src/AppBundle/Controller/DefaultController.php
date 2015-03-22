@@ -49,6 +49,28 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/api/loadlastsongs", name="load-last-songs")
+     * @Method("GET")
+     */
+    public function radiowiziapiLoadLastSongsAction()
+    {
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var EntityRepository $ytRepository */
+        $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
+        $lastSongs = $ytRepository->findBy(['skipped' => 0, 'played' => 1],['id' => 'DESC'], 10);
+
+        $data = [];
+        /** @var YoutubeMovie  $movie */
+        foreach ($lastSongs as $k => $movie) {
+            $data[$k]['title'] = $movie->getTitle();
+        }
+
+        return new JsonResponse($data);
+    }
+
+    /**
      * @Route("/ajax/load-videos", name="load-more")
      * @Method("GET")
      */

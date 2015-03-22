@@ -103,6 +103,7 @@ class YoutubeMovie
             'requestname' => $this->getRequestName(),
             'duration' => $this->getDuration(),
             'id' => $this->getId(),
+            'youtubekey' => $this->getYoutubeKey(),
         );
     }
 }

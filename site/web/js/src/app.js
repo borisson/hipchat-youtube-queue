@@ -7,7 +7,8 @@ var path = origin + '/partials/';
 /* App Module */
 var radiowiziApp = angular.module('radiowiziApp', [
     'ngRoute',
-    'radiowiziControllers'
+    'radiowiziControllers',
+    'youtube-embed'
 ]);
 
 radiowiziApp.config(['$routeProvider',

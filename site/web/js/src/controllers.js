@@ -3,8 +3,8 @@
 /* Controllers */
 var radiowiziControllers = angular.module('radiowiziControllers', []);
 
-radiowiziControllers.controller('mainController', ['$scope', '$http', 'videoManager',
-    function ($scope, $http, videoManager) {
+radiowiziControllers.controller('mainController', ['$scope', '$http', 'videoManager', 'notificationManager',
+    function ($scope, $http, videoManager, notificationManager) {
 
         var seekto = 0;
 
@@ -29,6 +29,8 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', 'videoMana
 
         //React on youtube events.
         $scope.$on('youtube.player.ready', function ($event, player) {
+            notificationManager.showNotifiction(player);
+
             $http.get(origin + '/' + folder + '/ajax/start-playing/' + $scope.video.id).success(function (data) {
                 //start time is now written
             });

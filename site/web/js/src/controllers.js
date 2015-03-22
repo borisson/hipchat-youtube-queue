@@ -19,6 +19,13 @@ radiowiziControllers.controller('mainController', ['$scope', '$http',
                 autoplay: 1
             };
             $scope.radiowizivideo = $scope.video.youtubekey;
+
+        });
+
+        $scope.$on('youtube.player.ready', function ($event, player) {
+            $http.get(origin + '/' + folder + '/ajax/start-playing/' + $scope.video.id).success(function (data) {
+                //start time is now written
+            });
         });
 
     }

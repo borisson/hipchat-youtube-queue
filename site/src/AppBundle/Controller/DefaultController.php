@@ -37,15 +37,30 @@ class DefaultController extends Controller
             $diff = $now->getTimestamp() - $yt->getStartedTime()->getTimestamp();
         }
 
-        if (is_null($yt)) {
-            return $this->render('default/playlist-empty.html.twig');
-        } else {
-            return $this->render('default/index.html.twig', [
-              'video' => $yt,
-              'lastSongs' => $lastSongs,
-              'startSeconds' => $diff,
-            ]);
+        return $this->render('base.html.twig');
+    }
+
+    /**
+     * @Route("/api/loadsong", name="load-song")
+     * @Method("GET")
+     */
+    public function radiowiziapiLoadSongsAction()
+    {
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var EntityRepository $ytRepository */
+        $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
+        /** @var YoutubeMovie $yt */
+        $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0]);
+
+        $diff = 0;
+        if ($yt instanceof YoutubeMovie && $yt->getStartedTime() instanceof \DateTime && $yt->getStartedTime()->format('Y') !== '-0001') {
+            $now = new \DateTime();
+            $diff = $now->getTimestamp() - $yt->getStartedTime()->getTimestamp();
         }
+
+        return new JsonResponse(array('obj' => $yt->getDataForJson(), 'diff'=>$diff));
     }
 
     /**

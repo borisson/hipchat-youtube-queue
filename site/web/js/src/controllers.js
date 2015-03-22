@@ -11,6 +11,8 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', '$interval
         var currentplaytime;
         var currenttimeint;
         var currenttime;
+        var currentplayer;
+
         $scope.videoavailable = false;
 
         //Load last 10 songs.
@@ -64,6 +66,16 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', '$interval
             //alert('Something went wrong with loading the video, please refresh this page.');
         });
 
+        $scope.mute = function() {
+            if (currentplayer.isMuted()) {
+                currentplayer.unMute();
+                //$('.player__mute').removeClass('player--muted');
+            } else {
+                currentplayer.mute();
+                //$('.player__mute').addClass('player--muted');
+            }
+        };
+
         //React on youtube events.
         $scope.$on('youtube.player.ready', function ($event, player) {
             notificationManager.showNotifiction(player);
@@ -72,6 +84,7 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', '$interval
                 //start time is now written
             });
             player.seekTo(seekto);
+            currentplayer = player;
         });
 
         $scope.$on('youtube.player.playing', function ($event, player) {

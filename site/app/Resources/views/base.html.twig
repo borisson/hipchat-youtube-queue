@@ -51,50 +51,7 @@
             var $timeDuration = $('.player__time-duration');
             totaltime = $timeDuration.text();
             $timeDuration.text($timeDuration.text().toHHMMSS());
-            ajaxLoadPlaylist();
         });
-
-        /**
-         * Ajax function to load the upcoming movies
-         */
-        function ajaxLoadPlaylist() {
-            $.ajax({
-                url: '/ajax/load-videos'
-            }).done(function (data) {
-                $('#coming-up .playlist').html('');
-                $.each(data, function (k, value) {
-                    var listItem = '<li class="playlist__song">';
-                    listItem += '<span class="song__title">';
-                    listItem += value.title;
-                    listItem += '</span></li>';
-
-                    $('#coming-up .playlist').append(listItem);
-                });
-            });
-        }
-
-        /**
-         * Youtube api is ready, create player
-         */
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '390',
-                width: '640',
-                events: {
-                    'onReady': onPlayerReady,
-                    'onStateChange': onPlayerStateChange,
-                    'onError': onPlayerError
-                },
-                playerVars: {
-                    controls: 0,
-                    disablekb: 1,
-                    fs: 0,
-                    iv_load_policy: 3,
-                    modestbranding: 1,
-                    rel: 0
-                }
-            });
-        }
 
         /**
          * Start current player timer.
@@ -120,20 +77,6 @@
             clearTimeout(watchId);
         }
 
-        /**
-         * Load video by youtube key
-         */
-        function loadVideoId(videoKey) {
-            player.loadVideoById({
-                'videoId': videoKey,
-                'startSeconds': $('.player__title').data('video-skip'),
-                'suggestedQuality': 'large'
-            });
-            player.playVideo();
-            $.ajax({
-                url: '/ajax/start-playing/' + $('.player__title').attr('data-video-id')
-            });
-        }
 
         /**
          * Youtube player state has changed (pause / play / end)
@@ -215,44 +158,6 @@
             return hours+':'+minutes+':'+seconds;
         };
 
-        /**
-         * On youtube player ready
-         * @param event
-         */
-        function onPlayerReady(event) {
-            loadVideoId($('.player__title').attr('data-youtube-id'));
-        }
-
-        function showNotification(){
-            if ('Notification' in window) {
-                Notification.requestPermission(function() {
-                    if(!getNotificationShown()){
-                        var notification = new Notification('Radio Wizi - Now playing', {
-                            body: player.getVideoData().title + '\nRequested by ' + $('.player__requester-name').html(),
-                            icon: 'http://img.youtube.com/vi/' + player.getVideoData().video_id + '/default.jpg'
-                        });
-
-                        setNotificationShown(true);
-
-                        setTimeout(function(){
-                            notification.close();
-                        }, 5000);
-                    }
-                });
-            }
-        }
-
-        function getNotificationShown(){
-            return notificationShown;
-        }
-
-        function setNotificationShown(value){
-            if(typeof value == 'boolean'){
-                notificationShown = value;
-            }
-
-            return notificationShown;
-        }
     </script>
 {% endblock %}
 </body>

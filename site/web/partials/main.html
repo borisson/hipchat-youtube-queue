@@ -9,7 +9,12 @@
             <h3 class="player__label">Now playing</h3>
 
             <h2 class="player__title" data-video-id="{{ video.id }}" data-youtube-id="{{ video.youtubekey }}" data-video-skip="{{ startSeconds }}">
-                {{ video.title }}
+                <span ng-if="videoavailable == false">
+                    There is nothing playing :'(
+                </span>
+                <span ng-if="videoavailable == true">
+                    {{ video.title }}
+                </span>
             </h2>
 
             <span class="player__requester-title">Requested by <em class="player__requester-name">{{ video.requestname }}</em></span>
@@ -38,9 +43,9 @@
     </div>
     <div class="playlist__wrapper" id="coming-up">
         <h3 class="playlist__title">Coming up</h3>
-        <ol class="playlist">
+        <ol ng-repeat="song in upcomingsongs" class="playlist">
             <li class="playlist__song">
-                <span class="song__title"></span>
+                <span class="song__title">{{ song.title }}</span>
             </li>
         </ol>
     </div>

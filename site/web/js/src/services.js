@@ -34,28 +34,39 @@ radiowiziServices.factory('videoManager', ['$http', '$q', function ($http, $q) {
                     deferred.reject(msg);
                 });
             return deferred.promise;
+        },
+        getUpcomingSongs: function () {
+            var deferred = $q.defer();
+            $http.get(origin + '/' + folder + '/ajax/load-videos')
+                .success(function (data) {
+                    deferred.resolve({
+                        upcomingsongs: data
+                    });
+                }).error(function (msg, code) {
+                    deferred.reject(msg);
+                });
+            return deferred.promise;
         }
     };
 }]);
 
 radiowiziServices.factory('notificationManager', ['$timeout', function ($timeout) {
     return {
-        showNotifiction: function(player){
-        if ('Notification' in window) {
-            Notification.requestPermission(function() {
-                if(!getNotificationShown()){
+        showNotifiction: function (player) {
+            if ('Notification' in window) {
+                Notification.requestPermission(function () {
                     var notification = new Notification('Radio Wizi - Now playing', {
                         body: player.getVideoData().title + '\nRequested by ' + $('.player__requester-name').html(),
                         icon: 'http://img.youtube.com/vi/' + player.getVideoData().video_id + '/default.jpg'
                     });
 
-                    $timeout(function(){
+                    $timeout(function () {
                         notification.close();
                     }, 5000);
-                }
-            });
+
+                });
+            }
         }
-    }
     };
 }]);
 

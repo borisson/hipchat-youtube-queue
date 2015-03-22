@@ -58,9 +58,14 @@ class DefaultController extends Controller
         if ($yt instanceof YoutubeMovie && $yt->getStartedTime() instanceof \DateTime && $yt->getStartedTime()->format('Y') !== '-0001') {
             $now = new \DateTime();
             $diff = $now->getTimestamp() - $yt->getStartedTime()->getTimestamp();
+            return new JsonResponse(array('obj' => $yt->getDataForJson(), 'diff'=>$diff), 200);
         }
 
-        return new JsonResponse(array('obj' => $yt->getDataForJson(), 'diff'=>$diff));
+        if ($yt instanceof YoutubeMovie){
+            return new JsonResponse(array('obj' => $yt->getDataForJson(), 'diff'=>$diff), 200);
+        }
+
+        return new JsonResponse(array(),500);
     }
 
     /**

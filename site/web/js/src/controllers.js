@@ -8,6 +8,9 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', '$interval
 
         var seekto = 0;
         var loadupcoming;
+        var currentplaytime;
+        var currenttimeint;
+        var currenttime;
         $scope.videoavailable = false;
 
         //Load last 10 songs.
@@ -36,6 +39,7 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', '$interval
             //video loaded and playing ok
             $scope.videoavailable = true;
             $scope.video = data.video;
+            $scope.video.duration = videoManager.toHHMMSS(data.video.duration);
             $scope.diff = data.diff;
             seekto = data.diff;
             $scope.playerVars = data.playerVars;
@@ -50,6 +54,7 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', '$interval
                     $interval.cancel(searchforvideo);
                     $scope.videoavailable = true;
                     $scope.video = data.video;
+                    $scope.video.duration = videoManager.toHHMMSS(data.video.duration);
                     $scope.diff = data.diff;
                     seekto = data.diff;
                     $scope.playerVars = data.playerVars;
@@ -69,6 +74,20 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', '$interval
             player.seekTo(seekto);
         });
 
+        $scope.$on('youtube.player.playing', function ($event, player) {
+            currentplaytime = $interval(function(){
+
+                    if(typeof player.getCurrentTime === 'function' && !isNaN(player.getCurrentTime())) {
+                        currenttimeint = Number(player.getCurrentTime());
+                        currenttime = videoManager.toHHMMSS(String(currenttimeint));
+                        $scope.currenttime = currenttime;
+
+                        //calculate percentage for css theming?
+                        $scope.progressBarStyle = {width:Math.round((100/Number(player.getDuration())) * Number(currenttimeint)*100)/100+'%'};
+                    }
+            }, 500);
+        });
+
         $scope.$on('youtube.player.ended', function ($event, player) {
             $http.get(origin + '/' + folder + '/ajax/set-done/' + $scope.video.id).success(function (data) {
                 //load next video
@@ -77,6 +96,7 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', '$interval
                     //video loaded and playing ok
                     $scope.videoavailable = true;
                     $scope.video = data.video;
+                    $scope.video.duration = videoManager.toHHMMSS(data.video.duration);
                     $scope.diff = data.diff;
                     seekto = data.diff;
                     $scope.playerVars = data.playerVars;
@@ -92,6 +112,7 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', '$interval
                             $interval.cancel(searchforvideo);
                             $scope.videoavailable = true;
                             $scope.video = data.video;
+                            $scope.video.duration = videoManager.toHHMMSS(data.video.duration);
                             $scope.diff = data.diff;
                             seekto = data.diff;
                             $scope.playerVars = data.playerVars;
@@ -105,6 +126,12 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', '$interval
                 var lastsongs = videoManager.getLastSongs();
                 lastsongs.then(function(data){
                     $scope.lastsongs = data.lastsongs;
+                });
+
+                //update upcoming
+                var upcomingsongs = videoManager.getUpcomingSongs();
+                upcomingsongs.then(function(data){
+                    $scope.upcomingsongs = data.upcomingsongs;
                 });
 
             });

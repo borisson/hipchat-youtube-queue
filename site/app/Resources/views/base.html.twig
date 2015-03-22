@@ -38,126 +38,19 @@
     <script src="https://www.youtube.com/iframe_api"></script>
 
     <script type="text/javascript">
-        var player;
-        var done = false;
-        var currenttimeint = $('.player__title').data('video-skip');
-        var currenttime = '00:00:00';
-        var currentpct = 0;
-        var totaltime = 0;
-        var watchId;
-        var notificationShown = false;
-
-        $(document).ready(function() {
-            var $timeDuration = $('.player__time-duration');
-            totaltime = $timeDuration.text();
-            $timeDuration.text($timeDuration.text().toHHMMSS());
-        });
-
-        /**
-         * Start current player timer.
-         */
-        function startWatch(){
-            watchId = setInterval( function(){
-                if(typeof player.getCurrentTime === 'function' && !isNaN(player.getCurrentTime())) {
-                    currenttimeint = Number(player.getCurrentTime());
-                    currenttime = String(currenttimeint).toHHMMSS();
-                    $('.player__time-timer').text(currenttime);
-
-                    //calculate percentage for css theming?
-                    currentpct = Math.round((100/Number(totaltime)) * Number(currenttimeint)*100)/100;
-                    $('.player__time-progress').css({'width':currentpct + '%'});
-                }
-            }, 500)
-        }
-
-        /**
-         * Stop current player timer.
-         */
-        function stopWatch(){
-            clearTimeout(watchId);
-        }
-
-
-        /**
-         * Youtube player state has changed (pause / play / end)
-         */
-        function onPlayerStateChange(event) {
-            switch (event.data){
-                case 0:
-                    skipToNextTrack();
-                    break;
-                case 1:
-                    startWatch();
-                    showNotification();
-                    break;
-                case 2:
-                    stopWatch();
-                    break;
-            }
-        }
-
-        /**
-         * Skip to next track if an error occures. (100, 101, 150).
-         */
-        function onPlayerError(event){
-            switch(event.data){
-                case 150:
-                    skipToNextTrack();
-                    break;
-                case 100:
-                    skipToNextTrack();
-                    break;
-                case 101:
-                    skipToNextTrack();
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        /**
-         * Helper function to skip to the next track.
-         */
-        function skipToNextTrack(){
-            done = true;
-            stopWatch();
-            $.ajax({
-                url: '/ajax/set-done/' + $('.player__title').attr('data-video-id')
-            }).done(function () {
-                window.location = window.location;
-            });
-        }
 
         /**
          * Toggle muted stated of player
          */
-        function muteToggle() {
-            if (player.isMuted()) {
-                player.unMute();
-                $('.player__mute').removeClass('player--muted');
-            } else {
-                player.mute();
-                $('.player__mute').addClass('player--muted');
-            }
-        }
-
-        /**
-         * Parse seconds to HH:MM:SS format
-         *
-         * @returns {string}
-         */
-        String.prototype.toHHMMSS = function () {
-            var sec_num = parseInt(this, 10);
-            var hours   = Math.floor(sec_num / 3600);
-            var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
-            var seconds = sec_num - (hours * 3600) - (minutes * 60);
-
-            if (hours   < 10) {hours   = "0"+hours;}
-            if (minutes < 10) {minutes = "0"+minutes;}
-            if (seconds < 10) {seconds = "0"+seconds;}
-            return hours+':'+minutes+':'+seconds;
-        };
-
+//        function muteToggle() {
+//            if (player.isMuted()) {
+//                player.unMute();
+//                $('.player__mute').removeClass('player--muted');
+//            } else {
+//                player.mute();
+//                $('.player__mute').addClass('player--muted');
+//            }
+//        }
     </script>
 {% endblock %}
 </body>

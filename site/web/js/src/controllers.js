@@ -102,6 +102,8 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', '$interval
         });
 
         $scope.$on('youtube.player.ended', function ($event, player) {
+            $interval.cancel(currentplaytime);
+
             $http.get(origin + '/' + folder + '/ajax/set-done/' + $scope.video.id).success(function (data) {
                 //load next video
                 var newvideo = videoManager.getVideo();

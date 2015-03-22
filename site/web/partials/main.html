@@ -1,4 +1,4 @@
-<div class="content-wrapper content--centered">
+<div class="content-wrapper content--centered" ng-if="videoavailable == true">
     <div class="player">
         <div class="player__media">
             <div class="player__video">
@@ -8,16 +8,13 @@
         <div class="player__detail">
             <h3 class="player__label">Now playing</h3>
 
-            <h2 class="player__title" data-video-id="{{ video.id }}" data-youtube-id="{{ video.youtubekey }}" data-video-skip="{{ startSeconds }}">
-                <span ng-if="videoavailable == false">
-                    There is nothing playing :'(
-                </span>
-                <span ng-if="videoavailable == true">
-                    {{ video.title }}
-                </span>
+            <h2 class="player__title" data-video-id="{{ video.id }}" data-youtube-id="{{ video.youtubekey }}"
+                data-video-skip="{{ startSeconds }}">
+                {{ video.title }}
             </h2>
 
-            <span class="player__requester-title">Requested by <em class="player__requester-name">{{ video.requestname }}</em></span>
+            <span class="player__requester-title">Requested by <em class="player__requester-name">{{ video.requestname
+                }}</em></span>
 
             <div class="player__controls">
                 <div class="controls--left">
@@ -57,5 +54,25 @@
                 <span class="song__title">{{ song.title }}</span>
             </li>
         </ol>
+    </div>
+</div>
+
+<div class="content-wrapper content--centered" ng-if="videoavailable == false">
+    <div class="player player--empty">
+        <div class="player__media">
+            <div class="player__video">
+                <img src="/images/empty-playlist.gif"/>
+            </div>
+        </div>
+        <div class="player__detail">
+            <h3 class="player__label">Now playing</h3>
+
+            <h2 class="player__title">There is nothing playing :'(</h2>
+        </div>
+    </div>
+    <div class="playlist__wrapper">
+        <h3 class="playlist__title">Coming up</h3>
+
+        <p>There are no songs in the playlist queue, add some in the Radio Wizi room on HipChat.</p>
     </div>
 </div>

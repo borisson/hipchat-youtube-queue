@@ -6,6 +6,8 @@ var radiowiziControllers = angular.module('radiowiziControllers', []);
 radiowiziControllers.controller('mainController', ['$scope', '$http', 'videoManager',
     function ($scope, $http, videoManager) {
 
+        var seekto = 0;
+
         //Load last 10 songs.
         var lastsongs = videoManager.getLastSongs();
         lastsongs.then(function(data){
@@ -18,6 +20,7 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', 'videoMana
             //video loaded and playing ok
             $scope.video = data.video;
             $scope.diff = data.diff;
+            seekto = data.diff;
             $scope.playerVars = data.playerVars;
             $scope.radiowizivideo = data.radiowizivideo;
         }, function(reason){
@@ -29,6 +32,7 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', 'videoMana
             $http.get(origin + '/' + folder + '/ajax/start-playing/' + $scope.video.id).success(function (data) {
                 //start time is now written
             });
+            player.seekTo(seekto);
         });
 
         $scope.$on('youtube.player.ended', function ($event, player) {
@@ -36,9 +40,11 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', 'videoMana
                 //load next video
                 var newvideo = videoManager.getVideo();
                 newvideo.then(function(data){
+                    console.log(data);
                     //video loaded and playing ok
                     $scope.video = data.video;
                     $scope.diff = data.diff;
+                    seekto = data.diff;
                     $scope.playerVars = data.playerVars;
                     $scope.radiowizivideo = data.radiowizivideo;
                 }, function(reason){

@@ -1,15 +1,15 @@
 'use strict';
 
 /* Controllers */
-
 var radiowiziControllers = angular.module('radiowiziControllers', []);
 
 radiowiziControllers.controller('mainController', ['$scope', '$http', 'videoManager',
     function ($scope, $http, videoManager) {
 
         //Load last 10 songs.
-        $http.get(origin + '/' + folder + '/api/loadlastsongs').success(function (data) {
-            $scope.lastsongs = data;
+        var lastsongs = videoManager.getLastSongs();
+        lastsongs.then(function(data){
+            $scope.lastsongs = data.lastsongs;
         });
 
         //Load videoManager and get video to play.
@@ -45,31 +45,14 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', 'videoMana
                     alert('Something went wrong with loading the video, please refresh this page.');
                 });
 
+                //update last songs
+                var lastsongs = videoManager.getLastSongs();
+                lastsongs.then(function(data){
+                    $scope.lastsongs = data.lastsongs;
+                });
+
             });
         });
 
     }
 ]);
-
-radiowiziApp.factory('videoManager', ['$http', '$q', function ($http, $q) {
-    return {
-        getVideo: function () {
-            var deferred = $q.defer();
-            $http.get(origin + '/' + folder + '/api/loadsong')
-                .success(function (data) {
-                    deferred.resolve({
-                        video: data.obj,
-                        diff: data.diff,
-                        playerVars: {
-                            controls: 0,
-                            autoplay: 1
-                        },
-                        radiowizivideo: data.obj.youtubekey
-                    });
-                }).error(function (msg, code) {
-                    deferred.reject(msg);
-                });
-            return deferred.promise;
-        }
-    };
-}]);

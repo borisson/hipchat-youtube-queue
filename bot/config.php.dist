@@ -1,3 +1,5 @@
 <?php
 $config = [];
 $config['radioUrl'] = 'http://test.test';
+$config['botname'] = 'youbot';
+$config['youtube_api_key'] = 'YOUR_KEY_HERE';

@@ -65,6 +65,38 @@ class RadioHandler
             ));
         }
 
+        // Load file that registers the last 10 video's.
+        $fileName =  'data/youtubelinks.txt';
+        if (file_exists($fileName)) {
+            $fileContents = file_get_contents($fileName);
+        } else {
+            $fileContents = '';
+        }
+
+        // Make an array of the file's contents
+        $lines = explode("\n", $fileContents);
+
+        // Make sure the array of video's is only 10 items long
+        while(count($lines) > 10) {
+            array_pop($lines);
+        }
+
+        // Check if the current video id is in the last 10 lines
+        if (in_array($video_id, $lines)) {
+            return array(
+              "action" => "reply",
+              "data" => array(
+                'msg' => 'This video was already queued in the last 10 songs. Spamming is bad, mkay.',
+                'color' => 'red',
+            ));
+        }
+
+        // Add current video to log
+        $lines[] = $video_id;
+
+        // Write file again.
+        file_put_contents($fileName, implode("\n", $lines));
+
         makePost($config['radioUrl'] . 'add', [
             'link' => $message['message'],
             'requestname' => $message['from']['name'],

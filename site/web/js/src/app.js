@@ -23,4 +23,5 @@ radiowiziApp.config(['$routeProvider',
             otherwise({
                 redirectTo: '/'
             });
-    }]);
+    }
+]);

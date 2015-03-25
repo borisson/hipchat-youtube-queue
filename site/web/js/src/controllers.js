@@ -69,10 +69,10 @@ radiowiziControllers.controller('mainController', ['$scope', '$http', '$interval
         $scope.mute = function() {
             if (currentplayer.isMuted()) {
                 currentplayer.unMute();
-                //$('.player__mute').removeClass('player--muted');
+                $('.player__mute').removeClass('player--muted');
             } else {
                 currentplayer.mute();
-                //$('.player__mute').addClass('player--muted');
+                $('.player__mute').addClass('player--muted');
             }
         };
 

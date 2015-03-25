@@ -145,7 +145,7 @@
   height: 24px;
   width: 36px;
   a {
-    background: image-url('mute.svg') center center no-repeat;
+    background: image-url('unmute.svg') center center no-repeat;
     background-size: 100%;
     display: block;
     height: 100%;
@@ -155,7 +155,7 @@
 
 .player--muted {
   a {
-    background: image-url('unmute.svg') center center no-repeat;
+    background: image-url('mute.svg') center center no-repeat;
   }
 }
 

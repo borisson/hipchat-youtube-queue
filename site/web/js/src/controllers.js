@@ -14,6 +14,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
         var currentplayer;
 
         $scope.videoavailable = false;
+        $scope.pagetitle = 'Nothing playing';
 
         //Load last 10 songs.
         var lastsongs = videoManager.getLastSongs();
@@ -40,6 +41,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
         vid.then(function(data){
             //video loaded and playing ok
             $scope.videoavailable = true;
+            $scope.pagetitle = data.video.title;
             $scope.video = data.video;
             $scope.diff = data.diff;
             seekto = data.diff;
@@ -54,6 +56,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                     //video loaded and playing ok
                     $interval.cancel(searchforvideo);
                     $scope.videoavailable = true;
+                    $scope.pagetitle = data.video.title;
                     $scope.video = data.video;
                     $scope.diff = data.diff;
                     seekto = data.diff;
@@ -108,6 +111,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                 newvideo.then(function(data){
                     //video loaded and playing ok
                     $scope.videoavailable = true;
+                    $scope.pagetitle = data.video.title;
                     $scope.video = data.video;
                     $scope.diff = data.diff;
                     seekto = data.diff;
@@ -116,7 +120,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
 
                 }, function(reason){
                     $scope.videoavailable = false;
-
+                    $scope.pagetitle = 'Nothing playing';
                     var searchforvideo = $interval(function(){
                         var vidinterval = videoManager.getVideo();
                         vidinterval.then(function(data){
@@ -124,6 +128,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                             $interval.cancel(searchforvideo);
                             $scope.videoavailable = true;
                             $scope.video = data.video;
+                            $scope.pagetitle = data.video.title;
                             $scope.diff = data.diff;
                             seekto = data.diff;
                             $scope.playerVars = data.playerVars;

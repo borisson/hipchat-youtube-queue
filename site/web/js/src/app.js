@@ -16,8 +16,8 @@ radiowiziApp.config(['$routeProvider',
     function($routeProvider) {
         $routeProvider.
             when('/', {
-                templateUrl: path + 'main.html',
-                controller: 'MainController'
+                templateUrl: path + 'main.html'
+                //controller: 'MainController'
             }).
             otherwise({
                 redirectTo: '/'

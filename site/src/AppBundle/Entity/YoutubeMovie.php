@@ -94,4 +94,16 @@ class YoutubeMovie
     {
       return $this->requestname;
     }
+
+    public function getDataForJson()
+    {
+        return array(
+            'iframe' => $this->getIframe(),
+            'title' => $this->getTitle(),
+            'requestname' => $this->getRequestName(),
+            'duration' => $this->getDuration(),
+            'id' => $this->getId(),
+            'youtubekey' => $this->getYoutubeKey(),
+        );
+    }
 }

@@ -78,7 +78,7 @@ class RadioHandler
 
         // Make sure the array of video's is only 10 items long
         while(count($lines) > 10) {
-            array_pop($lines);
+            array_shift($lines);
         }
 
         // Check if the current video id is in the last 10 lines

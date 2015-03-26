@@ -42,8 +42,8 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
             //video loaded and playing ok
             $scope.videoavailable = true;
             $scope.pagetitle = data.video.title;
-            $scope.video.duration = videoManager.toHHMMSS(data.video.duration);
             $scope.video = data.video;
+            $scope.video.duration = videoManager.toHHMMSS(data.video.duration);
             $scope.diff = data.diff;
             seekto = data.diff;
             $scope.playerVars = data.playerVars;
@@ -58,8 +58,8 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                     $interval.cancel(searchforvideo);
                     $scope.videoavailable = true;
                     $scope.pagetitle = data.video.title;
-                    $scope.video.duration = videoManager.toHHMMSS(data.video.duration);
                     $scope.video = data.video;
+                    $scope.video.duration = videoManager.toHHMMSS(data.video.duration);
                     $scope.diff = data.diff;
                     seekto = data.diff;
                     $scope.playerVars = data.playerVars;
@@ -114,8 +114,8 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                     //video loaded and playing ok
                     $scope.videoavailable = true;
                     $scope.pagetitle = data.video.title;
-                    $scope.video.duration = videoManager.toHHMMSS(data.video.duration);
                     $scope.video = data.video;
+                    $scope.video.duration = videoManager.toHHMMSS(data.video.duration);
                     $scope.diff = data.diff;
                     seekto = data.diff;
                     $scope.playerVars = data.playerVars;

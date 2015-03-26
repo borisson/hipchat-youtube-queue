@@ -6,11 +6,13 @@ var radiowiziServices = angular.module('radiowiziServices', []);
 radiowiziServices.factory('videoManager', ['$http', '$q', function ($http, $q) {
     return {
         getVideo: function () {
-            var self = this;
             var deferred = $q.defer();
             $http.get(origin + '/' + folder + '/api/loadsong')
                 .success(function (data) {
-                    data.obj.duration = self.toHHMMSS(data.obj.duration);
+                    if(data.obj == undefined){
+                        deferred.reject('204 no content');
+                        return deferred.promise;
+                    }
                     deferred.resolve({
                         video: data.obj,
                         diff: data.diff,

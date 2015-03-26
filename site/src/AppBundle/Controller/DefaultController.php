@@ -65,7 +65,7 @@ class DefaultController extends Controller
             return new JsonResponse(array('obj' => $yt->getDataForJson(), 'diff'=>$diff), 200);
         }
 
-        return new JsonResponse(array(),500);
+        return new JsonResponse(array(),204);
     }
 
     /**

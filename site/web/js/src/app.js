@@ -8,7 +8,6 @@ var path = origin + '/partials/';
 var radiowiziApp = angular.module('radiowiziApp', [
     'ngRoute',
     'youtube-embed',
-
     'radiowiziControllers',
     'radiowiziServices'
 ]);
@@ -17,8 +16,8 @@ radiowiziApp.config(['$routeProvider',
     function($routeProvider) {
         $routeProvider.
             when('/', {
-                templateUrl: path + 'main.html',
-                controller: 'mainController'
+                templateUrl: path + 'main.html'
+                //controller: 'MainController'
             }).
             otherwise({
                 redirectTo: '/'

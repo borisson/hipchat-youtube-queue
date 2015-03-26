@@ -40,8 +40,8 @@
     </div>
     <div class="playlist__wrapper" id="coming-up">
         <h3 class="playlist__title">Coming up</h3>
-        <ol ng-repeat="song in upcomingsongs" class="playlist">
-            <li class="playlist__song">
+        <ol class="playlist">
+            <li ng-repeat="song in upcomingsongs" class="playlist__song">
                 <span class="song__title">{{ song.title }}</span>
             </li>
         </ol>
@@ -49,8 +49,8 @@
 
     <div class="playlist__wrapper">
         <h3 class="playlist__title">Last 10 songs</h3>
-        <ol ng-repeat="song in lastsongs" class="playlist">
-            <li class="playlist__song">
+        <ol class="playlist">
+            <li ng-repeat="song in lastsongs" class="playlist__song">
                 <span class="song__title">{{ song.title }}</span>
             </li>
         </ol>

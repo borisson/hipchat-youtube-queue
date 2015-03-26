@@ -3,7 +3,7 @@
 /* Controllers */
 var radiowiziControllers = angular.module('radiowiziControllers', []);
 
-radiowiziControllers.controller('mainController', ['$scope', '$http', '$interval', 'videoManager', 'notificationManager',
+radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval', 'videoManager', 'notificationManager',
     function ($scope, $http, $interval, videoManager, notificationManager) {
 
         var seekto = 0;

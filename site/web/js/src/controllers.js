@@ -48,6 +48,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
             seekto = data.diff;
             $scope.playerVars = data.playerVars;
             $scope.radiowizivideo = data.radiowizivideo;
+            $scope.image = data.image;
         }, function(reason){
             $scope.videoavailable = false;
 
@@ -88,6 +89,15 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
             });
             player.seekTo(seekto);
             currentplayer = player;
+
+          var $image = $('.player__video--image').find('img');
+          var image = $image[0];
+
+          var colorThief = new ColorThief();
+          var color = colorThief.getColor(image);
+          console.log(color);
+
+          $('.player__time-progress').css('background-color', 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')');
         });
 
         $scope.$on('youtube.player.playing', function ($event, player) {

@@ -15,6 +15,8 @@ class YoutubeMovie
     private $skipped = false;
     private $played = false;
 
+    private $imageLocation = 'images/youtube/';
+
     public function __construct($videoId, $length, $title, $requestname = NULL)
     {
         $this->videoId = $videoId;
@@ -82,7 +84,22 @@ class YoutubeMovie
 
     public function getImage()
     {
-      return "http://img.youtube.com/vi/$this->videoId/0.jpg";
+        if (!$this->checkImageExists()) {
+            $this->downloadImage($this->videoId);
+        }
+
+      return '/'.$this->imageLocation . $this->videoId . '.jpg';
+    }
+
+    private function checkImageExists()
+    {
+        return file_exists($this->imageLocation . $this->videoId . '.jpg');
+    }
+
+    private function downloadImage($videoId)
+    {
+        $fileContents = file_get_contents('http://img.youtube.com/vi/' . $this->videoId . '/maxresdefault.jpg');
+        file_put_contents('images/youtube/' . $videoId . '.jpg', $fileContents);
     }
 
     public function getIframe()
@@ -104,6 +121,7 @@ class YoutubeMovie
             'duration' => $this->getDuration(),
             'id' => $this->getId(),
             'youtubekey' => $this->getYoutubeKey(),
+            'image' => $this->getImage(),
         );
     }
 }

@@ -95,7 +95,6 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
 
           var colorThief = new ColorThief();
           var color = colorThief.getColor(image);
-          console.log(color);
 
           $('.player__time-progress').css('background-color', 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')');
         });

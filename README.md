@@ -12,6 +12,6 @@ Check out the [releases](https://github.com/borisson/hipchat-youtube-queue/relea
 - fill in all config parameters. 
 If you want to be able to search you'll need a youtube api key, if you don't want to search you can remove bot/handlers/searchHandler.php
 - you'll need to do ``composer install`` in both the bot and site directories.
-- To make sure the website has styling you'll need to do ``npm install`` and ``grunt build`` as well.
+- To make sure the website has styling you'll need to do ``npm install`` and ``grunt build`` as well. You'll need to do these commands from inside the site/web/ directory.
 
 We've got some [open issues](https://github.com/borisson/hipchat-youtube-queue/issues) and we appreciate every pull request.

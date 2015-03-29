@@ -1,17 +1,39 @@
+.page__header {
+  background: image-url('logo-background.png') left top no-repeat;
+  background-size: contain;
+  height: 288px;
+  left: 0;
+  overflow: auto;
+  position: absolute;
+  top: 0;
+  width: 369px;
+  z-index: 100;
+
+  @include media(max-width 1440px) {
+    height: 288px * 0.75;
+    width: 369px * 0.75;
+  }
+}
+
 .header__logo {
   @include rem(font-size, 30);
   color: $white;
   height: 110px;
   line-height: 36px;
-  margin: $base-spacing-unit*2 auto;
+  margin: $base-spacing-unit*2 0 0 $base-spacing-unit*2;
   text-transform: uppercase;
   width: 122px;
 
   a {
     background: image-url('logo_v2.svg') left center no-repeat;
-    background-size: 100%;
+    background-size: contain;
     display: block;
     height: 100%;
     width: 100%;
+  }
+
+  @include media(max-width 1440px) {
+    height: 110px * 0.75;
+    width: 122px * 0.75;
   }
 }

@@ -38,10 +38,10 @@ h3, .gamma,
 h4, .delta,
 h5, .epsilon,
 h6, .zeta {
-  color: $black;
+  color: $white;
   -webkit-font-smoothing: antialiased;
   font-family: $title-font;
-  //font-family: $serif-font;
+  font-weight: 300;
 
   a,
   a:visited {
@@ -55,24 +55,24 @@ h6, .zeta {
 
 h1, .alpha {
   @include font-size(40px);
-  font-weight: 400;
+  font-weight: 300;
 }
 h2, .beta {
   @include font-size(32px);
-  font-weight: 400;
+  font-weight: 300;
 }
 h3, .gamma {
   @include font-size(24px);
-  font-weight: 400;
+  font-weight: 300;
 }
 h4, .delta {
   @include font-size(16px);
-  font-weight: 400;
+  font-weight: 300;
   margin: 0;
 }
 h5, .epsilon{
   @include font-size(16px);
-  font-weight: 400;
+  font-weight: 300;
 }
 h6, .zeta {
   @include font-size(14px);

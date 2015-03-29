@@ -90,12 +90,12 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
             player.seekTo(seekto);
             currentplayer = player;
 
-          var $image = $('.player__video--image').find('img');
+          var $image = $('.player__background img');
           var image = $image[0];
 
+          console.log($image);
           var colorThief = new ColorThief();
           var color = colorThief.getColor(image);
-
           $('.player__time-progress').css('background-color', 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')');
         });
 

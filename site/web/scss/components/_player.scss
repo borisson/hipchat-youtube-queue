@@ -4,13 +4,14 @@
 
 .player__wrapper {
   height: 100vh;
-  padding: 160px 0 0;
+  padding: 120px 0 0;
   position: relative;
   width: 100%;
 }
 
 .player {
   @extend .clearfix;
+  padding-left: 160px;
   width: 100%;
 }
 
@@ -37,12 +38,21 @@
 }
 
 .player__title {
-  @include rem(font-size, 72);
-  margin: 0;
+  @include rem(font-size, 66);
+  margin: 0 0 $base-spacing-unit*2;
   line-height: 1;
 
   @include media(max-width $base-width) {
     @include rem(font-size, 54);
+  }
+}
+
+.player__request {
+  color: $grey;
+  @include rem(font-size, 16);
+  margin: 0 0 $base-spacing-unit*2;
+  span {
+    color: $white;
   }
 }
 
@@ -101,7 +111,7 @@
 .player__controls {
   @extend .clearfix;
   color: $grey;
-  @include rem(font-size, 80);
+  @include rem(font-size, 72);
   font-family: $title-font;
   font-weight: 300;
   margin-top: $base-spacing-unit;
@@ -121,7 +131,7 @@
   border: none;
   color: $white;
   display: inline-block;
-  @include rem(font-size, 14);
+  @include rem(font-size, 16);
   height: 24px;
   line-height: 24px;
   opacity: .5;
@@ -140,10 +150,10 @@
 }
 
 .player__time-indicator {
-  background-color: $border-color;
+  background-color: transparent;
   bottom: 0;
   clear: both;
-  height:3px;
+  height: 4px;
   float: left;
   margin: 0;
   position: absolute;
@@ -152,8 +162,8 @@
   .player__time-progress {
     @include transition(width .5s linear);
     background-color: $grey;
-    height: 3px;
-    width:0%
+    height: 100%;
+    width: 0%;
   }
 }
 
@@ -170,5 +180,5 @@
   top: 0;
   width: 100%;
   z-index: -1;
-  @include filter(blur(25px) brightness(0.4) grayscale(0.2));
+  @include filter(blur(35px) brightness(0.4) grayscale(0.2));
 }

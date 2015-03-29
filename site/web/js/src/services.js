@@ -66,7 +66,11 @@ radiowiziServices.factory('videoManager', ['$http', '$q', function ($http, $q) {
             if (seconds < 10) {
                 seconds = "0" + seconds;
             }
-            return hours + ':' + minutes + ':' + seconds;
+            if (hours != 0) {
+              return hours + ':' + minutes + ':' + seconds;
+            } else {
+              return minutes + ':' + seconds;
+            }
         }
     };
 }]);

@@ -200,6 +200,7 @@ class DefaultController extends Controller
           return new Response("This video can't be added. The video is not embeddable. :( \n");
         }
 
+        // Get correct filename of a thumbnail before attempting download
         if (isset($jsondata['thumbnail']['hqDefault'])) {
             $youtubeFileName = $jsondata['thumbnail']['hqDefault'];
         } else {
@@ -221,11 +222,20 @@ class DefaultController extends Controller
         return new Response("ok \n");
     }
 
+    /**
+     * Check if the file exists before downloading it.
+     */
     private function checkImageExists($video_id)
     {
         return file_exists('images/youtube/' . $video_id . '.jpg');
     }
 
+    /**
+     * Download image from youtube
+     *
+     * @param $videoId
+     * @param $filename
+     */
     private function downloadImage($videoId, $filename)
     {
         $fileContents = file_get_contents($filename);

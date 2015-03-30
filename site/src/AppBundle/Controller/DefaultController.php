@@ -211,6 +211,9 @@ class DefaultController extends Controller
             $this->downloadImage($video_id, $youtubeFileName);
         }
 
+        // Check if we need to create a jingle
+        $this->addJingle();
+
         // Create a new YoutubeMovie to be saved in database.
         $yt = new YoutubeMovie($video_id, $totalSeconds, $jsondata['title'], $requestname);
 
@@ -220,6 +223,64 @@ class DefaultController extends Controller
         $entityManager->flush();
 
         return new Response("ok \n");
+    }
+
+    /**
+     * Create a Jingle if there isn't one found in the previous 20 songs.
+     *
+     * The jingles are kept in an array in this function ($jingles).
+     * Preferably these are fetched from a youtubeChannel that holds all the jingles.
+     */
+    private function addJingle()
+    {
+        $jingles = [
+            'cx0R0XSGvTo',
+            'b0k8nGCtdaU',
+            'UHBZX8rNxPA',
+            'K8GsVLwJIOs',
+            'w2cjgThAexc',
+        ];
+
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->getDoctrine()->getManager();
+        $movieRepo = $entityManager->getRepository('AppBundle:YoutubeMovie');
+
+        $songs = $movieRepo->findBy([], ['id' => 'DESC'], 20);
+
+        $needsJingle = true;
+
+        /** @var YoutubeMovie $song */
+        foreach ($songs as $song) {
+            if (in_array($song->getYoutubeKey(), $jingles)) {
+                $needsJingle = false;
+            }
+        }
+
+        // There was no jingle in the past 20 songs, add a new one.
+        if ($needsJingle) {
+            // Get a random jingle from the array of jingles
+            $randomJingle = array_rand($jingles);
+            $jingleKey = $jingles[$randomJingle];
+
+            $client = new GuzzleClient();
+
+            $response = $client->get(
+              'http://gdata.youtube.com/feeds/api/videos/' . $jingleKey . '?v=2&alt=jsonc&prettyprint=true',
+              [
+                'headers' => ['Content-Type' => 'text/json'],
+                'verify' => false,
+                'timeout' => 5,
+              ]
+            );
+
+            $json = $response->json();
+            $jsondata = $json['data'];
+            $totalSeconds = $jsondata['duration'];
+
+            // Create a new YoutubeMovie to be saved in database.
+            $jingle = new YoutubeMovie($jingleKey, $totalSeconds, $jsondata['title'], 'Radio wizi');
+            $entityManager->persist($jingle);
+        }
     }
 
     /**

@@ -200,6 +200,16 @@ class DefaultController extends Controller
           return new Response("This video can't be added. The video is not embeddable. :( \n");
         }
 
+        if (isset($jsondata['thumbnail']['hqDefault'])) {
+            $youtubeFileName = $jsondata['thumbnail']['hqDefault'];
+        } else {
+            $youtubeFileName = $jsondata['thumbnail']['sqDefault'];
+        }
+
+        if (!$this->checkImageExists($video_id)) {
+            $this->downloadImage($video_id, $youtubeFileName);
+        }
+
         // Create a new YoutubeMovie to be saved in database.
         $yt = new YoutubeMovie($video_id, $totalSeconds, $jsondata['title'], $requestname);
 
@@ -209,5 +219,16 @@ class DefaultController extends Controller
         $entityManager->flush();
 
         return new Response("ok \n");
+    }
+
+    private function checkImageExists($video_id)
+    {
+        return file_exists('images/youtube/' . $video_id . '.jpg');
+    }
+
+    private function downloadImage($videoId, $filename)
+    {
+        $fileContents = file_get_contents($filename);
+        file_put_contents('images/youtube/' . $videoId . '.jpg', $fileContents);
     }
 }

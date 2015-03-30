@@ -84,22 +84,7 @@ class YoutubeMovie
 
     public function getImage()
     {
-        if (!$this->checkImageExists()) {
-            $this->downloadImage($this->videoId);
-        }
-
       return '/'.$this->imageLocation . $this->videoId . '.jpg';
-    }
-
-    private function checkImageExists()
-    {
-        return file_exists($this->imageLocation . $this->videoId . '.jpg');
-    }
-
-    private function downloadImage($videoId)
-    {
-        $fileContents = file_get_contents('http://img.youtube.com/vi/' . $this->videoId . '/maxresdefault.jpg');
-        file_put_contents('images/youtube/' . $videoId . '.jpg', $fileContents);
     }
 
     public function getIframe()

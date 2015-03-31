@@ -85,6 +85,8 @@ class DefaultController extends Controller
         /** @var YoutubeMovie  $movie */
         foreach ($lastSongs as $k => $movie) {
             $data[$k]['title'] = $movie->getTitle();
+            $data[$k]['image'] = $movie->getImage();
+            $data[$k]['requestname'] = $movie->getRequestName();
         }
 
         return new JsonResponse($data);
@@ -108,6 +110,7 @@ class DefaultController extends Controller
         foreach ($ytMovies as $k => $movie) {
             $data[$k]['title'] = $movie->getTitle();
             $data[$k]['image'] = $movie->getImage();
+            $data[$k]['requestname'] = $movie->getRequestName();
         }
 
         return new JsonResponse($data);

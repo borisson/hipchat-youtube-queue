@@ -26,15 +26,16 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
         var upcomingsongs = videoManager.getUpcomingSongs();
         upcomingsongs.then(function(data){
             $scope.upcomingsongs = data.upcomingsongs;
+            console.log($scope.upcomingsongs);
         });
 
         //check every 5 seconds for new tracks.
-        loadupcoming = $interval(function(){
+        var loadupcoming = $interval(function(){
             var upcomingsongs = videoManager.getUpcomingSongs();
             upcomingsongs.then(function(data){
                 $scope.upcomingsongs = data.upcomingsongs;
             });
-        }, 5000);
+        }, 50000);
 
         //Load videoManager and get video to play.
         var vid = videoManager.getVideo();
@@ -48,10 +49,14 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
             seekto = data.diff;
             $scope.playerVars = data.playerVars;
             $scope.radiowizivideo = data.radiowizivideo;
-            $scope.image = data.image;
+            if (data.image) {
+              $scope.image = data.image;
+            } else {
+              $scope.image = '/images/bg-lush.jpg';
+            }
+
         }, function(reason){
             $scope.videoavailable = false;
-
             var searchforvideo = $interval(function(){
                 var vidinterval = videoManager.getVideo();
                 vidinterval.then(function(data){
@@ -66,7 +71,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                     $scope.playerVars = data.playerVars;
                     $scope.radiowizivideo = data.radiowizivideo;
                 });
-            }, 5000);
+            }, 50000);
             //alert('Something went wrong with loading the video, please refresh this page.');
         });
 
@@ -90,10 +95,11 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
             player.seekTo(seekto);
             currentplayer = player;
 
-          var $image = $('.player__background img');
-          var image = $image[0];
+          var $image = $('.player__background');
+          var image = $image;
 
-          console.log($image);
+          $image.css({'background-image': 'url('+ $image.attr('data-bg') +')'});
+
           var colorThief = new ColorThief();
           var color = colorThief.getColor(image);
           $('.player__time-progress').css('background-color', 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')');
@@ -102,13 +108,13 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
         $scope.$on('youtube.player.playing', function ($event, player) {
             currentplaytime = $interval(function(){
 
-                    if(typeof player.getCurrentTime === 'function' && !isNaN(player.getCurrentTime())) {
-                        currenttimeint = Number(player.getCurrentTime());
-                        currenttime = videoManager.toHHMMSS(String(currenttimeint));
-                        $scope.currenttime = currenttime;
+                if(typeof player.getCurrentTime === 'function' && !isNaN(player.getCurrentTime())) {
+                    currenttimeint = Number(player.getCurrentTime());
+                    currenttime = videoManager.toHHMMSS(String(currenttimeint));
+                    $scope.currenttime = currenttime;
 
-                        //calculate percentage for css theming?
-                        $scope.progressBarStyle = {width:Math.round((100/Number(player.getDuration())) * Number(currenttimeint)*100)/100+'%'};
+                    //calculate percentage for css theming?
+                    $scope.progressBarStyle = {width:Math.round((100/Number(player.getDuration())) * Number(currenttimeint)*100)/100+'%'};
                     }
             }, 500);
         });
@@ -147,7 +153,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                             $scope.playerVars = data.playerVars;
                             $scope.radiowizivideo = data.radiowizivideo;
                         });
-                    }, 5000);
+                    }, 50000);
                     //alert('Something went wrong with loading the video, please refresh this page.');
                 });
 
@@ -161,8 +167,8 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                 var upcomingsongs = videoManager.getUpcomingSongs();
                 upcomingsongs.then(function(data){
                     $scope.upcomingsongs = data.upcomingsongs;
+                    console.log($scope.upcomingsongs);
                 });
-
             });
         });
 

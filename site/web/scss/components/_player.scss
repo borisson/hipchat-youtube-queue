@@ -17,9 +17,10 @@
 
 .player__video {
   height: 420px * 0.5625;
+  margin-bottom: $base-spacing-unit;
   //padding-bottom: 56.25%; /* 16:9 */
   position: relative;
-  width: 100%;
+  //width: 100%;
   width: 420px;
 
   .iframe {
@@ -38,13 +39,17 @@
 }
 
 .player__title {
-  @include rem(font-size, 66);
+  @include rem(font-size, 72);
   margin: 0 0 $base-spacing-unit*2;
   line-height: 1;
 
   @include media(max-width $base-width) {
-    @include rem(font-size, 54);
+    @include rem(font-size, 60);
   }
+}
+
+.player__subtitle {
+  margin: 0;
 }
 
 .player__request {
@@ -56,68 +61,23 @@
   }
 }
 
-/**
- * Playlist stuff
- */
-
-.playlist__wrapper {
-  padding: $base-spacing-unit;
-  text-align: center;
-}
-
-.playlist__title {
-  border: 2px solid $medium-grey;
-  border-radius: 4px;
-  color: $medium-grey;
-  display: inline-block;
-  @include rem(font-size, 10);
-  font-weight: 700;
-  margin-top: 0;
-  padding: 3px 6px;
-  text-align: center;
-}
-
-.playlist {
-  margin: 0;
-  padding: 0;
-  text-align: left;
-  width: 100%;
-
-  li {
-    border-bottom: 1px solid $border-color;
-    display: table;
-    @include rem(font-size, 12);
-    font-weight: 700;
-    margin-bottom: 9px;
-    padding: 0 12px 8px;
-    width: 100%;
-  }
-}
-
-.playlist__song {
-  display: table-row;
-  width: 100%;
-}
-
-.song__title {
-  display: table-cell;
-}
-
-.song__duration {
-  display: table-cell;
-  text-align: right;
+.player__next {
+  bottom: $base-spacing-unit*2;
+  max-width: 33%;
+  position: absolute;
+  right: $base-spacing-unit*2;
 }
 
 .player__controls {
   @extend .clearfix;
   color: $grey;
-  @include rem(font-size, 72);
+  @include rem(font-size, 78);
   font-family: $title-font;
   font-weight: 300;
   margin-top: $base-spacing-unit;
   line-height: 1;
   @include media(max-width $base-width) {
-    @include rem(font-size, 60);
+    @include rem(font-size, 66);
   }
 }
 
@@ -171,6 +131,7 @@
   background-color: $black;
   background-image: image-url('bg-lush.jpg');
   background-repeat: no-repeat;
+  background-position: center center;
   background-size: cover;
   display: block;
   left: 0;

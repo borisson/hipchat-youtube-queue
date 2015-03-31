@@ -18,11 +18,11 @@
 .header__logo {
   @include rem(font-size, 30);
   color: $white;
-  height: 110px;
+  height: 126px;
   line-height: 36px;
-  margin: $base-spacing-unit*2 0 0 $base-spacing-unit*2;
+  margin: $base-spacing-unit*2.25 0 0 $base-spacing-unit*2.5;
   text-transform: uppercase;
-  width: 122px;
+  width: 150px;
 
   a {
     background: image-url('logo_v2.svg') left center no-repeat;
@@ -33,7 +33,8 @@
   }
 
   @include media(max-width 1440px) {
-    height: 110px * 0.75;
-    width: 122px * 0.75;
+    height: 126px * 0.75;
+    margin: ($base-spacing-unit*2.25)*0.75 0 0 ($base-spacing-unit*2.5)*0.75;
+    width: 150px * 0.75;
   }
 }

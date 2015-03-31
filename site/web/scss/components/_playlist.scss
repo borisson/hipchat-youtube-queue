@@ -1,0 +1,162 @@
+.tab__wrapper {
+  background: #0e0d0d;
+  width: 100%;
+}
+
+.tab__list {
+  @extend .clearfix;
+  display: table;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+
+  li {
+    background-color: #0e0d0d;
+    color: #909090;
+    display: block;
+    @include rem(font-size, 20);
+    letter-spacing: 2px;
+    float: left;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: $title-font;
+    width: 33.33%;
+  }
+  a {
+    background-color: #0e0d0d;
+    border: none;
+    color: #909090;
+    display: block;
+    padding: 12px;
+    @include transition(all .2s ease-in-out);
+    &:hover {
+      background-color: #000;
+      border: none;
+      color: #fff;
+    }
+  }
+  .tab--active {
+    a {
+      background-color: #1c1d1f;
+      color: #909090;
+      &:hover {
+        background-color: #000;
+        border: none;
+        color: #fff;
+      }
+    }
+  }
+}
+
+/**
+ * Playlist stuff
+ */
+
+.playlist__wrapper {
+  position: relative;
+}
+
+.wrapper--empty {
+  padding: 12px;
+}
+.title__wrapper {
+  background-image: image-url('title-background.png');
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: 308px 170px;
+  display: block;
+  height: 170px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  text-align: right;
+  width: 16.6666% * 2;
+  z-index: 20;
+
+  .playlist__title {
+    max-width: 308px;
+    padding: 12px;
+    float: right;
+    margin-right: 92px;
+    line-height: 1;
+  }
+}
+
+.playlist__title {
+  color: #fff;
+  @include rem(font-size, 40);
+  margin: 0;
+}
+
+.playlist {
+  @extend .clearfix;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  width: 100%;
+}
+
+.playlist__song {
+  background: #1c1d1f;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  float: left;
+  height: 180px;
+  height: 16.666vw;
+  overflow: hidden;
+  position: relative;
+  width: 16.6666%;
+
+ /* img {
+    display: block;
+    min-width: 100%;
+    min-height: 100%;
+    position: relative;
+    opacity: 0.2;
+  }*/
+
+}
+
+.song--big {
+  width: 16.6666% * 2;
+  height: 360px;
+  height: 16.6666vw * 2;
+}
+
+.song__title {
+  @include rem(font-size, 20);
+
+  .song--big & {
+    @include rem(font-size, 40);
+  }
+}
+
+.song__overlay {
+  background: #1c1d1f;
+  height: 100%;
+  left: 0;
+  opacity: .8;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.song__info {
+  bottom: 0;
+  color: $white;
+  @include rem(font-size, 20);
+  padding: 12px;
+  position: absolute;
+  z-index: 10;
+
+  h5 {
+    margin: 0;
+  }
+}
+
+.song__image {
+  display: none;
+}

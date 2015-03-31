@@ -107,6 +107,7 @@ class DefaultController extends Controller
         /** @var YoutubeMovie  $movie */
         foreach ($ytMovies as $k => $movie) {
             $data[$k]['title'] = $movie->getTitle();
+            $data[$k]['image'] = $movie->getImage();
         }
 
         return new JsonResponse($data);

@@ -245,7 +245,7 @@ class DefaultController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $movieRepo = $entityManager->getRepository('AppBundle:YoutubeMovie');
 
-        $songs = $movieRepo->findBy([], ['id' => 'DESC'], 20);
+        $songs = $movieRepo->findBy([], ['id' => 'DESC'], 12);
 
         $needsJingle = true;
 

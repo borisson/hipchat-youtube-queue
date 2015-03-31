@@ -200,6 +200,20 @@ class DefaultController extends Controller
           return new Response("This video can't be added. The video is not embeddable. :( \n");
         }
 
+        // Get correct filename of a thumbnail before attempting download
+        if (isset($jsondata['thumbnail']['hqDefault'])) {
+            $youtubeFileName = $jsondata['thumbnail']['hqDefault'];
+        } else {
+            $youtubeFileName = $jsondata['thumbnail']['sqDefault'];
+        }
+
+        if (!$this->checkImageExists($video_id)) {
+            $this->downloadImage($video_id, $youtubeFileName);
+        }
+
+        // Check if we need to create a jingle
+        $this->addJingle();
+
         // Create a new YoutubeMovie to be saved in database.
         $yt = new YoutubeMovie($video_id, $totalSeconds, $jsondata['title'], $requestname);
 
@@ -209,5 +223,83 @@ class DefaultController extends Controller
         $entityManager->flush();
 
         return new Response("ok \n");
+    }
+
+    /**
+     * Create a Jingle if there isn't one found in the previous 20 songs.
+     *
+     * The jingles are kept in an array in this function ($jingles).
+     * Preferably these are fetched from a youtubeChannel that holds all the jingles.
+     */
+    private function addJingle()
+    {
+        $jingles = [
+            'cx0R0XSGvTo',
+            'b0k8nGCtdaU',
+            'UHBZX8rNxPA',
+            'K8GsVLwJIOs',
+            'w2cjgThAexc',
+        ];
+
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->getDoctrine()->getManager();
+        $movieRepo = $entityManager->getRepository('AppBundle:YoutubeMovie');
+
+        $songs = $movieRepo->findBy([], ['id' => 'DESC'], 12);
+
+        $needsJingle = true;
+
+        /** @var YoutubeMovie $song */
+        foreach ($songs as $song) {
+            if (in_array($song->getYoutubeKey(), $jingles)) {
+                $needsJingle = false;
+            }
+        }
+
+        // There was no jingle in the past 20 songs, add a new one.
+        if ($needsJingle) {
+            // Get a random jingle from the array of jingles
+            $randomJingle = array_rand($jingles);
+            $jingleKey = $jingles[$randomJingle];
+
+            $client = new GuzzleClient();
+
+            $response = $client->get(
+              'http://gdata.youtube.com/feeds/api/videos/' . $jingleKey . '?v=2&alt=jsonc&prettyprint=true',
+              [
+                'headers' => ['Content-Type' => 'text/json'],
+                'verify' => false,
+                'timeout' => 5,
+              ]
+            );
+
+            $json = $response->json();
+            $jsondata = $json['data'];
+            $totalSeconds = $jsondata['duration'];
+
+            // Create a new YoutubeMovie to be saved in database.
+            $jingle = new YoutubeMovie($jingleKey, $totalSeconds, $jsondata['title'], 'Radio wizi');
+            $entityManager->persist($jingle);
+        }
+    }
+
+    /**
+     * Check if the file exists before downloading it.
+     */
+    private function checkImageExists($video_id)
+    {
+        return file_exists('images/youtube/' . $video_id . '.jpg');
+    }
+
+    /**
+     * Download image from youtube
+     *
+     * @param $videoId
+     * @param $filename
+     */
+    private function downloadImage($videoId, $filename)
+    {
+        $fileContents = file_get_contents($filename);
+        file_put_contents('images/youtube/' . $videoId . '.jpg', $fileContents);
     }
 }

@@ -167,7 +167,6 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                 var upcomingsongs = videoManager.getUpcomingSongs();
                 upcomingsongs.then(function(data){
                     $scope.upcomingsongs = data.upcomingsongs;
-                    console.log($scope.upcomingsongs);
                 });
             });
         });

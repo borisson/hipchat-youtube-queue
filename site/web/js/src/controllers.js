@@ -35,7 +35,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
             upcomingsongs.then(function(data){
                 $scope.upcomingsongs = data.upcomingsongs;
             });
-        }, 50000);
+        }, 5000);
 
         //Load videoManager and get video to play.
         var vid = videoManager.getVideo();
@@ -153,7 +153,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                             $scope.playerVars = data.playerVars;
                             $scope.radiowizivideo = data.radiowizivideo;
                         });
-                    }, 50000);
+                    }, 5000);
                     //alert('Something went wrong with loading the video, please refresh this page.');
                 });
 

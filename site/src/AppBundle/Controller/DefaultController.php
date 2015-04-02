@@ -72,9 +72,7 @@ class DefaultController extends Controller
         $yt = $top20Songs[$randomTopSongKey];
 
         if ($yt instanceof YoutubeMovie){
-            $data = $yt->getDataForJson();
-            $data['requestname'] = 'Random top hit';
-            return new JsonResponse(array('obj' => $data, 'diff'=>$diff), 200);
+            $this->addVideo('Random top hit', $yt->getYoutubeKey());
         }
 
         return new JsonResponse(array(),204);
@@ -175,20 +173,39 @@ class DefaultController extends Controller
     public function postAction(Request $request)
     {
         $youtubeLink = $request->get('link');
-        if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $youtubeLink, $match)) {
+        if (preg_match(
+          '%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i',
+          $youtubeLink,
+          $match
+        )) {
             $video_id = $match[1];
+        }
+
+        if (!isset($video_id)) {
+            return new Response('Invalid url', 422);
         }
 
         $requestname = $request->get('requestname');
 
-        if (!isset($video_id)) {
-          return new Response('Invalid url', 422);
-        }
+        $this->addVideo($requestname, $video_id);
+
+        return new Response("ok \n");
+    }
+
+    /**
+     * Add video to database.
+     *
+     * @param $requestName
+     * @param $videoId
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function addVideo($requestName, $videoId)
+    {
 
         $client = new GuzzleClient();
 
         $response = $client->get(
-          'http://gdata.youtube.com/feeds/api/videos/' . $video_id . '?v=2&alt=jsonc&prettyprint=true',
+          'http://gdata.youtube.com/feeds/api/videos/' . $videoId . '?v=2&alt=jsonc&prettyprint=true',
           [
             'headers' => ['Content-Type' => 'text/json'],
             'verify' => false,
@@ -223,22 +240,20 @@ class DefaultController extends Controller
             $youtubeFileName = $jsondata['thumbnail']['sqDefault'];
         }
 
-        if (!$this->checkImageExists($video_id)) {
-            $this->downloadImage($video_id, $youtubeFileName);
+        if (!$this->checkImageExists($videoId)) {
+            $this->downloadImage($videoId, $youtubeFileName);
         }
 
         // Check if we need to create a jingle
         $this->addJingle();
 
         // Create a new YoutubeMovie to be saved in database.
-        $yt = new YoutubeMovie($video_id, $totalSeconds, $jsondata['title'], $requestname);
+        $yt = new YoutubeMovie($videoId, $totalSeconds, $jsondata['title'], $requestName);
 
         /** @var EntityManager $entityManager */
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($yt);
         $entityManager->flush();
-
-        return new Response("ok \n");
     }
 
     /**

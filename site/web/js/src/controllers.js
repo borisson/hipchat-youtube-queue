@@ -26,7 +26,6 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
         var upcomingsongs = videoManager.getUpcomingSongs();
         upcomingsongs.then(function(data){
             $scope.upcomingsongs = data.upcomingsongs;
-            console.log($scope.upcomingsongs);
         });
 
         //check every 5 seconds for new tracks.

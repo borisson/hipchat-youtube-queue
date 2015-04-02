@@ -84,7 +84,12 @@ class YoutubeMovie
 
     public function getImage()
     {
-      return '/'.$this->imageLocation . $this->videoId . '.jpg';
+        $filename = $this->imageLocation.$this->videoId.'.jpg';
+        if (file_exists($filename)) {
+            return '/'.$filename;
+        } else {
+            return '/images/default-youtube-image.jpg';
+        }
     }
 
     public function getIframe()

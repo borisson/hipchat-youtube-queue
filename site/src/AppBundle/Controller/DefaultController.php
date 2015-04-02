@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use AppBundle\Entity\Repository\YoutubeMovieRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -49,7 +50,7 @@ class DefaultController extends Controller
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
-        /** @var EntityRepository $ytRepository */
+        /** @var YoutubeMovieRepository $ytRepository */
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
         /** @var YoutubeMovie $yt */
         $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0]);
@@ -63,6 +64,17 @@ class DefaultController extends Controller
 
         if ($yt instanceof YoutubeMovie){
             return new JsonResponse(array('obj' => $yt->getDataForJson(), 'diff'=>$diff), 200);
+        }
+
+        // No results found, get 20 songs with most airtime, play a random song of those.
+        $top20Songs = $ytRepository->findTopSongsWithMostAirtime();
+        $randomTopSongKey = array_rand($top20Songs);
+        $yt = $top20Songs[$randomTopSongKey];
+
+        if ($yt instanceof YoutubeMovie){
+            $data = $yt->getDataForJson();
+            $data['requestname'] = 'Random top hit';
+            return new JsonResponse(array('obj' => $data, 'diff'=>$diff), 200);
         }
 
         return new JsonResponse(array(),204);

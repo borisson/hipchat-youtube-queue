@@ -16,3 +16,8 @@ tmp/
 *.css.map
 
 images/youtube
+
+# compiled files
+js/main.js
+css/main.min.css
+css/main.css

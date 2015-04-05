@@ -34,7 +34,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
             upcomingsongs.then(function(data){
                 $scope.upcomingsongs = data.upcomingsongs;
             });
-        }, 5000);
+        }, 50000);
 
         //Load videoManager and get video to play.
         var vid = videoManager.getVideo();
@@ -101,7 +101,6 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
 
           var colorThief = new ColorThief();
           var color = colorThief.getColor(image);
-          $('.player__time-progress').css('background-color', 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')');
         });
 
         $scope.$on('youtube.player.playing', function ($event, player) {
@@ -113,8 +112,11 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                     $scope.currenttime = currenttime;
 
                     //calculate percentage for css theming?
-                    $scope.progressBarStyle = {width:Math.round((100/Number(player.getDuration())) * Number(currenttimeint)*100)/100+'%'};
-                    }
+                    $scope.progressBarStyle = {
+                      'width': Math.round((100/Number(player.getDuration())) * Number(currenttimeint)*100)/100+'%'//,
+                      //'background-color': 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')'
+                    };
+                }
             }, 500);
         });
 
@@ -152,7 +154,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                             $scope.playerVars = data.playerVars;
                             $scope.radiowizivideo = data.radiowizivideo;
                         });
-                    }, 5000);
+                    }, 50000);
                     //alert('Something went wrong with loading the video, please refresh this page.');
                 });
 

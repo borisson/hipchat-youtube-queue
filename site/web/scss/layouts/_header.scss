@@ -1,18 +1,25 @@
 .page__header {
-  background: image-url('logo-background.png') left top no-repeat;
-  background-size: contain;
-  height: 288px;
+  height: 270px;
   left: 0;
   overflow: auto;
   position: absolute;
   top: 0;
-  width: 369px;
+  width: 360px;
   z-index: 100;
 
   @include media(max-width 1440px) {
-    height: 288px * 0.75;
-    width: 369px * 0.75;
+    height: 270px * 0.75;
+    width: 360px * 0.75;
   }
+}
+
+.header__background {
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+  z-index: -1;
 }
 
 .header__logo {

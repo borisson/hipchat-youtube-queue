@@ -142,4 +142,8 @@
   width: 100%;
   z-index: -1;
   @include filter(blur(35px) brightness(0.4) grayscale(0.2));
+
+  img {
+    visibility: hidden;
+  }
 }

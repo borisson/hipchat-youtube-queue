@@ -4,7 +4,7 @@
 	 width="400px" height="300px" viewBox="0 0 400 300" enable-background="new 0 0 400 300" xml:space="preserve">
         <polygon fill="#1C1D1F" points="0,0 368,0 153.335,285.334 0,172.001 "/>
         <polygon fill="#232426" points="0,82 0,172 96.25,244.5 242.25,168.25 364.75,4.75 "/>
-        <polygon fill="#3A2E35" ng-style="logoStyle" points="96.25,244.5 153.25,286.75 242.25,168.25 "/>
+        <polygon fill="#3A2E35" ng-style="logoColor" class="logo-path" points="96.25,244.5 153.25,286.75 242.25,168.25 "/>
     </svg>
 </header>
 
@@ -53,7 +53,7 @@
 </div>
 
 <div class="player__background" data-bg="{{video.image}}">
-    <img src="{{video.image}}" alt="{{video.title}} image" style="visibility: hidden;"/>
+    <img src="{{video.image}}" alt="{{video.title}} image" />
 </div>
 
 <div class="tab__wrapper">
@@ -69,19 +69,11 @@
         <h3 class="playlist__title">Coming <br/><span class="up">Up</span></h3>
     </div>
     <ol class="playlist">
-        <li ng-repeat-start="song in upcomingsongs" ng-if="$first" class="playlist__song song--big" style="background-image: url({{ song.image }})">
+        <li ng-repeat="song in upcomingsongs" ng-class="{ 'song--big': $first }" class="playlist__song" style="background-image: url({{ song.image }})">
             <div class="song__info">
                 <h4 class="song__title">{{ song.title }}</h4>
                 <h5>Requested by {{ song.requestname }}</h5>
             </div>
-            <img src="{{ song.image }}" class="song__image" />
-        </li>
-        <li ng-repeat-end ng-if="!$first" class="playlist__song" style="background-image: url({{ song.image }})">
-            <div class="song__info">
-                <h4 class="song__title">{{ song.title }}</h4>
-                <h5>Requested by {{ song.requestname }}</h5>
-            </div>
-            <div class="song__overlay"></div>
             <img src="{{ song.image }}" class="song__image" />
         </li>
     </ol>
@@ -97,15 +89,7 @@
         <h3 class="playlist__title">Last 10<br /> songs</h3>
     </div>
     <ol class="playlist">
-        <li ng-repeat-start="song in lastsongs" ng-if="$first" class="playlist__song song--big" style="background-image: url({{ song.image }})">
-            <div class="song__info">
-                <h4 class="song__title">{{ song.title }}</h4>
-                <h5>Requested by {{ song.requestname }}</h5>
-            </div>
-            <div class="song__overlay"></div>
-            <img src="{{ song.image }}" class="song__image" />
-        </li>
-        <li ng-repeat-end ng-if="!$first" class="playlist__song" style="background-image: url({{ song.image }})">
+        <li ng-repeat="song in lastsongs" ng-class="{ 'song--big': $first }" class="playlist__song" style="background-image: url({{ song.image }})">
             <div class="song__info">
                 <h4 class="song__title">{{ song.title }}</h4>
                 <h5>Requested by {{ song.requestname }}</h5>

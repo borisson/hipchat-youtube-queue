@@ -48,12 +48,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
             seekto = data.diff;
             $scope.playerVars = data.playerVars;
             $scope.radiowizivideo = data.radiowizivideo;
-            if (data.image) {
-              $scope.image = data.image;
-            } else {
-              $scope.image = '/images/bg-lush.jpg';
-            }
-
+            $scope.image = data.image;
         }, function(reason){
             $scope.videoavailable = false;
             var searchforvideo = $interval(function(){
@@ -94,13 +89,17 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
             player.seekTo(seekto);
             currentplayer = player;
 
-          var $image = $('.player__background');
-          var image = $image;
+          var $backgroundWrapper = $('.player__background');
+          var $image = $backgroundWrapper.find('img');
+          var image = $image[0];
 
-          $image.css({'background-image': 'url('+ $image.attr('data-bg') +')'});
+          $backgroundWrapper.css({'background-image': 'url('+ $backgroundWrapper.attr('data-bg') +')'});
 
           var colorThief = new ColorThief();
           var color = colorThief.getColor(image);
+
+          $('.player__time-progress').css('background-color', 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')');
+          $scope.logoColor = {'fill': 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')'};
         });
 
         $scope.$on('youtube.player.playing', function ($event, player) {
@@ -112,11 +111,8 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                     $scope.currenttime = currenttime;
 
                     //calculate percentage for css theming?
-                    $scope.progressBarStyle = {
-                      'width': Math.round((100/Number(player.getDuration())) * Number(currenttimeint)*100)/100+'%'//,
-                      //'background-color': 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')'
-                    };
-                }
+                    $scope.progressBarStyle = {width: Math.round((100/Number(player.getDuration())) * Number(currenttimeint)*100)/100+'%'};
+                    }
             }, 500);
         });
 

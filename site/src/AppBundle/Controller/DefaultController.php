@@ -22,22 +22,6 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var EntityRepository $ytRepository */
-        $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
-        /** @var YoutubeMovie $yt */
-        $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0]);
-
-        $lastSongs = $ytRepository->findBy(['skipped' => 0, 'played' => 1],['id' => 'DESC'], 10);
-
-        $diff = 0;
-        if ($yt instanceof YoutubeMovie && $yt->getStartedTime() instanceof \DateTime && $yt->getStartedTime()->format('Y') !== '-0001') {
-            $now = new \DateTime();
-            $diff = $now->getTimestamp() - $yt->getStartedTime()->getTimestamp();
-        }
-
         return $this->render('base.html.twig');
     }
 

@@ -53,7 +53,7 @@
 </div>
 
 <div class="player__background" data-bg="{{video.image}}">
-    <img src="{{video.image}}" alt="{{video.title}} image" />
+    <img ng-src="{{video.image}}" alt="{{video.title}} image" />
 </div>
 
 <div class="tab__wrapper">
@@ -74,7 +74,8 @@
                 <h4 class="song__title">{{ song.title }}</h4>
                 <h5>Requested by {{ song.requestname }}</h5>
             </div>
-            <img src="{{ song.image }}" class="song__image" />
+            <div class="song__overlay"></div>
+            <img ng-src="{{ song.image }}" class="song__image" />
         </li>
     </ol>
 </div>
@@ -95,7 +96,7 @@
                 <h5>Requested by {{ song.requestname }}</h5>
             </div>
             <div class="song__overlay"></div>
-            <img src="{{ song.image }}" class="song__image" />
+            <img ng-src="{{ song.image }}" class="song__image" />
         </li>
     </ol>
 </div>

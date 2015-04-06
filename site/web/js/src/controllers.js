@@ -34,7 +34,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
             upcomingsongs.then(function(data){
                 $scope.upcomingsongs = data.upcomingsongs;
             });
-        }, 50000);
+        }, 5000);
 
         //Load videoManager and get video to play.
         var vid = videoManager.getVideo();
@@ -64,8 +64,9 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                     seekto = data.diff;
                     $scope.playerVars = data.playerVars;
                     $scope.radiowizivideo = data.radiowizivideo;
+                    $scope.image = data.image;
                 });
-            }, 50000);
+            }, 5000);
             //alert('Something went wrong with loading the video, please refresh this page.');
         });
 
@@ -99,7 +100,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
           var color = colorThief.getColor(image);
 
           $('.player__time-progress').css('background-color', 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')');
-          $scope.logoColor = {'fill': 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')'};
+          $scope.logoColor = {'fill': 'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ', 0.7)'};
         });
 
         $scope.$on('youtube.player.playing', function ($event, player) {
@@ -132,7 +133,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                     seekto = data.diff;
                     $scope.playerVars = data.playerVars;
                     $scope.radiowizivideo = data.radiowizivideo;
-
+                    $scope.image = data.image;
                 }, function(reason){
                     $scope.videoavailable = false;
                     $scope.pagetitle = 'Nothing playing';
@@ -149,8 +150,9 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                             seekto = data.diff;
                             $scope.playerVars = data.playerVars;
                             $scope.radiowizivideo = data.radiowizivideo;
+                            $scope.image = data.image;
                         });
-                    }, 50000);
+                    }, 5000);
                     //alert('Something went wrong with loading the video, please refresh this page.');
                 });
 

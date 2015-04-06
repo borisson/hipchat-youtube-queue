@@ -1,9 +1,9 @@
 'use strict';
 
 /* Controllers */
-var radiowiziControllers = angular.module('radiowiziControllers', []);
+var radiowiziControllers = angular.module('radiowiziControllers', ['truncate']);
 
-radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval', 'videoManager', 'notificationManager',
+radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interval', 'videoManager', 'notificationManager',
     function ($scope, $http, $interval, videoManager, notificationManager) {
 
         var seekto = 0;

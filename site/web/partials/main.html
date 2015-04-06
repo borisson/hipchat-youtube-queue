@@ -12,8 +12,8 @@
     <div class="content--centered">
         <div class="player" ng-if="videoavailable == true">
             <h2 class="player__title" data-video-id="{{ video.id }}" data-youtube-id="{{ video.youtubekey }}"
-                data-video-skip="{{ startSeconds }}">
-                {{ video.title }}
+                data-video-skip="{{ startSeconds }}" title="{{ video.title }}">
+                {{ video.title | characters: 35 }}
             </h2>
             <h4 class="player__request">
                 Requested by <span class="player__requester-name">{{ video.requestname }}</span>
@@ -71,7 +71,7 @@
     <ol class="playlist">
         <li ng-repeat="song in upcomingsongs" ng-class="{ 'song--big': $first }" class="playlist__song" style="background-image: url({{ song.image }})">
             <div class="song__info">
-                <h4 class="song__title">{{ song.title }}</h4>
+                <h4 class="song__title" title="{{ song.title }}">{{ song.title | characters: 48 }}</h4>
                 <h5>Requested by {{ song.requestname }}</h5>
             </div>
             <div class="song__overlay"></div>
@@ -92,7 +92,7 @@
     <ol class="playlist">
         <li ng-repeat="song in lastsongs" ng-class="{ 'song--big': $first }" class="playlist__song" style="background-image: url({{ song.image }})">
             <div class="song__info">
-                <h4 class="song__title">{{ song.title }}</h4>
+                <h4 class="song__title" title="{{ song.title }}">{{ song.title | characters: 48 }}</h4>
                 <h5>Requested by {{ song.requestname }}</h5>
             </div>
             <div class="song__overlay"></div>

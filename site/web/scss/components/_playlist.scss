@@ -36,7 +36,7 @@
       color: #fff;
     }
   }
-  .tab--active {
+  .active {
     a {
       background-color: #1c1d1f;
       color: #909090;
@@ -111,6 +111,7 @@
   position: relative;
   width: 16.6666%;
 
+  @include transition(all .2s ease-in-out);
  /* img {
     display: block;
     min-width: 100%;
@@ -120,7 +121,7 @@
   }*/
   &:hover {
     .song__overlay {
-      opacity: .3;
+      opacity: .5;
     }
   }
 }
@@ -143,7 +144,7 @@
   background: #1c1d1f;
   height: 100%;
   left: 0;
-  opacity: .6;
+  opacity: .7;
   position: absolute;
   top: 0;
   width: 100%;
@@ -157,7 +158,7 @@
   @include rem(font-size, 20);
   padding: 12px;
   position: absolute;
-  text-shadow: 1px 1px 8px rgba(0, 0, 0, .3);
+  text-shadow: 1px 1px 10px rgba(0, 0, 0, .9);
   z-index: 10;
 
   h5 {

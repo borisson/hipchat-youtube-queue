@@ -54,12 +54,15 @@
  */
 
 .playlist__wrapper {
+  overflow: auto;
   position: relative;
 }
 
-.wrapper--empty {
-  padding: 12px;
+.playlist__message {
+  margin: 170px 0 0;
+  padding: $base-spacing-unit;
 }
+
 .title__wrapper {
   background-image: image-url('title-background.png');
   background-repeat: no-repeat;

@@ -14,6 +14,7 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
         var currentplayer;
 
         $scope.videoavailable = false;
+        $scope.videoUpcoming = false;
         $scope.pagetitle = 'Nothing playing';
 
         //Load last 10 songs.
@@ -26,6 +27,11 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
         var upcomingsongs = videoManager.getUpcomingSongs();
         upcomingsongs.then(function(data){
             $scope.upcomingsongs = data.upcomingsongs;
+            if(data.upcomingsongs.length > 0){
+              $scope.videoUpcoming = true;
+            } else {
+              $scope.videoUpcoming = false;
+            }
         });
 
         //check every 5 seconds for new tracks.
@@ -33,6 +39,11 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
             var upcomingsongs = videoManager.getUpcomingSongs();
             upcomingsongs.then(function(data){
                 $scope.upcomingsongs = data.upcomingsongs;
+                if(data.upcomingsongs.length > 0){
+                  $scope.videoUpcoming = true;
+                } else {
+                  $scope.videoUpcoming = false;
+                }
             });
         }, 5000);
 

@@ -37,7 +37,7 @@
         <div class="player" ng-if="videoavailable == false">
             <h2 class="player__title">There is nothing playing :'(</h2>
             <div class="player__video">
-                <img src="/images/empty-playlist.gif"/>
+                <img src="/images/empty-playlist-2.gif"/>
             </div>
             <p>Be a cool dude and go add some music in the Radio Wizi room on HipChat.</p>
         </div>
@@ -64,11 +64,11 @@
     </ul>
 </div>
 
-<div class="playlist__wrapper" id="coming-up" ng-if="videoavailable == true" ng-show="isSelected(1)">
+<div class="playlist__wrapper" id="coming-up" ng-show="isSelected(1)">
     <div class="title__wrapper">
         <h3 class="playlist__title">Coming <br/><span class="up">Up</span></h3>
     </div>
-    <ol class="playlist">
+    <ol class="playlist" ng-if="videoUpcoming == true">
         <li ng-repeat="song in upcomingsongs" ng-class="{ 'song--big': $first }" class="playlist__song" style="background-image: url({{ song.image }})">
             <div class="song__info">
                 <h4 class="song__title" title="{{ song.title }}">{{ song.title | characters: 48 }}</h4>
@@ -78,11 +78,9 @@
             <img ng-src="{{ song.image }}" class="song__image" />
         </li>
     </ol>
-</div>
-
-<div class="playlist__wrapper wrapper--empty" ng-if="videoavailable == false" ng-show="isSelected(1)">
-    <h3 class="playlist__title">Coming up</h3>
-    <p>There are no songs in the playlist queue, add some in the Radio Wizi room on HipChat.</p>
+    <div class="playlist__message" ng-if="videoUpcoming == false">
+        <p>There are no songs in the playlist queue, add some in the Radio Wizi room on HipChat.</p>
+    </div>
 </div>
 
 <div class="playlist__wrapper" ng-show="isSelected(2)">
@@ -100,4 +98,3 @@
         </li>
     </ol>
 </div>
-

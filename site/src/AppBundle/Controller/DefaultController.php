@@ -241,7 +241,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * Create a Jingle if there isn't one found in the previous 20 songs.
+     * Create a Jingle if there isn't one found in the previous 9 songs.
      *
      * The jingles are kept in an array in this function ($jingles).
      * Preferably these are fetched from a youtubeChannel that holds all the jingles.
@@ -260,7 +260,7 @@ class DefaultController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $movieRepo = $entityManager->getRepository('AppBundle:YoutubeMovie');
 
-        $songs = $movieRepo->findBy([], ['id' => 'DESC'], 12);
+        $songs = $movieRepo->findBy([], ['id' => 'DESC'], 9);
 
         $needsJingle = true;
 
@@ -271,11 +271,18 @@ class DefaultController extends Controller
             }
         }
 
-        // There was no jingle in the past 20 songs, add a new one.
+        // There was no jingle in the past 9 songs, add a new one.
         if ($needsJingle) {
+
+            /** @var YoutubeMovie $lastJingle */
+            $lastJingle = $movieRepo->findOneBy(['videoId' => $jingles], ['id' => 'DESC']);
+
             // Get a random jingle from the array of jingles
-            $randomJingle = array_rand($jingles);
-            $jingleKey = $jingles[$randomJingle];
+            $jingleKey = $lastJingle->getYoutubeKey();
+            while ($lastJingle->getYoutubeKey() == $jingleKey) {
+                $randomJingle = array_rand($jingles);
+                $jingleKey = $jingles[$randomJingle];
+            }
 
             $client = new GuzzleClient();
 

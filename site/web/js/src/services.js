@@ -41,7 +41,7 @@ radiowiziServices.factory('videoManager', ['$http', '$q', function ($http, $q) {
         },
         getUpcomingSongs: function () {
             var deferred = $q.defer();
-            $http.get(origin + '/' + folder + '/ajax/load-videos')
+            $http.get(origin + '/' + folder + '/api/load-videos')
                 .success(function (data) {
                     deferred.resolve({
                         upcomingsongs: data
@@ -94,4 +94,3 @@ radiowiziServices.factory('notificationManager', ['$timeout', function ($timeout
         }
     };
 }]);
-

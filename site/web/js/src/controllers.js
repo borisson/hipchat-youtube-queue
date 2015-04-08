@@ -95,7 +95,7 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
         $scope.$on('youtube.player.ready', function ($event, player) {
             notificationManager.showNotifiction(player);
 
-            $http.get(origin + '/' + folder + '/ajax/start-playing/' + $scope.video.id).success(function (data) {
+            $http.get(origin + '/' + folder + '/api/start-playing/' + $scope.video.id).success(function (data) {
                 //start time is now written
             });
             player.seekTo(seekto);
@@ -131,7 +131,7 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
         $scope.$on('youtube.player.ended', function ($event, player) {
             $interval.cancel(currentplaytime);
 
-            $http.get(origin + '/' + folder + '/ajax/set-done/' + $scope.video.id).success(function (data) {
+            $http.get(origin + '/' + folder + '/api/set-done/' + $scope.video.id).success(function (data) {
                 //load next video
                 var newvideo = videoManager.getVideo();
                 newvideo.then(function(data){

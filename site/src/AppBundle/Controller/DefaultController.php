@@ -87,7 +87,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/ajax/load-videos", name="load-more")
+     * @Route("/api/load-videos", name="load-more")
      * @Method("GET")
      */
     public function ajaxLoadVideoAction()
@@ -111,7 +111,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/ajax/set-done/{id}")
+     * @Route("/api/set-done/{id}")
      * @Method("GET")
      */
     public function ajaxSetVideoDone($id)
@@ -131,7 +131,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/ajax/start-playing/{id}")
+     * @Route("/api/start-playing/{id}")
      * @Method("GET")
      */
     public function ajaxLoad($id)

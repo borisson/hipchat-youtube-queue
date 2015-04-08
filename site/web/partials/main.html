@@ -1,13 +1,19 @@
 <header class="page__header">
     <h1 class="header__logo"><a href="/" class="ir">Radio Wizi</a></h1>
+    <svg version="1.1" id="logo-background" class="header__background" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="400px" height="300px" viewBox="0 0 400 300" enable-background="new 0 0 400 300" xml:space="preserve">
+        <polygon fill="#1C1D1F" points="0,0 368,0 153.335,285.334 0,172.001 "/>
+        <polygon fill="#232426" points="0,82 0,172 96.25,244.5 242.25,168.25 364.75,4.75 "/>
+        <polygon fill="#3A2E35" ng-style="logoColor" class="logo-path" points="96.25,244.5 153.25,286.75 242.25,168.25 "/>
+    </svg>
 </header>
 
 <div class="player__wrapper">
     <div class="content--centered">
         <div class="player" ng-if="videoavailable == true">
             <h2 class="player__title" data-video-id="{{ video.id }}" data-youtube-id="{{ video.youtubekey }}"
-                data-video-skip="{{ startSeconds }}">
-                {{ video.title }}
+                data-video-skip="{{ startSeconds }}" title="{{ video.title }}">
+                {{ video.title | characters: 40 }}
             </h2>
             <h4 class="player__request">
                 Requested by <span class="player__requester-name">{{ video.requestname }}</span>
@@ -31,7 +37,7 @@
         <div class="player" ng-if="videoavailable == false">
             <h2 class="player__title">There is nothing playing :'(</h2>
             <div class="player__video">
-                <img src="/images/empty-playlist.gif"/>
+                <img src="/images/empty-playlist-2.gif"/>
             </div>
             <p>Be a cool dude and go add some music in the Radio Wizi room on HipChat.</p>
         </div>
@@ -47,66 +53,48 @@
 </div>
 
 <div class="player__background" data-bg="{{video.image}}">
-    <img src="{{video.image}}" alt="{{video.title}} image" style="visibility: hidden;"/>
+    <img ng-src="{{video.image}}" alt="{{video.title}} image" />
 </div>
 
 <div class="tab__wrapper">
     <ul class="tab__list">
-        <li class="tab--active"><a href="#">Coming up</a></li>
-        <li><a href="#">History</a></li>
-        <li><a href="#">Top tracks</a></li>
+        <li ng-class="{active:isSelected(1)}"><a href ng-click="selectTab(1)">Coming up</a></li>
+        <li ng-class="{active:isSelected(2)}"><a href ng-click="selectTab(2)">History</a></li>
+        <li ng-class="{active:isSelected(3)}"><a href ng-click="selectTab(3)">Top tracks</a></li>
     </ul>
 </div>
 
-<div class="playlist__wrapper" id="coming-up" ng-if="videoavailable == true">
+<div class="playlist__wrapper" id="coming-up" ng-show="isSelected(1)">
     <div class="title__wrapper">
         <h3 class="playlist__title">Coming <br/><span class="up">Up</span></h3>
     </div>
-    <ol class="playlist">
-        <li ng-repeat-start="song in upcomingsongs" ng-if="$first" class="playlist__song song--big">
+    <ol class="playlist" ng-if="videoUpcoming == true">
+        <li ng-repeat="song in upcomingsongs" ng-class="{ 'song--big': $first }" class="playlist__song" style="background-image: url({{ song.image }})">
             <div class="song__info">
-                <h4 class="song__title">{{ song.title }}</h4>
-                <h5>Requested by {{ song.requestname }}</h5>
-            </div>
-            <img src="{{ song.image }}" class="song__image" />
-        </li>
-        <li ng-repeat-end ng-if="!$first" class="playlist__song">
-            <div class="song__info">
-                <h4 class="song__title">{{ song.title }}</h4>
+                <h4 class="song__title" title="{{ song.title }}">{{ song.title | characters: 48 }}</h4>
                 <h5>Requested by {{ song.requestname }}</h5>
             </div>
             <div class="song__overlay"></div>
-            <img src="{{ song.image }}" class="song__image" />
+            <img ng-src="{{ song.image }}" class="song__image" />
         </li>
     </ol>
+    <div class="playlist__message" ng-if="videoUpcoming == false">
+        <p>There are no songs in the playlist queue, add some in the Radio Wizi room on HipChat.</p>
+    </div>
 </div>
 
-<div class="playlist__wrapper wrapper--empty" ng-if="videoavailable == false">
-    <h3 class="playlist__title">Coming up</h3>
-    <p>There are no songs in the playlist queue, add some in the Radio Wizi room on HipChat.</p>
-</div>
-
-<div class="playlist__wrapper">
+<div class="playlist__wrapper" ng-show="isSelected(2)">
     <div class="title__wrapper">
         <h3 class="playlist__title">Last 10<br /> songs</h3>
     </div>
     <ol class="playlist">
-        <li ng-repeat-start="song in lastsongs" ng-if="$first" class="playlist__song song--big" style="background-image: url({{ song.image }})">
+        <li ng-repeat="song in lastsongs" ng-class="{ 'song--big': $first }" class="playlist__song" style="background-image: url({{ song.image }})">
             <div class="song__info">
-                <h4 class="song__title">{{ song.title }}</h4>
+                <h4 class="song__title" title="{{ song.title }}">{{ song.title | characters: 48 }}</h4>
                 <h5>Requested by {{ song.requestname }}</h5>
             </div>
             <div class="song__overlay"></div>
-            <img src="{{ song.image }}" class="song__image" />
-        </li>
-        <li ng-repeat-end ng-if="!$first" class="playlist__song" style="background-image: url({{ song.image }})">
-            <div class="song__info">
-                <h4 class="song__title">{{ song.title }}</h4>
-                <h5>Requested by {{ song.requestname }}</h5>
-            </div>
-            <div class="song__overlay"></div>
-            <img src="{{ song.image }}" class="song__image" />
+            <img ng-src="{{ song.image }}" class="song__image" />
         </li>
     </ol>
 </div>
-

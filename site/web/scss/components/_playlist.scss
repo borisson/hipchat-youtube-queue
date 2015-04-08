@@ -36,7 +36,7 @@
       color: #fff;
     }
   }
-  .tab--active {
+  .active {
     a {
       background-color: #1c1d1f;
       color: #909090;
@@ -54,12 +54,15 @@
  */
 
 .playlist__wrapper {
+  overflow: auto;
   position: relative;
 }
 
-.wrapper--empty {
-  padding: 12px;
+.playlist__message {
+  margin: 170px 0 0;
+  padding: $base-spacing-unit;
 }
+
 .title__wrapper {
   background-image: image-url('title-background.png');
   background-repeat: no-repeat;
@@ -102,7 +105,8 @@
   background: #1c1d1f;
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: cover;
+  background-size: 180%;
+  //background-size: cover;
   float: left;
   height: 180px;
   height: 16.666vw;
@@ -110,6 +114,7 @@
   position: relative;
   width: 16.6666%;
 
+  @include transition(all .2s ease-in-out);
  /* img {
     display: block;
     min-width: 100%;
@@ -117,7 +122,11 @@
     position: relative;
     opacity: 0.2;
   }*/
-
+  &:hover {
+    .song__overlay {
+      opacity: .5;
+    }
+  }
 }
 
 .song--big {
@@ -138,10 +147,12 @@
   background: #1c1d1f;
   height: 100%;
   left: 0;
-  opacity: .8;
+  opacity: .7;
   position: absolute;
   top: 0;
   width: 100%;
+
+  @include transition(opacity .2s ease-in-out);
 }
 
 .song__info {
@@ -150,6 +161,7 @@
   @include rem(font-size, 20);
   padding: 12px;
   position: absolute;
+  text-shadow: 1px 1px 10px rgba(0, 0, 0, .9);
   z-index: 10;
 
   h5 {

@@ -51,12 +51,10 @@ class DefaultController extends Controller
         }
 
         // No results found, get 20 songs with most airtime, play a random song of those.
-        $top20Songs = $ytRepository->findTopSongsWithMostAirtime();
-        $randomTopSongKey = array_rand($top20Songs);
-        $yt = $top20Songs[$randomTopSongKey];
+        $randomTopSong = $ytRepository->findRandomTopSong();
 
-        if ($yt instanceof YoutubeMovie){
-            $this->addVideo('Random top hit', $yt->getYoutubeKey());
+        if ($randomTopSong instanceof YoutubeMovie){
+            $this->addVideo('Random top hit', $randomTopSong->getYoutubeKey());
         }
 
         return new JsonResponse(array(),204);

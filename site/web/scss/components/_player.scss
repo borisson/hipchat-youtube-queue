@@ -12,6 +12,7 @@
     align-items: center;
     display: flex;
     justify-content: center;
+    flex-direction: column;
     padding: 0;
   }
 }
@@ -78,7 +79,7 @@
 
 .player__next {
   bottom: $base-spacing-unit*2;
-  max-width: 33%;
+  max-width: 25%;
   position: absolute;
   right: $base-spacing-unit*2;
 }

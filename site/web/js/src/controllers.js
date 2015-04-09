@@ -22,6 +22,10 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
         lastsongs.then(function(data){
             $scope.lastsongs = data.lastsongs;
         });
+        var topsongs = videoManager.getTopSongs();
+        topsongs.then(function(data) {
+            $scope.topsongs = data.topsongs;
+        });
 
         //load upcoming songs.
         var upcomingsongs = videoManager.getUpcomingSongs();

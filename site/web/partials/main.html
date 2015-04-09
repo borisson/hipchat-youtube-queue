@@ -98,3 +98,19 @@
         </li>
     </ol>
 </div>
+
+<div class="playlist__wrapper" ng-show="isSelected(3)">
+    <div class="title__wrapper">
+        <h3 class="playlist__title">Top 10<br /> all time</h3>
+    </div>
+    <ol class="playlist">
+        <li ng-repeat="song in topsongs" ng-class="{ 'song--big': $first }" class="playlist__song" style="background-image: url({{ song.image }})">
+            <div class="song__info">
+                <h4 class="song__title" title="{{ song.title }}">{{ song.title | characters: 48 }}</h4>
+                <h5>Requested by {{ song.requestname }}</h5>
+            </div>
+            <div class="song__overlay"></div>
+            <img ng-src="{{ song.image }}" class="song__image" />
+        </li>
+    </ol>
+</div>

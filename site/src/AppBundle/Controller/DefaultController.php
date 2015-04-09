@@ -109,6 +109,32 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/api/load-top-songs", name="load-top-songs")
+     * @Method("GET")
+     */
+    public function ajaxLoadTopSongsAction()
+    {
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var YoutubeMovieRepository $ytRepository */
+        $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
+
+        $topSongs = $ytRepository->getTop10Songs();
+
+        $data = [];
+
+        /** @var YoutubeMovie  $movie */
+        foreach ($topSongs as $k => $movie) {
+            $data[$k]['title'] = $movie->getTitle();
+            $data[$k]['image'] = $movie->getImage();
+            $data[$k]['requestname'] = $movie->getRequestName();
+        }
+
+        return new JsonResponse($data);
+    }
+
+    /**
      * @Route("/api/set-done/{id}")
      * @Method("GET")
      */

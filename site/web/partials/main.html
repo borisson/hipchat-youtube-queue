@@ -12,11 +12,10 @@
     <div class="content--centered">
         <div class="player" ng-if="videoavailable == true">
             <h2 class="player__title" data-video-id="{{ video.id }}" data-youtube-id="{{ video.youtubekey }}"
-                data-video-skip="{{ startSeconds }}" title="{{ video.title }}">
-                {{ video.title | characters: 40 }}
+                data-video-skip="{{ startSeconds }}" title="{{ video.title }}" ng-bind="video.title | characters: 75">
             </h2>
             <h4 class="player__request">
-                Requested by <span class="player__requester-name">{{ video.requestname }}</span>
+                Requested by <span class="player__requester-name" ng-bind="video.requestname"></span>
             </h4>
 
             <div class="player__video">
@@ -24,12 +23,8 @@
             </div>
 
             <div class="player__controls">
-                <span class="player__time-timer">
-                    {{ currenttime }}
-                </span> /
-                <span class="player__time-duration">
-                    {{ video.duration }}
-                </span>
+                <span class="player__time-timer" ng-bind="currenttime">00:00</span> /
+                <span class="player__time-duration" ng-bind="video.duration"></span>
                 <a ng-click="mute()" href="" class="player__mute">Mute</a>
             </div>
         </div>
@@ -45,7 +40,7 @@
     </div>
     <div class="player__next" ng-if="upcomingsongs.length > 0">
         <h3 class="player__subtitle">Coming up</h3>
-        <h4 ng-repeat="song in upcomingsongs" ng-if="$first">{{ song.title }}</h4>
+        <h4 ng-repeat="song in upcomingsongs" ng-if="$first" ng-bind="song.title "></h4>
     </div>
     <div class="player__time-indicator">
         <div class="player__time-progress" ng-style="progressBarStyle"></div>
@@ -71,11 +66,11 @@
     <ol class="playlist" ng-if="videoUpcoming == true">
         <li ng-repeat="song in upcomingsongs" ng-class="{ 'song--big': $first }" class="playlist__song" style="background-image: url({{ song.image }})">
             <div class="song__info">
-                <h4 class="song__title" title="{{ song.title }}">{{ song.title | characters: 48 }}</h4>
+                <h4 class="song__title" title="{{ song.title }}" ng-bind="song.title | characters: 48"></h4>
                 <h5>Requested by {{ song.requestname }}</h5>
             </div>
             <div class="song__overlay"></div>
-            <img ng-src="{{ song.image }}" class="song__image" />
+            <img ng-src="song.image" class="song__image" />
         </li>
     </ol>
     <div class="playlist__message" ng-if="videoUpcoming == false">
@@ -90,11 +85,11 @@
     <ol class="playlist">
         <li ng-repeat="song in lastsongs" ng-class="{ 'song--big': $first }" class="playlist__song" style="background-image: url({{ song.image }})">
             <div class="song__info">
-                <h4 class="song__title" title="{{ song.title }}">{{ song.title | characters: 48 }}</h4>
+                <h4 class="song__title" title="{{ song.title }}" ng-bind="song.title | characters: 48"></h4>
                 <h5>Requested by {{ song.requestname }}</h5>
             </div>
             <div class="song__overlay"></div>
-            <img ng-src="{{ song.image }}" class="song__image" />
+            <img ng-src="song.image" class="song__image" />
         </li>
     </ol>
 </div>

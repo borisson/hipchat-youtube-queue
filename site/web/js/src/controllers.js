@@ -125,7 +125,7 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
                     //calculate percentage for css theming?
                     $scope.progressBarStyle = {width: Math.round((100/Number(player.getDuration())) * Number(currenttimeint)*100)/100+'%'};
                     }
-            }, 500);
+            }, 1000);
         });
 
         $scope.$on('youtube.player.ended', function ($event, player) {

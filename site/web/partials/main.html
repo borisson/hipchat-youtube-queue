@@ -40,7 +40,7 @@
     </div>
     <div class="player__next" ng-if="upcomingsongs.length > 0">
         <h3 class="player__subtitle">Coming up</h3>
-        <h4 ng-repeat="song in upcomingsongs" ng-if="$first" ng-bind="song.title "></h4>
+        <h4 ng-repeat="song in upcomingsongs" ng-if="$first" title="{{ song.title }}" ng-bind="song.title | characters: 100"></h4>
     </div>
     <div class="player__time-indicator">
         <div class="player__time-progress" ng-style="progressBarStyle"></div>

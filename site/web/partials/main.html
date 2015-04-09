@@ -70,7 +70,7 @@
                 <h5>Requested by {{ song.requestname }}</h5>
             </div>
             <div class="song__overlay"></div>
-            <img ng-src="song.image" class="song__image" />
+            <img ng-src="{{ song.image }}" class="song__image" />
         </li>
     </ol>
     <div class="playlist__message" ng-if="videoUpcoming == false">
@@ -89,7 +89,7 @@
                 <h5>Requested by {{ song.requestname }}</h5>
             </div>
             <div class="song__overlay"></div>
-            <img ng-src="song.image" class="song__image" />
+            <img ng-src="{{ song.image }}" class="song__image" />
         </li>
     </ol>
 </div>

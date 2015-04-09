@@ -7,6 +7,13 @@
   padding: 120px 0 0;
   position: relative;
   width: 100%;
+
+  .flexbox & {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+  }
 }
 
 .player {
@@ -18,7 +25,7 @@
 .player__video {
   box-shadow: 0 0 24px rgba(0, 0, 0, 0.25);
   height: 420px * 0.5625;
-  margin-bottom: $base-spacing-unit;
+  margin-bottom: $base-spacing-unit*2;
   //padding-bottom: 56.25%; /* 16:9 */
   position: relative;
   width: 420px;
@@ -52,10 +59,6 @@
   @include rem(font-size, 72);
   margin: 0 0 $base-spacing-unit*2;
   line-height: 1;
-
-  @include media(max-width $base-width) {
-    @include rem(font-size, 60);
-  }
 }
 
 .player__subtitle {
@@ -64,6 +67,7 @@
 
 .player__request {
   color: $grey;
+  color: rgba(255, 255, 255, 0.4);
   @include rem(font-size, 16);
   margin: 0 0 $base-spacing-unit*2;
   text-shadow: 1px 1px 10px rgba(0, 0, 0, .4);
@@ -82,14 +86,12 @@
 .player__controls {
   @extend .clearfix;
   color: $grey;
+  color: rgba(255, 255, 255, 0.4);
   @include rem(font-size, 78);
   font-family: $title-font;
   font-weight: 300;
   margin-top: $base-spacing-unit;
   line-height: 1;
-  @include media(max-width $base-width) {
-    @include rem(font-size, 66);
-  }
 }
 
 .player__time-timer {
@@ -131,7 +133,8 @@
   width: 100%;
 
   .player__time-progress {
-    @include transition(width .5s linear);
+    @include transition(width 1s linear);
+    transform: translate3d(0,0,0);
     background-color: $grey;
     height: 100%;
     width: 0%;
@@ -143,7 +146,8 @@
   background-image: image-url('bg-lush.jpg');
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: cover;
+  background-size: 180%;
+  //background-size: cover;
   display: block;
   left: 0;
   height: 100%;
@@ -152,9 +156,80 @@
   top: 0;
   width: 100%;
   z-index: -1;
-  @include filter(blur(35px) brightness(0.4) grayscale(0.2));
-
+  @include filter(blur(35px) brightness(0.5) grayscale(0.2));
+  //@include animation(traantjes 20s linear infinite both);
   img {
     visibility: hidden;
   }
 }
+
+@include keyframes(traantjes) {
+  0% {
+    background-size: 180%;
+  }
+  50% {
+    background-size: 250%;
+  }
+  100% {
+    background-size: 180%;
+  }
+}
+
+/**
+ * Mediaqueries
+ */
+
+@include media(max-width $desktop-wide) {
+  .player__controls {
+    @include rem(font-size, 66);
+  }
+  .player__title {
+    @include rem(font-size, 60);
+  }
+  .player__wrapper {
+    padding-top: 100px;
+  }
+}
+
+@include media(max-width $desktop-normal) {
+  .player__controls {
+    @include rem(font-size, 60);
+  }
+  .player__title {
+    @include rem(font-size, 54);
+  }
+}
+
+@include media(max-width $desktop-base) {
+  .player__wrapper {
+    padding-top: 80px;
+  }
+}
+
+@include media(max-width $desktop-base) {
+  .player__controls {
+    @include rem(font-size, 54);
+  }
+  .player__title {
+    @include rem(font-size, 48);
+  }
+}
+
+@include media(max-width $phone-big) {
+  .player {
+    padding-left: 40px;
+  }
+}
+
+@include media(max-width $phone-width) {
+  .player {
+    padding-left: 0;
+  }
+}
+
+@include media(max-height $phone-big) {
+  .player__video {
+    display: none;
+  }
+}
+

@@ -172,3 +172,110 @@
 .song__image {
   display: none;
 }
+
+/**
+ * Mediaqueries
+ */
+
+@include media(max-width $desktop-wide) {
+
+}
+
+@include media(max-width $desktop-normal) {
+
+  /*
+  .song__title {
+    @include rem(font-size, 16);
+
+    .song--big & {
+      @include rem(font-size, 30);
+    }
+  }
+  .song__info {
+    h5 {
+      @include rem(font-size, 12);
+      .song--big & {
+        @include rem(font-size, 20);
+      }
+    }
+  }*/
+}
+
+@include media(max-width $desktop-base) {
+  .playlist__song {
+    height: 20vw;
+    width: 20vw;
+    &:nth-of-type(n + 8) {
+      display: none;
+    }
+  }
+  .song--big {
+    width: 40%;
+    height: 40vw;
+  }
+  .title__wrapper {
+    width: 40%;
+  }
+}
+
+@include media(max-width $tab-width + 120) {
+  .playlist__song {
+    height: 25vw;
+    width: 25vw;
+    &:nth-of-type(n + 8) {
+      display: block;
+    }
+  }
+  .song--big {
+    width: 50%;
+    height: 50vw;
+  }
+  .title__wrapper {
+    width: 50%;
+  }
+}
+
+@include media(max-width $phone-big) {
+  .playlist__song {
+    height: 33.3333vw;
+    width: 33.3333vw;
+    &:nth-of-type(n + 7) {
+      display: none;
+    }
+  }
+  .song--big {
+    width: 66.6666%;
+    height: 66.6vw;
+  }
+  .title__wrapper {
+    width: 66.6666%;
+  }
+  .song__info {
+    h5 {
+      display: none;
+    }
+  }
+}
+
+@include media(max-width $phone-width) {
+  .playlist__song {
+    height: 50vw;
+    width: 50vw;
+    &:nth-of-type(n + 7) {
+      display: block;
+    }
+  }
+  .song--big {
+    width: 100%;
+    height: 100vw;
+  }
+  .title__wrapper {
+    width: 100%;
+  }
+
+  .tab__list {
+    li {
+      width: 100%;
+    }
+  }
+}

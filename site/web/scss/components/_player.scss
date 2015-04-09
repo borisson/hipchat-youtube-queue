@@ -182,10 +182,10 @@
 
 @include media(max-width $desktop-wide) {
   .player__controls {
-    @include rem(font-size, 66);
+    @include rem(font-size, 72);
   }
   .player__title {
-    @include rem(font-size, 60);
+    @include rem(font-size, 66);
   }
   .player__wrapper {
     padding-top: 100px;
@@ -194,10 +194,24 @@
 
 @include media(max-width $desktop-normal) {
   .player__controls {
+    @include rem(font-size, 66);
+  }
+  .player__title {
+    @include rem(font-size, 60);
+  }
+}
+
+@include media(min-width $desktop-normal max-height $phone-big) {
+  .player__controls {
     @include rem(font-size, 60);
   }
   .player__title {
     @include rem(font-size, 54);
+  }
+  .player__title,
+  .player__request,
+  .player__video {
+    margin-bottom: $base-spacing-unit;
   }
 }
 
@@ -205,14 +219,24 @@
   .player__wrapper {
     padding-top: 80px;
   }
-}
 
-@include media(max-width $desktop-base) {
   .player__controls {
-    @include rem(font-size, 54);
+    @include rem(font-size, 60);
   }
   .player__title {
-    @include rem(font-size, 48);
+    @include rem(font-size, 54);
+  }
+}
+
+@include media(max-width $tab-end) {
+  .player__next {
+    bottom: $base-spacing-unit;
+    right: $base-spacing-unit;
+  }
+  .player__title,
+  .player__request,
+  .player__video {
+    margin-bottom: $base-spacing-unit*1.5;
   }
 }
 
@@ -220,11 +244,31 @@
   .player {
     padding-left: 40px;
   }
+  .player__title,
+  .player__request,
+  .player__video {
+    margin-bottom: $base-spacing-unit;
+  }
 }
 
 @include media(max-width $phone-width) {
   .player {
     padding-left: 0;
+  }
+  .player__title {
+    @include rem(font-size, 36);
+  }
+  .player__controls {
+    @include rem(font-size, 42);
+  }
+  .player__next {
+    bottom: 0;
+    margin-top: $half-spacing-unit;
+    max-width: none;
+    right: auto;
+    padding: $half-spacing-unit;
+    position: relative;
+    width: 100%;
   }
 }
 
@@ -233,4 +277,3 @@
     display: none;
   }
 }
-

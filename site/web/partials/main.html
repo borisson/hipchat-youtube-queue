@@ -102,7 +102,6 @@
         <li ng-repeat="song in topsongs" ng-class="{ 'song--big': $first }" class="playlist__song" style="background-image: url({{ song.image }})">
             <div class="song__info">
                 <h4 class="song__title" title="{{ song.title }}">{{ song.title | characters: 48 }}</h4>
-                <h5>Requested by {{ song.requestname }}</h5>
             </div>
             <div class="song__overlay"></div>
             <img ng-src="{{ song.image }}" class="song__image" />

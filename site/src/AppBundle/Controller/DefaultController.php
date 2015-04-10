@@ -79,12 +79,14 @@ class DefaultController extends Controller
 
         /** @var EntityRepository $ytRepository */
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
-        $lastSongs = $ytRepository->findBy(['skipped' => 0, 'played' => 1],['id' => 'DESC'], 10);
+        $lastSongs = $ytRepository->findBy(['skipped' => 0, 'played' => 1],['id' => 'DESC'], 9);
 
         $data = [];
         /** @var YoutubeMovie  $movie */
         foreach ($lastSongs as $k => $movie) {
             $data[$k]['title'] = $movie->getTitle();
+            $data[$k]['image'] = $movie->getImage();
+            $data[$k]['requestname'] = $movie->getRequestName();
         }
 
         return new JsonResponse($data);
@@ -101,12 +103,14 @@ class DefaultController extends Controller
 
         /** @var EntityRepository $ytRepository */
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
-        $ytMovies = $ytRepository->findBy(['played' => 0, 'skipped' => 0], null, 15, 1);
+        $ytMovies = $ytRepository->findBy(['played' => 0, 'skipped' => 0], null, 9, 1);
 
         $data = [];
         /** @var YoutubeMovie  $movie */
         foreach ($ytMovies as $k => $movie) {
             $data[$k]['title'] = $movie->getTitle();
+            $data[$k]['image'] = $movie->getImage();
+            $data[$k]['requestname'] = $movie->getRequestName();
         }
 
         return new JsonResponse($data);

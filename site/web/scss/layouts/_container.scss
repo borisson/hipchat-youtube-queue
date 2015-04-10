@@ -1,7 +1,6 @@
 
 body {
-  background: image-url('bg-lush.jpg') top center no-repeat;
-  background-size: cover;
+  background-color: $black;
 }
 
 .page {
@@ -10,9 +9,9 @@ body {
 
 .content--centered {
   margin: 0 auto;
-  width: $tab-width;
+  width: $desktop-base;
   @include media(max-width $desktop-wide) {
-    //width: 94%;
+    width: 94%;
   }
   @include media(max-width $tab-width) {
     padding: 0 $half-spacing-unit;
@@ -21,7 +20,4 @@ body {
 }
 
 .content-wrapper {
-  background: $white;
-  border-radius: 4px;
-  overflow: hidden;
 }

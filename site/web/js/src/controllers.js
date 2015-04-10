@@ -1,9 +1,9 @@
 'use strict';
 
 /* Controllers */
-var radiowiziControllers = angular.module('radiowiziControllers', []);
+var radiowiziControllers = angular.module('radiowiziControllers', ['truncate']);
 
-radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval', 'videoManager', 'notificationManager',
+radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interval', 'videoManager', 'notificationManager',
     function ($scope, $http, $interval, videoManager, notificationManager) {
 
         var seekto = 0;
@@ -14,6 +14,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
         var currentplayer;
 
         $scope.videoavailable = false;
+        $scope.videoUpcoming = false;
         $scope.pagetitle = 'Nothing playing';
 
         //Load last 10 songs.
@@ -26,13 +27,23 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
         var upcomingsongs = videoManager.getUpcomingSongs();
         upcomingsongs.then(function(data){
             $scope.upcomingsongs = data.upcomingsongs;
+            if(data.upcomingsongs.length > 0){
+              $scope.videoUpcoming = true;
+            } else {
+              $scope.videoUpcoming = false;
+            }
         });
 
         //check every 5 seconds for new tracks.
-        loadupcoming = $interval(function(){
+        var loadupcoming = $interval(function(){
             var upcomingsongs = videoManager.getUpcomingSongs();
             upcomingsongs.then(function(data){
                 $scope.upcomingsongs = data.upcomingsongs;
+                if(data.upcomingsongs.length > 0){
+                  $scope.videoUpcoming = true;
+                } else {
+                  $scope.videoUpcoming = false;
+                }
             });
         }, 5000);
 
@@ -51,7 +62,6 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
             $scope.image = data.image;
         }, function(reason){
             $scope.videoavailable = false;
-
             var searchforvideo = $interval(function(){
                 var vidinterval = videoManager.getVideo();
                 vidinterval.then(function(data){
@@ -65,6 +75,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                     seekto = data.diff;
                     $scope.playerVars = data.playerVars;
                     $scope.radiowizivideo = data.radiowizivideo;
+                    $scope.image = data.image;
                 });
             }, 5000);
             //alert('Something went wrong with loading the video, please refresh this page.');
@@ -90,27 +101,31 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
             player.seekTo(seekto);
             currentplayer = player;
 
-          var $image = $('.player__video--image').find('img');
+          var $backgroundWrapper = $('.player__background');
+          var $image = $backgroundWrapper.find('img');
           var image = $image[0];
+
+          $backgroundWrapper.css({'background-image': 'url('+ $backgroundWrapper.attr('data-bg') +')'});
 
           var colorThief = new ColorThief();
           var color = colorThief.getColor(image);
 
           $('.player__time-progress').css('background-color', 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')');
+          $scope.logoColor = {'fill': 'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ', 0.7)'};
         });
 
         $scope.$on('youtube.player.playing', function ($event, player) {
             currentplaytime = $interval(function(){
 
-                    if(typeof player.getCurrentTime === 'function' && !isNaN(player.getCurrentTime())) {
-                        currenttimeint = Number(player.getCurrentTime());
-                        currenttime = videoManager.toHHMMSS(String(currenttimeint));
-                        $scope.currenttime = currenttime;
+                if(typeof player.getCurrentTime === 'function' && !isNaN(player.getCurrentTime())) {
+                    currenttimeint = Number(player.getCurrentTime());
+                    currenttime = videoManager.toHHMMSS(String(currenttimeint));
+                    $scope.currenttime = currenttime;
 
-                        //calculate percentage for css theming?
-                        $scope.progressBarStyle = {width:Math.round((100/Number(player.getDuration())) * Number(currenttimeint)*100)/100+'%'};
+                    //calculate percentage for css theming?
+                    $scope.progressBarStyle = {width: Math.round((100/Number(player.getDuration())) * Number(currenttimeint)*100)/100+'%'};
                     }
-            }, 500);
+            }, 1000);
         });
 
         $scope.$on('youtube.player.ended', function ($event, player) {
@@ -129,7 +144,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                     seekto = data.diff;
                     $scope.playerVars = data.playerVars;
                     $scope.radiowizivideo = data.radiowizivideo;
-
+                    $scope.image = data.image;
                 }, function(reason){
                     $scope.videoavailable = false;
                     $scope.pagetitle = 'Nothing playing';
@@ -146,6 +161,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                             seekto = data.diff;
                             $scope.playerVars = data.playerVars;
                             $scope.radiowizivideo = data.radiowizivideo;
+                            $scope.image = data.image;
                         });
                     }, 5000);
                     //alert('Something went wrong with loading the video, please refresh this page.');
@@ -162,9 +178,16 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                 upcomingsongs.then(function(data){
                     $scope.upcomingsongs = data.upcomingsongs;
                 });
-
             });
         });
+
+      $scope.tab = 1;
+      $scope.selectTab = function (setTab){
+        $scope.tab = setTab;
+      };
+      $scope.isSelected = function(checkTab) {
+        return $scope.tab === checkTab;
+      };
 
     }
 ]);

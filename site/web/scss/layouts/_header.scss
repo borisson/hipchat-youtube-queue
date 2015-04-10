@@ -1,17 +1,85 @@
+.page__header {
+  height: 270px;
+  left: 0;
+  overflow: auto;
+  position: absolute;
+  top: 0;
+  width: 360px;
+  z-index: 100;
+
+  @include media(max-width $desktop-wide) {
+    height: 270px * 0.75;
+    width: 360px * 0.75;
+  }
+
+  @include media(max-width $desktop-base) {
+    height: 270px * 0.6;
+    width: 360px * 0.6;
+  }
+}
+
+.header__background {
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  position: absolute;
+  z-index: -1;
+}
+
 .header__logo {
   @include rem(font-size, 30);
   color: $white;
-  height: 110px;
+  height: 126px;
   line-height: 36px;
-  margin: $base-spacing-unit*2 auto;
+  margin: $base-spacing-unit*2.25 0 0 $base-spacing-unit*2.5;
   text-transform: uppercase;
-  width: 122px;
+  width: 150px;
 
   a {
     background: image-url('logo_v2.svg') left center no-repeat;
-    background-size: 100%;
+    background-size: contain;
     display: block;
     height: 100%;
     width: 100%;
+  }
+}
+
+@include media(max-width $desktop-wide) {
+  .page__header {
+    height: 270px * 0.75;
+    width: 360px * 0.75;
+  }
+
+  .header__logo {
+    height: 126px * 0.75;
+    margin: ($base-spacing-unit*2.25)*0.75 0 0 ($base-spacing-unit*2.5)*0.75;
+    width: 150px * 0.75;
+  }
+}
+
+@include media(max-width $desktop-base) {
+  .page__header {
+    height: 270px * 0.6;
+    width: 360px * 0.6;
+  }
+
+  .header__logo {
+    height: 126px * 0.6;
+    margin: ($base-spacing-unit*2.25)*0.6 0 0 ($base-spacing-unit*2.5)*0.6;
+    width: 150px * 0.6;
+  }
+}
+
+@include media(max-width $phone-big) {
+  .page__header {
+    height: 270px * 0.5;
+    width: 360px * 0.5;
+  }
+
+  .header__logo {
+    height: 126px * 0.5;
+    margin: ($base-spacing-unit*2.25)*0.5 0 0 ($base-spacing-unit*2.5)*0.5;
+    width: 150px * 0.5;
   }
 }

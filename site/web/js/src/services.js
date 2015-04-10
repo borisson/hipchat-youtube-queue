@@ -89,11 +89,11 @@ radiowiziServices.factory('videoManager', ['$http', '$q', function ($http, $q) {
 
 radiowiziServices.factory('notificationManager', ['$timeout', function ($timeout) {
     return {
-        showNotifiction: function (player) {
+        showNotifiction: function (player, userName) {
             if ('Notification' in window) {
                 Notification.requestPermission(function () {
                     var notification = new Notification('Radio Wizi - Now playing', {
-                        body: player.getVideoData().title + '\nRequested by ' + $('.player__requester-name').html(),
+                        body: player.getVideoData().title + '\nRequested by ' + userName ,
                         icon: 'http://img.youtube.com/vi/' + player.getVideoData().video_id + '/default.jpg'
                     });
 

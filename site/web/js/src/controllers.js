@@ -88,16 +88,16 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
         $scope.mute = function() {
             if (currentplayer.isMuted()) {
                 currentplayer.unMute();
-                $('.player__mute').removeClass('player--muted');
+                $scope.isMute = false;
             } else {
                 currentplayer.mute();
-                $('.player__mute').addClass('player--muted');
+                $scope.isMute = true;
             }
         };
 
         //React on youtube events.
         $scope.$on('youtube.player.ready', function ($event, player) {
-            notificationManager.showNotifiction(player);
+            notificationManager.showNotifiction(player, $scope.video.requestname);
 
             $http.get(origin + '/' + folder + '/api/start-playing/' + $scope.video.id).success(function (data) {
                 //start time is now written
@@ -105,16 +105,15 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
             player.seekTo(seekto);
             currentplayer = player;
 
-          var $image = $('.player__img');
-          var image = $image[0];
+          var image = document.getElementById('player__img');
 
           var colorThief = new ColorThief();
           var color = colorThief.getColor(image);
 
           stackBlurImage('player__img', 'player__canvas', 35, false );
 
-          $('.player__time-progress').css('background-color', 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')');
-          $scope.logoColor = {'fill': 'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ', 0.7)'};
+          $scope.progressBarColor = 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')';
+          $scope.logoColor = { 'fill': 'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ', 0.7)' };
         });
 
         $scope.$on('youtube.player.playing', function ($event, player) {
@@ -126,7 +125,7 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
                     $scope.currenttime = currenttime;
 
                     //calculate percentage for css theming?
-                    $scope.progressBarStyle = {width: Math.round((100/Number(player.getDuration())) * Number(currenttimeint)*100)/100+'%'};
+                    $scope.progressBarWidth = Math.round((100/Number(player.getDuration())) * Number(currenttimeint)*100)/100 + '%';
                     }
             }, 1000);
         });

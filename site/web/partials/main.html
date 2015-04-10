@@ -25,7 +25,7 @@
             <div class="player__controls">
                 <span class="player__time-timer" ng-bind="currenttime">00:00</span><span> / </span>
                 <span class="player__time-duration" ng-bind="video.duration"></span>
-                <a ng-click="mute()" href="" class="player__mute">Mute</a>
+                <a ng-click="mute()" ng-class="{ 'player--muted': isMute == true }" href="" class="player__mute">Mute</a>
             </div>
         </div>
 
@@ -43,7 +43,7 @@
         <h4 ng-repeat="song in upcomingsongs" ng-if="$first" title="{{ song.title }}" ng-bind="song.title | characters: 100"></h4>
     </div>
     <div class="player__time-indicator">
-        <div class="player__time-progress" ng-style="progressBarStyle"></div>
+        <div class="player__time-progress" ng-style="{ width: progressBarWidth, backgroundColor: progressBarColor }"></div>
     </div>
 </div>
 

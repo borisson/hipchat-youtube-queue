@@ -209,6 +209,20 @@ class DefaultController extends Controller
      */
     public function addVideo($requestName, $videoId)
     {
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->getDoctrine()->getManager();
+
+        /** @var EntityRepository $ytRepository */
+        $ytRepository = $entityManager->getRepository('AppBundle:YoutubeMovie');
+
+        $ytMovies = $ytRepository->findBy(['played' => 0, 'skipped' => 0], null, 10);
+
+        /** @var YoutubeMovie $song */
+        foreach ($ytMovies as $song) {
+            if ($song->getYoutubeKey == $videoId) {
+                return new Response("This video can't be added. It is already in the last 10 played songs");
+            }
+        }
 
         $client = new GuzzleClient();
 
@@ -258,8 +272,6 @@ class DefaultController extends Controller
         // Create a new YoutubeMovie to be saved in database.
         $yt = new YoutubeMovie($videoId, $totalSeconds, $jsondata['title'], $requestName);
 
-        /** @var EntityManager $entityManager */
-        $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($yt);
         $entityManager->flush();
     }

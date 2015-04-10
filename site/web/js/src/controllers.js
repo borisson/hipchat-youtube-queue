@@ -106,13 +106,15 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
             currentplayer = player;
 
           var $backgroundWrapper = $('.player__background');
-          var $image = $backgroundWrapper.find('img');
+          var $image = $('.player__img');
           var image = $image[0];
 
           $backgroundWrapper.css({'background-image': 'url('+ $backgroundWrapper.attr('data-bg') +')'});
 
           var colorThief = new ColorThief();
           var color = colorThief.getColor(image);
+
+          stackBlurImage('player__img', 'player__canvas', 35, false );
 
           $('.player__time-progress').css('background-color', 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')');
           $scope.logoColor = {'fill': 'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ', 0.7)'};

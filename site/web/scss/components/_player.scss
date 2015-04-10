@@ -4,6 +4,7 @@
 
 .player__wrapper {
   height: 100vh;
+  overflow: hidden;
   padding: 120px 0 0;
   position: relative;
   width: 100%;
@@ -165,11 +166,26 @@
   top: 0;
   width: 100%;
   z-index: -1;
-  @include filter(blur(35px) brightness(0.5) grayscale(0.2));
+  //@include filter(blur(35px) brightness(0.5) grayscale(0.2));
   //@include animation(traantjes 20s linear infinite both);
   img {
-    visibility: hidden;
+    //visibility: hidden;
   }
+}
+
+.player__img {
+  display: none;
+}
+
+#player__canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.canvas__wrapper {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
 @include keyframes(traantjes) {

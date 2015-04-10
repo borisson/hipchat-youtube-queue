@@ -1,5 +1,6 @@
 AppBundle\Entity\YoutubeMovie:
     type: entity
+    repositoryClass: AppBundle\Entity\Repository\YoutubeMovieRepository
     table: youtube_movies
     id:
         id:

@@ -41,7 +41,7 @@ radiowiziServices.factory('videoManager', ['$http', '$q', function ($http, $q) {
         },
         getUpcomingSongs: function () {
             var deferred = $q.defer();
-            $http.get(origin + '/' + folder + '/ajax/load-videos')
+            $http.get(origin + '/' + folder + '/api/load-videos')
                 .success(function (data) {
                     deferred.resolve({
                         upcomingsongs: data
@@ -50,6 +50,18 @@ radiowiziServices.factory('videoManager', ['$http', '$q', function ($http, $q) {
                     deferred.reject(msg);
                 });
             return deferred.promise;
+        },
+        getTopSongs: function() {
+          var deferred = $q.defer();
+          $http.get(origin + '/' + folder + '/api/load-top-songs')
+            .success(function (data) {
+              deferred.resolve({
+                topsongs: data
+              });
+            }).error(function (msg, code) {
+              deferred.reject(msg);
+            });
+          return deferred.promise;
         },
         toHHMMSS: function (string) {
             var sec_num = parseInt(string, 10);
@@ -94,4 +106,3 @@ radiowiziServices.factory('notificationManager', ['$timeout', function ($timeout
         }
     };
 }]);
-

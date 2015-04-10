@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use AppBundle\Entity\Repository\YoutubeMovieRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,22 +22,6 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        /** @var EntityManager $em */
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var EntityRepository $ytRepository */
-        $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
-        /** @var YoutubeMovie $yt */
-        $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0]);
-
-        $lastSongs = $ytRepository->findBy(['skipped' => 0, 'played' => 1],['id' => 'DESC'], 10);
-
-        $diff = 0;
-        if ($yt instanceof YoutubeMovie && $yt->getStartedTime() instanceof \DateTime && $yt->getStartedTime()->format('Y') !== '-0001') {
-            $now = new \DateTime();
-            $diff = $now->getTimestamp() - $yt->getStartedTime()->getTimestamp();
-        }
-
         return $this->render('base.html.twig');
     }
 
@@ -49,7 +34,7 @@ class DefaultController extends Controller
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
-        /** @var EntityRepository $ytRepository */
+        /** @var YoutubeMovieRepository $ytRepository */
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
         /** @var YoutubeMovie $yt */
         $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0]);
@@ -63,6 +48,13 @@ class DefaultController extends Controller
 
         if ($yt instanceof YoutubeMovie){
             return new JsonResponse(array('obj' => $yt->getDataForJson(), 'diff'=>$diff), 200);
+        }
+
+        // No results found, get 20 songs with most airtime, play a random song of those.
+        $randomTopSong = $ytRepository->findRandomTopSong();
+
+        if ($randomTopSong instanceof YoutubeMovie){
+            $this->addVideo('Random top hit', $randomTopSong->getYoutubeKey());
         }
 
         return new JsonResponse(array(),204);
@@ -93,7 +85,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/ajax/load-videos", name="load-more")
+     * @Route("/api/load-videos", name="load-more")
      * @Method("GET")
      */
     public function ajaxLoadVideoAction()
@@ -117,7 +109,33 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/ajax/set-done/{id}")
+     * @Route("/api/load-top-songs", name="load-top-songs")
+     * @Method("GET")
+     */
+    public function ajaxLoadTopSongsAction()
+    {
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var YoutubeMovieRepository $ytRepository */
+        $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
+
+        $topSongs = $ytRepository->getTop10Songs();
+
+        $data = [];
+
+        /** @var YoutubeMovie  $movie */
+        foreach ($topSongs as $k => $movie) {
+            $data[$k]['title'] = $movie->getTitle();
+            $data[$k]['image'] = $movie->getImage();
+            $data[$k]['requestname'] = $movie->getRequestName();
+        }
+
+        return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/api/set-done/{id}")
      * @Method("GET")
      */
     public function ajaxSetVideoDone($id)
@@ -137,7 +155,7 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/ajax/start-playing/{id}")
+     * @Route("/api/start-playing/{id}")
      * @Method("GET")
      */
     public function ajaxLoad($id)
@@ -163,20 +181,39 @@ class DefaultController extends Controller
     public function postAction(Request $request)
     {
         $youtubeLink = $request->get('link');
-        if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $youtubeLink, $match)) {
+        if (preg_match(
+          '%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i',
+          $youtubeLink,
+          $match
+        )) {
             $video_id = $match[1];
+        }
+
+        if (!isset($video_id)) {
+            return new Response('Invalid url', 422);
         }
 
         $requestname = $request->get('requestname');
 
-        if (!isset($video_id)) {
-          return new Response('Invalid url', 422);
-        }
+        $this->addVideo($requestname, $video_id);
+
+        return new Response("ok \n");
+    }
+
+    /**
+     * Add video to database.
+     *
+     * @param $requestName
+     * @param $videoId
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function addVideo($requestName, $videoId)
+    {
 
         $client = new GuzzleClient();
 
         $response = $client->get(
-          'http://gdata.youtube.com/feeds/api/videos/' . $video_id . '?v=2&alt=jsonc&prettyprint=true',
+          'http://gdata.youtube.com/feeds/api/videos/' . $videoId . '?v=2&alt=jsonc&prettyprint=true',
           [
             'headers' => ['Content-Type' => 'text/json'],
             'verify' => false,
@@ -211,26 +248,24 @@ class DefaultController extends Controller
             $youtubeFileName = $jsondata['thumbnail']['sqDefault'];
         }
 
-        if (!$this->checkImageExists($video_id)) {
-            $this->downloadImage($video_id, $youtubeFileName);
+        if (!$this->checkImageExists($videoId)) {
+            $this->downloadImage($videoId, $youtubeFileName);
         }
 
         // Check if we need to create a jingle
         $this->addJingle();
 
         // Create a new YoutubeMovie to be saved in database.
-        $yt = new YoutubeMovie($video_id, $totalSeconds, $jsondata['title'], $requestname);
+        $yt = new YoutubeMovie($videoId, $totalSeconds, $jsondata['title'], $requestName);
 
         /** @var EntityManager $entityManager */
         $entityManager = $this->getDoctrine()->getManager();
         $entityManager->persist($yt);
         $entityManager->flush();
-
-        return new Response("ok \n");
     }
 
     /**
-     * Create a Jingle if there isn't one found in the previous 20 songs.
+     * Create a Jingle if there isn't one found in the previous 9 songs.
      *
      * The jingles are kept in an array in this function ($jingles).
      * Preferably these are fetched from a youtubeChannel that holds all the jingles.
@@ -249,7 +284,7 @@ class DefaultController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $movieRepo = $entityManager->getRepository('AppBundle:YoutubeMovie');
 
-        $songs = $movieRepo->findBy([], ['id' => 'DESC'], 12);
+        $songs = $movieRepo->findBy([], ['id' => 'DESC'], 9);
 
         $needsJingle = true;
 
@@ -260,11 +295,18 @@ class DefaultController extends Controller
             }
         }
 
-        // There was no jingle in the past 20 songs, add a new one.
+        // There was no jingle in the past 9 songs, add a new one.
         if ($needsJingle) {
+
+            /** @var YoutubeMovie $lastJingle */
+            $lastJingle = $movieRepo->findOneBy(['videoId' => $jingles], ['id' => 'DESC']);
+
             // Get a random jingle from the array of jingles
-            $randomJingle = array_rand($jingles);
-            $jingleKey = $jingles[$randomJingle];
+            $jingleKey = $lastJingle->getYoutubeKey();
+            while ($lastJingle->getYoutubeKey() == $jingleKey) {
+                $randomJingle = array_rand($jingles);
+                $jingleKey = $jingles[$randomJingle];
+            }
 
             $client = new GuzzleClient();
 

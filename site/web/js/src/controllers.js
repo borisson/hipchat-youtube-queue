@@ -105,11 +105,8 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
             player.seekTo(seekto);
             currentplayer = player;
 
-          var $backgroundWrapper = $('.player__background');
           var $image = $('.player__img');
           var image = $image[0];
-
-          $backgroundWrapper.css({'background-image': 'url('+ $backgroundWrapper.attr('data-bg') +')'});
 
           var colorThief = new ColorThief();
           var color = colorThief.getColor(image);

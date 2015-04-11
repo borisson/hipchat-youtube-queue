@@ -16,7 +16,7 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
         $scope.videoavailable = false;
         $scope.videoUpcoming = false;
         $scope.pagetitle = 'Nothing playing';
-
+        $scope.currenttime = '00:00';
         //Load last 10 songs.
         var lastsongs = videoManager.getLastSongs();
         lastsongs.then(function(data){

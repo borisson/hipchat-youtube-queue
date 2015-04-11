@@ -282,18 +282,18 @@ class DefaultController extends Controller
     private function addTopTen()
     {
         $jinglesTopTen = [
-            1 => 'cx0R0XSGvTo',
-            2 => 'cx0R0XSGvTo',
-            3 => 'cx0R0XSGvTo',
-            4 => 'cx0R0XSGvTo',
-            5 => 'cx0R0XSGvTo',
-            6 => 'cx0R0XSGvTo',
-            7 => 'cx0R0XSGvTo',
-            8 => 'cx0R0XSGvTo',
-            9 => 'cx0R0XSGvTo',
-            10 => 'cx0R0XSGvTo',
-            'intro' => 'cx0R0XSGvTo',
-            'outro' => '2a4Uxdy9TQY',
+            1 => 'hSuEdk4UJmw',
+            2 => 'ekRw8kr0Tl4',
+            3 => '3h7NRVD74mw',
+            4 => 'k557o3VR1Nc',
+            5 => 'CCljzcGJeNQ',
+            6 => 'u48TzLLlVHg',
+            7 => 'HVvvo6ZORmI',
+            8 => 'dSkiWbouwpU',
+            9 => 'K_qrwG5odJM',
+            10 => 'hrPSTBtC2rY',
+            'intro' => 'jt-lE8oAF9A',
+            'outro' => 'F7gT4pPvFR8',
         ];
 
         /** @var EntityManager $entityManager */

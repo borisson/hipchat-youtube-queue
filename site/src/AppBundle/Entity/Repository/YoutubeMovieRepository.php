@@ -54,4 +54,25 @@ class YoutubeMovieRepository extends EntityRepository
         return $output;
     }
 
+    public function getUltraWiziTop10Songs()
+    {
+        $query = "SELECT id, COUNT(id) as num
+        FROM `youtube_movies`
+        WHERE title != 'jingle'
+            AND length < 1800
+        GROUP BY video_id
+        ORDER BY num DESC LIMIT 0,10";
+
+        $connection = $this->getEntityManager()->getConnection();
+        $statement = $connection->prepare($query);
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+        $output = [];
+        foreach ($results as $row) {
+            $output[] = $this->find($row['id']);
+        }
+        return $output;
+    }
+
 }

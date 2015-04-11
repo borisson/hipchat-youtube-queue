@@ -219,7 +219,7 @@ class DefaultController extends Controller
 
         /** @var YoutubeMovie $song */
         foreach ($ytMovies as $song) {
-            if ($song->getYoutubeKey == $videoId) {
+            if ($song->getYoutubeKey() == $videoId) {
                 return new Response("This video can't be added. It is already in the last 10 played songs");
             }
         }
@@ -273,8 +273,84 @@ class DefaultController extends Controller
         $yt = new YoutubeMovie($videoId, $totalSeconds, $jsondata['title'], $requestName);
 
         $entityManager->persist($yt);
+
+        $this->addTopTen();
+
         $entityManager->flush();
     }
+
+    private function addTopTen()
+    {
+        $jinglesTopTen = [
+            1 => 'cx0R0XSGvTo',
+            2 => 'cx0R0XSGvTo',
+            3 => 'cx0R0XSGvTo',
+            4 => 'cx0R0XSGvTo',
+            5 => 'cx0R0XSGvTo',
+            6 => 'cx0R0XSGvTo',
+            7 => 'cx0R0XSGvTo',
+            8 => 'cx0R0XSGvTo',
+            9 => 'cx0R0XSGvTo',
+            10 => 'cx0R0XSGvTo',
+            'intro' => 'cx0R0XSGvTo',
+            'outro' => '2a4Uxdy9TQY',
+        ];
+
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->getDoctrine()->getManager();
+        $movieRepo = $entityManager->getRepository('AppBundle:YoutubeMovie');
+
+        $songs = $movieRepo->findBy([], ['id' => 'DESC'], 300);
+
+        $needsJingle = true;
+
+        /** @var YoutubeMovie $song */
+        foreach ($songs as $song) {
+            if ($song->getYoutubeKey() == $jinglesTopTen['outro']) {
+                $needsJingle = false;
+            }
+        }
+
+        if ($needsJingle) {
+            $topSongs = $movieRepo->getUltraWiziTop10Songs();
+            $entityManager->persist($this->addRadioWiziTopTenSong($jinglesTopTen['intro']));
+            $songs = array_reverse($topSongs);
+            $count = 10;
+
+            foreach ($songs as $k => $movie) {
+                if(isset($jinglesTopTen[$count]) && $count > 0){
+                    $entityManager->persist($this->addRadioWiziTopTenSong($jinglesTopTen[$count]));
+                    $entityManager->persist($this->addRadioWiziTopTenSong($movie->getYoutubeKey()));
+                }
+
+                $count --;
+            }
+
+            $entityManager->persist($this->addRadioWiziTopTenSong($jinglesTopTen['outro']));
+        }
+    }
+
+    private function addRadioWiziTopTenSong($key) {
+        $client = new GuzzleClient();
+
+        $response = $client->get(
+            'http://gdata.youtube.com/feeds/api/videos/' . $key . '?v=2&alt=jsonc&prettyprint=true',
+            [
+                'headers' => ['Content-Type' => 'text/json'],
+                'verify' => false,
+                'timeout' => 5,
+            ]
+        );
+
+        $json = $response->json();
+        $jsondata = $json['data'];
+        $totalSeconds = $jsondata['duration'];
+
+        // Create a new YoutubeMovie to be saved in database.
+        $jingle = new YoutubeMovie($key, $totalSeconds, $jsondata['title'], 'Ultra Wizi TOP 10');
+        return $jingle;
+    }
+
 
     /**
      * Create a Jingle if there isn't one found in the previous 9 songs.

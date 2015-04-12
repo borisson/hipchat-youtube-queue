@@ -39,6 +39,7 @@ class YoutubeMovieRepository extends EntityRepository
         FROM `youtube_movies`
         WHERE title != 'jingle'
             AND length < 1800
+            AND started_time < NOW() - INTERVAL 3 WEEK
         GROUP BY video_id
         ORDER BY num DESC LIMIT 0,9";
 
@@ -60,6 +61,7 @@ class YoutubeMovieRepository extends EntityRepository
         FROM `youtube_movies`
         WHERE title != 'jingle'
             AND length < 1800
+            AND started_time < NOW() - INTERVAL 3 WEEK
         GROUP BY video_id
         ORDER BY num DESC LIMIT 0,10";
 

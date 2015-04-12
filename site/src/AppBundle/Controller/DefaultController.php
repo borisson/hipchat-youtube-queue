@@ -37,7 +37,14 @@ class DefaultController extends Controller
         /** @var YoutubeMovieRepository $ytRepository */
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
         /** @var YoutubeMovie $yt */
-        $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0], ['force' => 'DESC']);
+        $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0]);
+
+        //check if a track was already playing
+        if ($yt instanceof YoutubeMovie && $yt->getStartedTime() instanceof \DateTime && $yt->getStartedTime()->format('Y') !== '-0001') {
+
+        }else{
+            $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0], ['force' => 'DESC']);
+        }
 
         $diff = 0;
         if ($yt instanceof YoutubeMovie && $yt->getStartedTime() instanceof \DateTime && $yt->getStartedTime()->format('Y') !== '-0001') {

@@ -37,7 +37,7 @@ class DefaultController extends Controller
         /** @var YoutubeMovieRepository $ytRepository */
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
         /** @var YoutubeMovie $yt */
-        $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0]);
+        $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0], ['force' => 'DESC']);
 
         $diff = 0;
         if ($yt instanceof YoutubeMovie && $yt->getStartedTime() instanceof \DateTime && $yt->getStartedTime()->format('Y') !== '-0001') {
@@ -71,7 +71,7 @@ class DefaultController extends Controller
 
         /** @var EntityRepository $ytRepository */
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
-        $lastSongs = $ytRepository->findBy(['skipped' => 0, 'played' => 1],['id' => 'DESC'], 9);
+        $lastSongs = $ytRepository->findBy(['skipped' => 0, 'played' => 1],['force' => 'DESC','id' => 'DESC'], 9);
 
         $data = [];
         /** @var YoutubeMovie  $movie */
@@ -95,7 +95,7 @@ class DefaultController extends Controller
 
         /** @var EntityRepository $ytRepository */
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
-        $ytMovies = $ytRepository->findBy(['played' => 0, 'skipped' => 0], null, 9, 1);
+        $ytMovies = $ytRepository->findBy(['played' => 0, 'skipped' => 0], ['force' => 'DESC'], 9, 1);
 
         $data = [];
         /** @var YoutubeMovie  $movie */
@@ -375,7 +375,7 @@ class DefaultController extends Controller
         $totalSeconds = $jsondata['duration'];
 
         // Create a new YoutubeMovie to be saved in database.
-        $jingle = new YoutubeMovie($key, $totalSeconds, $jsondata['title'], 'Ultra Wizi TOP 10');
+        $jingle = new YoutubeMovie($key, $totalSeconds, $jsondata['title'], 'Ultra Wizi TOP 10', 10);
         return $jingle;
     }
 

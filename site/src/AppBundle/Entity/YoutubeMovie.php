@@ -14,15 +14,17 @@ class YoutubeMovie
     private $startedTime;
     private $skipped = false;
     private $played = false;
+    private $force;
 
     private $imageLocation = 'images/youtube/';
 
-    public function __construct($videoId, $length, $title, $requestname = NULL)
+    public function __construct($videoId, $length, $title, $requestname = NULL, $force = 0)
     {
         $this->videoId = $videoId;
         $this->length = $length;
         $this->title = $title;
         $this->requestname = $requestname;
+        $this->force = $force;
 
         $this->postedTime = new \DateTime();
     }
@@ -45,6 +47,11 @@ class YoutubeMovie
     public function setPlayed()
     {
         $this->played = true;
+    }
+
+    public function setForce($value)
+    {
+        $this->force = $value;
     }
 
     public function startPlaying()
@@ -100,6 +107,11 @@ class YoutubeMovie
     public function getRequestName()
     {
       return $this->requestname;
+    }
+
+    public function getForce()
+    {
+        return $this->force;
     }
 
     public function getDataForJson()

@@ -7,7 +7,6 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
     function ($scope, $http, $interval, videoManager, notificationManager) {
 
         var seekto = 0;
-        var loadupcoming;
         var currentplaytime;
         var currenttimeint;
         var currenttime;
@@ -16,6 +15,7 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
         $scope.videoavailable = false;
         $scope.videoUpcoming = false;
         $scope.pagetitle = 'Nothing playing';
+        $scope.currenttime = '00:00'
 
         //Load last 10 songs.
         var lastsongs = videoManager.getLastSongs();
@@ -109,11 +109,16 @@ radiowiziControllers.controller('MainController', [ '$scope', '$http', '$interva
 
           var colorThief = new ColorThief();
           var color = colorThief.getColor(image);
+          var colorPalette = colorThief.getPalette(image, 2);
 
           stackBlurImage('player__img', 'player__canvas', 35, false );
 
+          $scope.logoAnimation =
+              'rgb(' + colorPalette[0][0] + ',' + colorPalette[0][1] + ',' + colorPalette[0][2] + ');' +
+              'rgb(' + colorPalette[1][0] + ',' + colorPalette[1][1] + ',' + colorPalette[1][2] + ');' +
+              'rgb(' + colorPalette[0][0] + ',' + colorPalette[0][1] + ',' + colorPalette[0][2] + ');';
           $scope.progressBarColor = 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')';
-          $scope.logoColor = { 'fill': 'rgba(' + color[0] + ',' + color[1] + ',' + color[2] + ', 0.7)' };
+          $scope.logoColor = { 'fill': 'rgb(' + color[0] + ',' + color[1] + ',' + color[2] + ')'};
         });
 
         $scope.$on('youtube.player.playing', function ($event, player) {

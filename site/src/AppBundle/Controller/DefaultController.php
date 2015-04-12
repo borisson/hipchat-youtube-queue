@@ -281,6 +281,20 @@ class DefaultController extends Controller
 
     private function addTopTen()
     {
+        $dayofweek = date('w', time());
+        $currenthour = date('H');
+        $currentday = date('d');
+        $currentmonth = date('m');
+        $currentyear = date('Y');
+        $toptenradioday = 5;
+        $toptenradiohour = 14;
+
+        if($dayofweek != $toptenradioday || ($dayofweek == $toptenradioday && $currenthour < $toptenradiohour)){
+            return NULL;
+        }
+
+        $needsJingle = true;
+
         $jinglesTopTen = [
             1 => 'hSuEdk4UJmw',
             2 => 'ekRw8kr0Tl4',
@@ -300,14 +314,28 @@ class DefaultController extends Controller
         $entityManager = $this->getDoctrine()->getManager();
         $movieRepo = $entityManager->getRepository('AppBundle:YoutubeMovie');
 
-        $songs = $movieRepo->findBy([], ['id' => 'DESC'], 300);
+        $songs = $movieRepo->findBy(
+            array('videoId' => $jinglesTopTen['intro']),
+            array('id' => 'DESC'),
+            1
+        );
 
-        $needsJingle = true;
+        if(count($songs) > 0){
+            foreach($songs as $song) {
+                $startdate = $song->getStartedTime();
 
-        /** @var YoutubeMovie $song */
-        foreach ($songs as $song) {
-            if ($song->getYoutubeKey() == $jinglesTopTen['outro']) {
-                $needsJingle = false;
+                if($startdate == NULL){
+                    //Do not add toplist again, it's already queued.
+                    $needsJingle = FALSE;
+                }else{
+                    $playday = date_format($startdate, "d");
+                    $playmonth = date_format($startdate, "m");
+                    $playyear = date_format($startdate, "Y");
+
+                    if($playday == $currentday && $playmonth == $currentmonth && $playyear == $currentyear){
+                        $needsJingle = FALSE;
+                    }
+                }
             }
         }
 

@@ -288,11 +288,12 @@ class DefaultController extends Controller
 
     private function addTopTen()
     {
-        $dayofweek = date('w', time());
-        $currenthour = date('H');
-        $currentday = date('d');
-        $currentmonth = date('m');
-        $currentyear = date('Y');
+        $datenow = new \DateTime();
+        $dayofweek = $datenow->format('w');
+        $currenthour = $datenow->format('H');
+        $currentday = $datenow->format('d');
+        $currentmonth = $datenow->format('m');
+        $currentyear = $datenow->format('Y');
         $toptenradioday = 5;
         $toptenradiohour = 14;
 

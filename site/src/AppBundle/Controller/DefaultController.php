@@ -233,11 +233,7 @@ class DefaultController extends Controller
         $totalSeconds = $youtubeinfo['duration'];
 
         if(!$youtubeinfo['playable']){
-            if(!$youtubeinfo['embeddable']){
-                return new Response("This video can't be added. The video is not embeddable. :( \n");
-            }else if(!$youtubeinfo['restriction']){
-                return new Response("This video can't be added. Belgium is not allowed. :( \n");
-            }
+            return new Response("This video can't be added. \n");
         }
 
         // Get correct filename of a thumbnail before attempting download

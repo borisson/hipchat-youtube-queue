@@ -344,23 +344,11 @@ class DefaultController extends Controller
     }
 
     private function addRadioWiziTopTenSong($key) {
-        $client = new GuzzleClient();
-
-        $response = $client->get(
-            'http://gdata.youtube.com/feeds/api/videos/' . $key . '?v=2&alt=jsonc&prettyprint=true',
-            [
-                'headers' => ['Content-Type' => 'text/json'],
-                'verify' => false,
-                'timeout' => 5,
-            ]
-        );
-
-        $json = $response->json();
-        $jsondata = $json['data'];
-        $totalSeconds = $jsondata['duration'];
+        $youtubeinfo = parseYoutubeInfo($key);
+        $totalSeconds = $youtubeinfo['duration'];
 
         // Create a new YoutubeMovie to be saved in database.
-        $jingle = new YoutubeMovie($key, $totalSeconds, $jsondata['title'], 'Ultra Wizi TOP 10', 10);
+        $jingle = new YoutubeMovie($key, $totalSeconds, $youtubeinfo['title'], 'Ultra Wizi TOP 10', 10);
         return $jingle;
     }
 

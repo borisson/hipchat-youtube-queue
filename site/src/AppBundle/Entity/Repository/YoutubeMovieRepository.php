@@ -59,9 +59,12 @@ class YoutubeMovieRepository extends EntityRepository
     {
         $query = "SELECT id, COUNT(id) as num
         FROM `youtube_movies`
-        WHERE title != 'jingle'
+        WHERE title != 'Jingle'
             AND length < 1800
-            AND started_time < NOW() - INTERVAL 3 WEEK
+            AND requestname <> 'Radio wizi'
+            AND requestname <> 'Ultra Wizi TOP 10'
+            AND requestname <> 'Random top hit'
+            AND started_time < NOW() - INTERVAL 2 WEEK
         GROUP BY video_id
         ORDER BY num DESC LIMIT 0,10";
 

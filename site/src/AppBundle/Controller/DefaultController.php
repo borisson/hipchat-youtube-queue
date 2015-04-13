@@ -231,43 +231,20 @@ class DefaultController extends Controller
             }
         }
 
-        $client = new GuzzleClient();
+        $youtubeinfo = $this->parseYoutubeInfo($videoId);
 
-        $response = $client->get(
-          'http://gdata.youtube.com/feeds/api/videos/' . $videoId . '?v=2&alt=jsonc&prettyprint=true',
-          [
-            'headers' => ['Content-Type' => 'text/json'],
-            'verify' => false,
-            'timeout' => 5,
-          ]
-        );
-
-        $json = $response->json();
-        $jsondata = $json['data'];
-        $totalSeconds = $jsondata['duration'];
-
-        //Check Belgian country check
-        if(isset($jsondata['restrictions'])){
-            foreach($jsondata['restrictions'] as $restriction){
-                if($restriction['type'] == 'country' && $restriction['relationship'] == 'deny'){
-                    if (strpos($restriction['countries'],'BE') !== false) {
-                        return new Response("This video can't be added. Belgium is not allowed. :( \n");
-                    }
-                }
-            }
+        if(!isset($youtubeinfo)){
+            return new Response("Problem loading youtube video");
         }
 
-        //Embed check
-        if(isset($jsondata['accessControl']['embed']) && $jsondata['accessControl']['embed'] != 'allowed'){
-          return new Response("This video can't be added. The video is not embeddable. :( \n");
+        $totalSeconds = $youtubeinfo['duration'];
+
+        if(!$youtubeinfo['playable']){
+            return new Response("This video can't be added. \n");
         }
 
         // Get correct filename of a thumbnail before attempting download
-        if (isset($jsondata['thumbnail']['hqDefault'])) {
-            $youtubeFileName = $jsondata['thumbnail']['hqDefault'];
-        } else {
-            $youtubeFileName = $jsondata['thumbnail']['sqDefault'];
-        }
+        $youtubeFileName = $youtubeinfo['img'];
 
         if (!$this->checkImageExists($videoId)) {
             $this->downloadImage($videoId, $youtubeFileName);
@@ -277,7 +254,7 @@ class DefaultController extends Controller
         $this->addJingle();
 
         // Create a new YoutubeMovie to be saved in database.
-        $yt = new YoutubeMovie($videoId, $totalSeconds, $jsondata['title'], $requestName);
+        $yt = new YoutubeMovie($videoId, $totalSeconds, $youtubeinfo['title'], $requestName);
 
         $entityManager->persist($yt);
 
@@ -388,6 +365,84 @@ class DefaultController extends Controller
     }
 
 
+    private function parseYoutubeInfo($videoId){
+        $client = new GuzzleClient();
+        $response = $client->get(
+            'https://www.googleapis.com/youtube/v3/videos?id=' . $videoId .
+            '&part=contentDetails,status,snippet&prettyPrint=true&&videoEmbeddable=true
+            &key='.$this->container->getParameter('ytkey'),
+            [
+                'headers' => ['Content-Type' => 'text/json'],
+                'verify' => false,
+                'timeout' => 5,
+            ]
+        );
+
+        $json = $response->json();
+
+        if(isset($json['items'][0]['kind']) && $json['items'][0]['kind'] == 'youtube#video'){
+            $video = $json['items'][0];
+            $duration_raw = $video['contentDetails']['duration'];
+            $duration = $this->PTtoSec($duration_raw);
+
+            $restrictions = false;
+            $playable = true;
+            $embeddable = true;
+            $title = 'Unknown title';
+
+            if(isset($video['contentDetails']['regionRestriction'])){
+                if(!isset($video['contentDetails']['regionRestriction']['allowed']['BE'])){
+                    if(!isset($video['contentDetails']['regionRestriction']['blocked'])){
+                        $restrictions = true;
+                        $playable = false;
+                    }
+                }
+
+                if(isset($video['contentDetails']['regionRestriction']['blocked']['BE'])){
+                    $restrictions = true;
+                    $playable = false;
+                }
+            }
+
+            if(isset($video['status']['embeddable']) && $video['status']['embeddable'] == false){
+                $embeddable = false;
+                $playable = false;
+            }
+
+            if(isset($video['snippet']['title'])){
+                $title = $video['snippet']['title'];
+            }
+
+            if(isset($video['snippet']['thumbnails']['high']['url'])) {
+                $img = $video['snippet']['thumbnails']['high']['url'];
+            }else{
+                $img = $video['snippet']['thumbnails']['default']['url'];
+            }
+
+            return array(
+                'title' => $title,
+                'video_id' => $videoId,
+                'duration' => $duration,
+                'playable' => $playable,
+                'img' => $img,
+                'restriction' => $restrictions,
+                'embeddable' => $embeddable,
+                'ytresponse' => $video,
+            );
+        }
+
+        return NULL;
+    }
+
+    private function PTtoSec($pt){
+        $dateint = new \DateInterval($pt);
+        $hourstosec = $dateint->h * 3600;
+        $minutestosec = $dateint->i * 60;
+        $duration = $hourstosec + $minutestosec + $dateint->s;
+        return $duration;
+    }
+
+
     /**
      * Create a Jingle if there isn't one found in the previous 9 songs.
      *
@@ -434,23 +489,12 @@ class DefaultController extends Controller
                 $jingleKey = $jingles[$randomJingle];
             }
 
-            $client = new GuzzleClient();
+            $youtubeinfo = $this->parseYoutubeInfo($jingleKey);
 
-            $response = $client->get(
-              'http://gdata.youtube.com/feeds/api/videos/' . $jingleKey . '?v=2&alt=jsonc&prettyprint=true',
-              [
-                'headers' => ['Content-Type' => 'text/json'],
-                'verify' => false,
-                'timeout' => 5,
-              ]
-            );
-
-            $json = $response->json();
-            $jsondata = $json['data'];
-            $totalSeconds = $jsondata['duration'];
+            $totalSeconds = $youtubeinfo['duration'];
 
             // Create a new YoutubeMovie to be saved in database.
-            $jingle = new YoutubeMovie($jingleKey, $totalSeconds, $jsondata['title'], 'Radio wizi');
+            $jingle = new YoutubeMovie($jingleKey, $totalSeconds, $youtubeinfo['title'], 'Radio Wizi');
             $entityManager->persist($jingle);
         }
     }

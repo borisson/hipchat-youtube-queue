@@ -8,21 +8,15 @@ class YoutubeMovieRepository extends EntityRepository
 {
     public function findRandomTopSong()
     {
-        $query = "SELECT id,
-    	COUNT(id) AS num,
-    	(
-        	SELECT count(b.id) as countMax
-        	FROM youtube_movies as b
-        	WHERE title != 'jingle'
-        	GROUP BY video_id
-        	ORDER BY countMax DESC
-        	LIMIT 1
-    	) AS max
+        $query = "SELECT *
         FROM `youtube_movies`
-        WHERE title != 'jingle'
+        WHERE title != 'Jingle'
             AND length < 1800
+            AND skipped = 0
+            AND requestname <> 'Random top hit'
+            AND requestname <> 'Radio wizi'
+            AND requestname <> 'Ultra Wizi TOP 10'
         GROUP BY video_id
-        HAVING num > max / 5
         ORDER BY RAND()
         LIMIT 1";
 
@@ -37,9 +31,13 @@ class YoutubeMovieRepository extends EntityRepository
     {
         $query = "SELECT id, COUNT(id) as num
         FROM `youtube_movies`
-        WHERE title != 'jingle'
+        WHERE title != 'Jingle'
             AND length < 1800
-            AND started_time < NOW() - INTERVAL 3 WEEK
+            AND skipped = 0
+            AND requestname <> 'Random top hit'
+            AND requestname <> 'Radio wizi'
+            AND requestname <> 'Ultra Wizi TOP 10'
+            AND started_time < NOW() - INTERVAL 2 WEEK
         GROUP BY video_id
         ORDER BY num DESC LIMIT 0,9";
 

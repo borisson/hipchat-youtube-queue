@@ -32,13 +32,13 @@ class RadioHandler
 
         $youtubeinfo = $this->parseYoutubeInfo($video_id);
 
-        if(!$youtubeinfo['playable']){
-            if(!$youtubeinfo['embeddable']){
+        if($youtubeinfo['playable'] == false){
+            if($youtubeinfo['embeddable'] == false){
                 return array("action" => "reply", "data" => array(
                     'msg' => 'This video is not added. The video is not embeddable. (traantjes2)',
                     'color' => 'red',
                 ));
-            }else if($youtubeinfo['restriction']){
+            }else if($youtubeinfo['restriction'] == true){
                 return array("action" => "reply", "data" => array(
                     'msg' => 'This video is not added. Belgium is not allowed. (traantjes2)',
                     'color' => 'red',
@@ -116,6 +116,13 @@ class RadioHandler
 
             if(isset($video['contentDetails']['regionRestriction'])){
                 if(!isset($video['contentDetails']['regionRestriction']['allowed']['BE'])){
+                    if(!isset($video['contentDetails']['regionRestriction']['blocked'])){
+                        $restrictions = true;
+                        $playable = false;
+                    }
+                }
+
+                if(isset($video['contentDetails']['regionRestriction']['blocked']['BE'])){
                     $restrictions = true;
                     $playable = false;
                 }

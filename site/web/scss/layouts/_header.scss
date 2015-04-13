@@ -6,16 +6,6 @@
   top: 0;
   width: 360px;
   z-index: 100;
-
-  @include media(max-width $desktop-wide) {
-    height: 270px * 0.75;
-    width: 360px * 0.75;
-  }
-
-  @include media(max-width $desktop-base) {
-    height: 270px * 0.6;
-    width: 360px * 0.6;
-  }
 }
 
 .header__background {
@@ -36,7 +26,8 @@
   text-transform: uppercase;
   width: 150px;
 
-  a {
+  a,
+  span {
     background: image-url('logo_v2.svg') left center no-repeat;
     background-size: contain;
     display: block;

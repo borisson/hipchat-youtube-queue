@@ -280,6 +280,13 @@ class DefaultController extends Controller
 
             if(isset($video['contentDetails']['regionRestriction'])){
                 if(!isset($video['contentDetails']['regionRestriction']['allowed']['BE'])){
+                    if(!isset($video['contentDetails']['regionRestriction']['blocked'])){
+                        $restrictions = true;
+                        $playable = false;
+                    }
+                }
+
+                if(isset($video['contentDetails']['regionRestriction']['blocked']['BE'])){
                     $restrictions = true;
                     $playable = false;
                 }

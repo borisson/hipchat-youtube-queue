@@ -38,7 +38,7 @@ class RadioHandler
                     'msg' => 'This video is not added. The video is not embeddable. (traantjes2)',
                     'color' => 'red',
                 ));
-            }else if(!$youtubeinfo['restriction']){
+            }else if($youtubeinfo['restriction']){
                 return array("action" => "reply", "data" => array(
                     'msg' => 'This video is not added. Belgium is not allowed. (traantjes2)',
                     'color' => 'red',

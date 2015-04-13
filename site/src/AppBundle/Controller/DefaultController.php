@@ -344,7 +344,7 @@ class DefaultController extends Controller
     }
 
     private function addRadioWiziTopTenSong($key) {
-        $youtubeinfo = parseYoutubeInfo($key);
+        $youtubeinfo = $this->parseYoutubeInfo($key);
         $totalSeconds = $youtubeinfo['duration'];
 
         // Create a new YoutubeMovie to be saved in database.

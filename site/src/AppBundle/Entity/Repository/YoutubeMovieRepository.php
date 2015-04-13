@@ -6,9 +6,9 @@ use Doctrine\ORM\EntityRepository;
 
 class YoutubeMovieRepository extends EntityRepository
 {
-  public function findRandomTopSong()
-  {
-    $query = "SELECT *
+    public function findRandomTopSong()
+    {
+        $query = "SELECT *
         FROM `youtube_movies`
         WHERE title != 'Jingle'
             AND length < 1800
@@ -20,16 +20,16 @@ class YoutubeMovieRepository extends EntityRepository
         ORDER BY RAND()
         LIMIT 1";
 
-    $connection = $this->getEntityManager()->getConnection();
-    $statement = $connection->prepare($query);
-    $statement->execute();
-    $result = $statement->fetch();
-    return $this->find($result['id']);
-  }
+        $connection = $this->getEntityManager()->getConnection();
+        $statement = $connection->prepare($query);
+        $statement->execute();
+        $result = $statement->fetch();
+        return $this->find($result['id']);
+    }
 
-  public function getTop10Songs()
-  {
-    $query = "SELECT id, COUNT(id) as num
+    public function getTop10Songs()
+    {
+        $query = "SELECT id, COUNT(id) as num
         FROM `youtube_movies`
         WHERE title != 'Jingle'
             AND length < 1800
@@ -40,16 +40,16 @@ class YoutubeMovieRepository extends EntityRepository
         GROUP BY video_id
         ORDER BY num DESC LIMIT 0,9";
 
-    $connection = $this->getEntityManager()->getConnection();
-    $statement = $connection->prepare($query);
-    $statement->execute();
-    $results = $statement->fetchAll();
+        $connection = $this->getEntityManager()->getConnection();
+        $statement = $connection->prepare($query);
+        $statement->execute();
+        $results = $statement->fetchAll();
 
-    $output = [];
-    foreach ($results as $row) {
-      $output[] = $this->find($row['id']);
+        $output = [];
+        foreach ($results as $row) {
+            $output[] = $this->find($row['id']);
+        }
+        return $output;
     }
-    return $output;
-  }
 
 }

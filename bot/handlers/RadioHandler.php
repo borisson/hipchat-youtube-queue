@@ -8,6 +8,7 @@ class RadioHandler
 {
 
     public $pattern;
+    private $ytkey = 'YOUR_YOUTUBE_API_KEY';
 
     public function __construct($pattern = "/.*/")
     {
@@ -29,40 +30,20 @@ class RadioHandler
           throw new \InvalidArgumentException("Doesn't match youtube url");
         }
 
-        $client = new GuzzleClient();
+        $youtubeinfo = $this->parseYoutubeInfo($video_id);
 
-        $response = $client->get(
-            'http://gdata.youtube.com/feeds/api/videos/' . $video_id . '?v=2&alt=jsonc&prettyprint=true',
-            [
-                'headers' => ['Content-Type' => 'text/json'],
-                'verify' => false,
-                'timeout' => 5,
-            ]
-        );
-
-        $json = $response->json();
-        $jsondata = $json['data'];
-
-        //Check Belgian country check
-        if(isset($jsondata['restrictions'])){
-            foreach($jsondata['restrictions'] as $restriction){
-                if($restriction['type'] == 'country' && $restriction['relationship'] == 'deny'){
-                    if (strpos($restriction['countries'],'BE') !== false) {
-                        return array("action" => "reply", "data" => array(
-                          'msg' => 'This video is not added. Belgium is not allowed. (traantjes2)',
-                          'color' => 'red',
-                        ));
-                    }
-                }
+        if(!$youtubeinfo['playable']){
+            if(!$youtubeinfo['embeddable']){
+                return array("action" => "reply", "data" => array(
+                    'msg' => 'This video is not added. The video is not embeddable. (traantjes2)',
+                    'color' => 'red',
+                ));
+            }else if(!$youtubeinfo['restriction']){
+                return array("action" => "reply", "data" => array(
+                    'msg' => 'This video is not added. Belgium is not allowed. (traantjes2)',
+                    'color' => 'red',
+                ));
             }
-        }
-
-        //Embed check
-        if(isset($jsondata['accessControl']['embed']) && $jsondata['accessControl']['embed'] != 'allowed'){
-            return array("action" => "reply", "data" => array(
-              'msg' => 'This video is not added. The video is not embeddable. (traantjes2)',
-              'color' => 'red',
-            ));
         }
 
         // Load file that registers the last 10 video's.
@@ -103,9 +84,78 @@ class RadioHandler
         ]);
 
         return array("action" => "reply", "data" => array(
-          'msg' => 'Added "' . $jsondata['title'] . '" to Radio Wizi',
+          'msg' => 'Added "' . $youtubeinfo['title'] . '" to Radio Wizi',
           'color' => 'green',
         ));
+    }
 
+    private function parseYoutubeInfo($videoId){
+        $client = new GuzzleClient();
+        $response = $client->get(
+            'https://www.googleapis.com/youtube/v3/videos?id=' . $videoId .
+            '&part=contentDetails,status,snippet&prettyPrint=true&&videoEmbeddable=true
+            &key='.$this->ytkey,
+            [
+                'headers' => ['Content-Type' => 'text/json'],
+                'verify' => false,
+                'timeout' => 5,
+            ]
+        );
+
+        $json = $response->json();
+
+        if(isset($json['items'][0]['kind']) && $json['items'][0]['kind'] == 'youtube#video'){
+            $video = $json['items'][0];
+            $duration_raw = $video['contentDetails']['duration'];
+            $duration = $this->PTtoSec($duration_raw);
+
+            $restrictions = false;
+            $playable = true;
+            $embeddable = true;
+            $title = 'Unknown title';
+
+            if(isset($video['contentDetails']['regionRestriction'])){
+                if(!isset($video['contentDetails']['regionRestriction']['allowed']['BE'])){
+                    $restrictions = true;
+                    $playable = false;
+                }
+            }
+
+            if(isset($video['status']['embeddable']) && $video['status']['embeddable'] == false){
+                $embeddable = false;
+                $playable = false;
+            }
+
+            if(isset($video['snippet']['title'])){
+                $title = $video['snippet']['title'];
+            }
+
+            if(isset($video['snippet']['thumbnails']['high']['url'])) {
+                $img = $video['snippet']['thumbnails']['high']['url'];
+            }else{
+                $img = $video['snippet']['thumbnails']['default']['url'];
+            }
+
+            return array(
+                'title' => $title,
+                'video_id' => $videoId,
+                'duration' => $duration,
+                'playable' => $playable,
+                'img' => $img,
+                'restriction' => $restrictions,
+                'embeddable' => $embeddable,
+                'ytresponse' => $video,
+            );
+        }
+
+        return NULL;
+    }
+
+    private function PTtoSec($pt){
+        $dateint = new \DateInterval($pt);
+        $hourstosec = $dateint->h * 3600;
+        $minutestosec = $dateint->i * 60;
+        $duration = $hourstosec + $minutestosec + $dateint->s;
+        return $duration;
     }
 }

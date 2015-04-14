@@ -26,7 +26,8 @@
   text-transform: uppercase;
   width: 150px;
 
-  a {
+  a,
+  span {
     background: image-url('logo_v2.svg') left center no-repeat;
     background-size: contain;
     display: block;

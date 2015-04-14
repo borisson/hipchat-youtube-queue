@@ -1,5 +1,5 @@
 # hipchat-youtube-queue
-This repo has bot a bot used to queue youtube links and a website to play them. 
+This repo has a bot used to queue youtube links and a website to play them. 
 It's functional from version 0.0.1, the angular version is implemented in version 0.0.2.
 A redesign is implemented in version 0.0.3
 

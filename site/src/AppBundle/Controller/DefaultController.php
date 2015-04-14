@@ -39,6 +39,13 @@ class DefaultController extends Controller
         /** @var YoutubeMovie $yt */
         $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0]);
 
+        //check if a track was already playing
+        if ($yt instanceof YoutubeMovie && $yt->getStartedTime() instanceof \DateTime && $yt->getStartedTime()->format('Y') !== '-0001') {
+
+        }else{
+            $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0], ['force' => 'DESC']);
+        }
+
         $diff = 0;
         if ($yt instanceof YoutubeMovie && $yt->getStartedTime() instanceof \DateTime && $yt->getStartedTime()->format('Y') !== '-0001') {
             $now = new \DateTime();
@@ -71,7 +78,7 @@ class DefaultController extends Controller
 
         /** @var EntityRepository $ytRepository */
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
-        $lastSongs = $ytRepository->findBy(['skipped' => 0, 'played' => 1],['id' => 'DESC'], 9);
+        $lastSongs = $ytRepository->findBy(['skipped' => 0, 'played' => 1],['force' => 'DESC','id' => 'DESC'], 9);
 
         $data = [];
         /** @var YoutubeMovie  $movie */
@@ -95,7 +102,7 @@ class DefaultController extends Controller
 
         /** @var EntityRepository $ytRepository */
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
-        $ytMovies = $ytRepository->findBy(['played' => 0, 'skipped' => 0], null, 9, 1);
+        $ytMovies = $ytRepository->findBy(['played' => 0, 'skipped' => 0], ['force' => 'DESC'], 9, 1);
 
         $data = [];
         /** @var YoutubeMovie  $movie */
@@ -250,8 +257,101 @@ class DefaultController extends Controller
         $yt = new YoutubeMovie($videoId, $totalSeconds, $youtubeinfo['title'], $requestName);
 
         $entityManager->persist($yt);
+
+        $this->addTopTen();
+
         $entityManager->flush();
     }
+
+    private function addTopTen()
+    {
+        $datenow = new \DateTime();
+        $dayofweek = $datenow->format('w');
+        $currenthour = $datenow->format('H');
+        $currentday = $datenow->format('d');
+        $currentmonth = $datenow->format('m');
+        $currentyear = $datenow->format('Y');
+        $toptenradioday = 5;
+        $toptenradiohour = 14;
+
+        if($dayofweek != $toptenradioday || ($dayofweek == $toptenradioday && $currenthour < $toptenradiohour)){
+            return NULL;
+        }
+
+        $needsJingle = true;
+
+        $jinglesTopTen = [
+            1 => 'hSuEdk4UJmw',
+            2 => 'ekRw8kr0Tl4',
+            3 => '3h7NRVD74mw',
+            4 => 'k557o3VR1Nc',
+            5 => 'CCljzcGJeNQ',
+            6 => 'u48TzLLlVHg',
+            7 => 'HVvvo6ZORmI',
+            8 => 'dSkiWbouwpU',
+            9 => 'K_qrwG5odJM',
+            10 => 'hrPSTBtC2rY',
+            'intro' => 'jt-lE8oAF9A',
+            'outro' => 'F7gT4pPvFR8',
+        ];
+
+        /** @var EntityManager $entityManager */
+        $entityManager = $this->getDoctrine()->getManager();
+        $movieRepo = $entityManager->getRepository('AppBundle:YoutubeMovie');
+
+        $songs = $movieRepo->findBy(
+            array('videoId' => $jinglesTopTen['intro']),
+            array('id' => 'DESC'),
+            1
+        );
+
+        if(count($songs) > 0){
+            foreach($songs as $song) {
+                $startdate = $song->getStartedTime();
+
+                if($startdate == NULL){
+                    //Do not add toplist again, it's already queued.
+                    $needsJingle = FALSE;
+                }else{
+                    $playday = date_format($startdate, "d");
+                    $playmonth = date_format($startdate, "m");
+                    $playyear = date_format($startdate, "Y");
+
+                    if($playday == $currentday && $playmonth == $currentmonth && $playyear == $currentyear){
+                        $needsJingle = FALSE;
+                    }
+                }
+            }
+        }
+
+        if ($needsJingle) {
+            $topSongs = $movieRepo->getUltraWiziTop10Songs();
+            $entityManager->persist($this->addRadioWiziTopTenSong($jinglesTopTen['intro']));
+            $songs = array_reverse($topSongs);
+            $count = 10;
+
+            foreach ($songs as $k => $movie) {
+                if(isset($jinglesTopTen[$count]) && $count > 0){
+                    $entityManager->persist($this->addRadioWiziTopTenSong($jinglesTopTen[$count]));
+                    $entityManager->persist($this->addRadioWiziTopTenSong($movie->getYoutubeKey()));
+                }
+
+                $count --;
+            }
+
+            $entityManager->persist($this->addRadioWiziTopTenSong($jinglesTopTen['outro']));
+        }
+    }
+
+    private function addRadioWiziTopTenSong($key) {
+        $youtubeinfo = $this->parseYoutubeInfo($key);
+        $totalSeconds = $youtubeinfo['duration'];
+
+        // Create a new YoutubeMovie to be saved in database.
+        $jingle = new YoutubeMovie($key, $totalSeconds, $youtubeinfo['title'], 'Ultra Wizi TOP 10', 10);
+        return $jingle;
+    }
+
 
     private function parseYoutubeInfo($videoId){
         $client = new GuzzleClient();

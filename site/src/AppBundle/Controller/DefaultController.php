@@ -78,7 +78,7 @@ class DefaultController extends Controller
 
         /** @var EntityRepository $ytRepository */
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
-        $lastSongs = $ytRepository->findBy(['skipped' => 0, 'played' => 1],['force' => 'DESC','id' => 'DESC'], 9);
+        $lastSongs = $ytRepository->findBy(['skipped' => 0, 'played' => 1],['startedTime' => 'DESC'], 9);
 
         $data = [];
         /** @var YoutubeMovie  $movie */

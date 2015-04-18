@@ -267,7 +267,7 @@ class DefaultController extends Controller
     {
         $datenow = new \DateTime();
         $dayofweek = $datenow->format('w');
-        $currenthour = $datenow->format('H');
+        $currenthour = $datenow->format('G');
         $currentday = $datenow->format('d');
         $currentmonth = $datenow->format('m');
         $currentyear = $datenow->format('Y');

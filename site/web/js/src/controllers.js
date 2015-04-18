@@ -12,6 +12,7 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
         var currenttime;
         var currentplayer;
         var notif = true;
+        var upctrcks = '';
 
         $scope.videoavailable = false;
         $scope.videoUpcoming = false;
@@ -31,24 +32,33 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
         //load upcoming songs.
         var upcomingsongs = videoManager.getUpcomingSongs();
         upcomingsongs.then(function (data) {
-            $scope.upcomingsongs = data.upcomingsongs;
-            if (data.upcomingsongs.length > 0) {
-                $scope.videoUpcoming = true;
-            } else {
-                $scope.videoUpcoming = false;
-            }
-        });
-
-        //check every 5 seconds for new tracks.
-        var loadupcoming = $interval(function () {
-            var upcomingsongs = videoManager.getUpcomingSongs();
-            upcomingsongs.then(function (data) {
+            if(JSON.stringify(data.upcomingsongs) != upctrcks){
                 $scope.upcomingsongs = data.upcomingsongs;
                 if (data.upcomingsongs.length > 0) {
                     $scope.videoUpcoming = true;
                 } else {
                     $scope.videoUpcoming = false;
                 }
+
+                upctrcks = JSON.stringify(data.upcomingsongs);
+            };
+        });
+
+        //check every 5 seconds for new tracks.
+        var loadupcoming = $interval(function () {
+            var upcomingsongs = videoManager.getUpcomingSongs();
+            upcomingsongs.then(function (data) {
+
+                if(JSON.stringify(data.upcomingsongs) != upctrcks) {
+                    $scope.upcomingsongs = data.upcomingsongs;
+                    if (data.upcomingsongs.length > 0) {
+                        $scope.videoUpcoming = true;
+                    } else {
+                        $scope.videoUpcoming = false;
+                    }
+                }
+
+                upctrcks = JSON.stringify(data.upcomingsongs);
             });
         }, 5000);
 

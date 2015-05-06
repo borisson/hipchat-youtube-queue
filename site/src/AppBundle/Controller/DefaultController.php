@@ -272,7 +272,7 @@ class DefaultController extends Controller
         $currentmonth = $datenow->format('m');
         $currentyear = $datenow->format('Y');
         $toptenradioday = 5;
-        $toptenradiohour = 14;
+        $toptenradiohour = 13;
 
         if($dayofweek != $toptenradioday || ($dayofweek == $toptenradioday && $currenthour < $toptenradiohour)){
             return NULL;

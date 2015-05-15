@@ -304,18 +304,9 @@ class DefaultController extends Controller
         $this->addJingle();
 
         // Create a new YoutubeMovie to be saved in database.
-        $videos = $ytRepository->findBy(
-            array('videoId' => $videoId)
-        );
-
-        $genre = NULL;
-
-        if(is_array($videos) && isset($videos[0])){
-            $firstvid = $videos[0];
-            $genre = $firstvid->getGenre();
-        }
-
         $yt = new YoutubeMovie($videoId, $totalSeconds, $youtubeinfo['title'], $requestName, 0);
+
+        $genre = $this->lookupGenreByVideoId($ytRepository,$videoId);
 
         if(is_object($genre)){
             $yt->setGenre($genre);
@@ -408,12 +399,35 @@ class DefaultController extends Controller
         }
     }
 
+    private function lookupGenreByVideoId($ytRepository, $videoId){
+        $videos = $ytRepository->findBy(
+            array('videoId' => $videoId)
+        );
+
+        $genre = NULL;
+
+        if(is_array($videos) && isset($videos[0])){
+            $firstvid = $videos[0];
+            $genre = $firstvid->getGenre();
+        }
+
+        return $genre;
+    }
+
     private function addRadioWiziTopTenSong($key) {
         $youtubeinfo = $this->parseYoutubeInfo($key);
         $totalSeconds = $youtubeinfo['duration'];
 
         // Create a new YoutubeMovie to be saved in database.
         $jingle = new YoutubeMovie($key, $totalSeconds, $youtubeinfo['title'], 'Ultra Wizi TOP 10', 10);
+        $entityManager = $this->getDoctrine()->getManager();
+        $movieRepo = $entityManager->getRepository('AppBundle:YoutubeMovie');
+        $genre = $this->lookupGenreByVideoId($movieRepo, $key);
+
+        if(is_object($genre)){
+            $jingle->setGenre($genre);
+        }
+
         return $jingle;
     }
 

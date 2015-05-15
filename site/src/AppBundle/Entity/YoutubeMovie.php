@@ -129,6 +129,8 @@ class YoutubeMovie
 
     public function getDataForJson()
     {
+        $genre = $this->getGenre();
+
         return array(
             'iframe' => $this->getIframe(),
             'title' => $this->getTitle(),
@@ -137,6 +139,7 @@ class YoutubeMovie
             'id' => $this->getId(),
             'youtubekey' => $this->getYoutubeKey(),
             'image' => $this->getImage(),
+            'genre' => is_object($genre)?$genre->getGenre():NULL,
         );
     }
 }

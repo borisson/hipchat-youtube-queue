@@ -28,7 +28,7 @@ class YoutubeMovie
         $this->title = $title;
         $this->requestname = $requestname;
         $this->force = $force;
-        $this->genre = new ArrayCollection();
+        $this->genre = NULL;
         $this->postedTime = new \DateTime();
     }
 

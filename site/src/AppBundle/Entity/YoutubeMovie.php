@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use \Doctrine\Common\Collections\ArrayCollection;
+
 class YoutubeMovie
 {
     private $id;
@@ -15,6 +17,7 @@ class YoutubeMovie
     private $skipped = false;
     private $played = false;
     private $force;
+    private $genre;
 
     private $imageLocation = 'images/youtube/';
 
@@ -25,7 +28,7 @@ class YoutubeMovie
         $this->title = $title;
         $this->requestname = $requestname;
         $this->force = $force;
-
+        $this->genre = new ArrayCollection();
         $this->postedTime = new \DateTime();
     }
 
@@ -112,6 +115,16 @@ class YoutubeMovie
     public function getForce()
     {
         return $this->force;
+    }
+
+    public function setGenre(\AppBundle\Entity\Genre $genre){
+        $this->genre = $genre;
+
+        return $this;
+    }
+
+    public function getGenre() {
+        return $this->genre;
     }
 
     public function getDataForJson()

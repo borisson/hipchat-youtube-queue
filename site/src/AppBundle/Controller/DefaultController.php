@@ -162,6 +162,28 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/api/set-genre/{id}/{genreid}")
+     * @Method("GET")
+     */
+    public function ajaxSetVideoGenre($id, $genreid)
+    {
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var EntityRepository $ytRepository */
+        $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
+
+        /** @var YoutubeMovie $youtube */
+        $youtube = $ytRepository->find($id);
+
+        $genre = $em->getReference('AppBundle:Genre', array('id'=>$genreid));
+        $youtube->setGenre($genre);
+
+        $em->flush();
+        return new Response();
+    }
+
+    /**
      * @Route("/api/start-playing/{id}")
      * @Method("GET")
      */

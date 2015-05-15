@@ -165,8 +165,15 @@ class DefaultController extends Controller
      * @Route("/api/set-genre/{id}/{genreid}")
      * @Method("GET")
      */
-    public function ajaxSetVideoGenre($id, $genreid)
+    public function ajaxSetVideoGenre(Request $request)
     {
+        $id = $request->get('id');
+        $genreid = $request->get('genreid');
+
+        if(!is_numeric($id) || !is_numeric($genreid)){
+            return new Response('Error, ids not valid');
+        }
+
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
 
@@ -176,11 +183,16 @@ class DefaultController extends Controller
         /** @var YoutubeMovie $youtube */
         $youtube = $ytRepository->find($id);
 
-        $genre = $em->getReference('AppBundle:Genre', array('id'=>$genreid));
-        $youtube->setGenre($genre);
+        $currentGenre = $youtube->getGenre();
 
-        $em->flush();
-        return new Response();
+        if(is_null($currentGenre)){
+            $genre = $em->getReference('AppBundle:Genre', array('id'=>$genreid));
+            $youtube->setGenre($genre);
+            $em->flush();
+            return new Response('genre set');
+        }
+
+        return new Response('already set');
     }
 
     /**

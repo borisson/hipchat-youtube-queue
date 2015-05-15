@@ -1,7 +1,7 @@
 AppBundle\Entity\Genre:
     type: entity
     table: null
-    repositoryClass: AppBundle\Entity\GenreRepository
+    repositoryClass: AppBundle\Entity\Repository\GenreRepository
     id:
         genreid:
             type: integer

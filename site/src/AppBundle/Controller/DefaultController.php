@@ -5,10 +5,12 @@ namespace AppBundle\Controller;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use AppBundle\Entity\Repository\YoutubeMovieRepository;
+use AppBundle\Entity\Repository\GenreRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use AppBundle\Entity\YoutubeMovie;
+use AppBundle\Entity\Genre;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -159,6 +161,31 @@ class DefaultController extends Controller
 
         $em->flush();
         return new Response();
+    }
+
+    /**
+     * @Route("/api/load-genres")
+     * @Method("GET")
+     */
+    public function ajaxLoadGenres()
+    {
+        /** @var EntityManager $em */
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var EntityRepository $ytRepository */
+        $rep = $em->getRepository('AppBundle:Genre');
+
+        $genres = $rep->findAll();
+        $genres_arr = array();
+
+        if(is_array($genres)){
+            foreach($genres as $genre){
+                if(is_object($genre)){
+                    $genres_arr[$genre->getGenreId()] = $genre->getGenre();
+                }
+            }
+        }
+        return new JsonResponse($genres_arr);
     }
 
     /**

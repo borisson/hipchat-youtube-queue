@@ -162,15 +162,15 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/api/set-genre/{id}/{genreid}")
-     * @Method("GET")
+     * @Route("/api/set-genre")
+     * @Method("POST")
      */
     public function ajaxSetVideoGenre(Request $request)
     {
         $id = $request->get('id');
         $genreid = $request->get('genreid');
 
-        if(!is_numeric($id) || !is_numeric($genreid)){
+        if(!is_numeric($genreid)){
             return new Response('Error, ids not valid');
         }
 
@@ -181,18 +181,34 @@ class DefaultController extends Controller
         $ytRepository = $em->getRepository('AppBundle:YoutubeMovie');
 
         /** @var YoutubeMovie $youtube */
-        $youtube = $ytRepository->find($id);
+        $videos = $ytRepository->findBy(
+            array('videoId' => $id)
+        );
 
-        $currentGenre = $youtube->getGenre();
+        $genre = $em->getReference('AppBundle:Genre', array('genreid'=>$genreid));
 
-        if(is_null($currentGenre)){
-            $genre = $em->getReference('AppBundle:Genre', array('id'=>$genreid));
-            $youtube->setGenre($genre);
-            $em->flush();
-            return new Response('genre set');
+        if(is_array($videos) && is_object($videos[0])){
+
+            $genreset = false;
+
+            foreach($videos as $videoobj){
+                $currentGenre = $videoobj->getGenre();
+
+                if(is_null($currentGenre)) {
+                    $videoobj->setGenre($genre);
+                    $genreset = true;
+                }
+            }
+
+            if($genreset){
+                $em->flush();
+                return new Response('genre set');
+            }else{
+                return new Response('already set');
+            }
         }
 
-        return new Response('already set');
+        return new Response('video does not exist');
     }
 
     /**

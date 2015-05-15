@@ -3,7 +3,7 @@ AppBundle\Entity\Genre:
     table: null
     repositoryClass: AppBundle\Entity\GenreRepository
     id:
-        id:
+        genreid:
             type: integer
             id: true
             generator:

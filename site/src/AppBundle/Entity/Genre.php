@@ -12,7 +12,7 @@ class Genre
     /**
      * @var integer
      */
-    private $id;
+    private $genreid;
 
     /**
      * @var string
@@ -25,9 +25,9 @@ class Genre
      *
      * @return integer 
      */
-    public function getId()
+    public function getGenreid()
     {
-        return $this->id;
+        return $this->genreid;
     }
 
     /**

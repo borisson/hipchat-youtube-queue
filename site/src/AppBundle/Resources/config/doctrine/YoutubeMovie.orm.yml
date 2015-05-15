@@ -61,10 +61,10 @@ AppBundle\Entity\YoutubeMovie:
             comment: ''
             column: `force`
             default: 0
-    oneToOne:
+    manyToOne:
         genre:
             targetEntity: Genre
             joinColumn:
                 name: genre
-                referencedColumnName: id
+                referencedColumnName: genreid
                 onDelete: CASCADE

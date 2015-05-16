@@ -52,16 +52,28 @@ radiowiziServices.factory('videoManager', ['$http', '$q', function ($http, $q) {
             return deferred.promise;
         },
         getTopSongs: function() {
-          var deferred = $q.defer();
-          $http.get(origin + '/' + folder + '/api/load-top-songs')
-            .success(function (data) {
-              deferred.resolve({
-                topsongs: data
-              });
-            }).error(function (msg, code) {
-              deferred.reject(msg);
-            });
-          return deferred.promise;
+            var deferred = $q.defer();
+            $http.get(origin + '/' + folder + '/api/load-top-songs')
+                .success(function (data) {
+                    deferred.resolve({
+                        topsongs: data
+                    });
+                }).error(function (msg, code) {
+                    deferred.reject(msg);
+                });
+            return deferred.promise;
+        },
+        getGenres: function() {
+            var deferred = $q.defer();
+            $http.get(origin + '/' + folder + '/api/load-genres')
+                .success(function (data) {
+                    deferred.resolve({
+                        genres: data
+                    });
+                }).error(function (msg, code) {
+                    deferred.reject(msg);
+                });
+            return deferred.promise;
         },
         toHHMMSS: function (string) {
             var sec_num = parseInt(string, 10);

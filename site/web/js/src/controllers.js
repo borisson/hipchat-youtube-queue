@@ -28,6 +28,25 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
         topsongs.then(function (data) {
             $scope.topsongs = data.topsongs;
         });
+        var genres = videoManager.getGenres();
+        genres.then(function (data) {
+            $scope.genresselect = data.genres;
+        });
+
+        $scope.setGenreClick = function(youtubeid, genreid, event) {
+            var data = new FormData;
+            data.append('id', youtubeid);
+            data.append('genreid', genreid);
+
+            $http({
+                method: 'POST',
+                url: origin + '/' + folder + '/api/set-genre',
+                data: data,
+                headers: { 'Content-Type': undefined }
+            }).success(function(data, status, headers, config) {
+                $scope.video.genre = data.title;
+            });
+        };
 
         //load upcoming songs.
         var upcomingsongs = videoManager.getUpcomingSongs();

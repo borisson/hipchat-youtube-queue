@@ -20,6 +20,11 @@
                 Requested by <span class="player__requester-name" ng-bind="video.requestname"></span>
                 &nbsp; Genre: <span class="player__genre" ng-bind="video.genre"></span>
             </h4>
+            <ul class="genre_list">
+                <li ng-repeat="genre in genresselect" class="genre_list__genre">
+                    <a href="" ng-click="setGenreClick(video.youtubekey, genre.id, $event)">{{ genre.title }}</a>
+                </li>
+            </ul>
 
             <div class="player__video">
                 <youtube-video video-id="radiowizivideo" class='iframe' player-vars="playerVars"></youtube-video>

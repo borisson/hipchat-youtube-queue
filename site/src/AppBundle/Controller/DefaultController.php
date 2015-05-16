@@ -181,7 +181,10 @@ class DefaultController extends Controller
         if(is_array($genres)){
             foreach($genres as $genre){
                 if(is_object($genre)){
-                    $genres_arr[$genre->getGenreId()] = $genre->getGenre();
+                    $genres_arr[] = array(
+                        'id' => $genre->getGenreId(),
+                        'title' => $genre->getGenre()
+                    );
                 }
             }
         }
@@ -213,6 +216,7 @@ class DefaultController extends Controller
         );
 
         $genre = $em->getReference('AppBundle:Genre', array('genreid'=>$genreid));
+        $genrename = '';
 
         if(is_array($videos) && is_object($videos[0])){
 
@@ -224,18 +228,18 @@ class DefaultController extends Controller
                 if(is_null($currentGenre)) {
                     $videoobj->setGenre($genre);
                     $genreset = true;
+                    $genrename = $genre->getGenre();
+                }else{
+                    $genrename = $currentGenre->getGenre();
                 }
             }
 
             if($genreset){
                 $em->flush();
-                return new Response('genre set');
-            }else{
-                return new Response('already set');
             }
         }
 
-        return new Response('video does not exist');
+        return new JsonResponse(array('title' => $genrename));
     }
 
     /**

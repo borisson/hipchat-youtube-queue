@@ -123,6 +123,9 @@ class YoutubeMovie
         return $this;
     }
 
+    /**
+     * @return \AppBundle\Entity\Genre
+     */
     public function getGenre() {
         return $this->genre;
     }

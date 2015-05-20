@@ -59,7 +59,8 @@ class DefaultController extends Controller
             return new JsonResponse(array('obj' => $yt->getDataForJson(), 'diff'=>$diff), 200);
         }
 
-        // No results found, get 20 songs with most airtime, play a random song of those.
+        // No results found, play a random song out history.
+        // Keeping in mind history and genres
         $randomTopSong = $ytRepository->findRandomTopSong();
 
         if ($randomTopSong instanceof YoutubeMovie){

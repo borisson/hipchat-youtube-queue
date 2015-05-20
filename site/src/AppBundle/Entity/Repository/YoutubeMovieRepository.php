@@ -41,7 +41,6 @@ class YoutubeMovieRepository extends EntityRepository
             AND requestname <> 'Random top hit'
             AND requestname <> 'Radio wizi'
             AND requestname <> 'Ultra Wizi TOP 10'
-            AND started_time > NOW() - INTERVAL 2 WEEK
         GROUP BY video_id
         ORDER BY num DESC LIMIT 0,9";
 

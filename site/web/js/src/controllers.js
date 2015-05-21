@@ -45,6 +45,11 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                 headers: { 'Content-Type': undefined }
             }).success(function(data, status, headers, config) {
                 $scope.video.genre = data.title;
+                var genres = videoManager.getGenres(genreid);
+                genres.then(function (data) {
+                    $scope.genresselect = data.genres;
+                });
+
             });
         };
 

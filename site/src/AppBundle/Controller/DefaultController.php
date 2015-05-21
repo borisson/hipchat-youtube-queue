@@ -226,13 +226,13 @@ class DefaultController extends Controller
             foreach($videos as $videoobj){
                 $currentGenre = $videoobj->getGenre();
 
-                if(is_null($currentGenre)) {
+//                if(is_null($currentGenre)) {
                     $videoobj->setGenre($genre);
                     $genreset = true;
                     $genrename = $genre->getGenre();
-                }else{
-                    $genrename = $currentGenre->getGenre();
-                }
+//                }else{
+//                    $genrename = $currentGenre->getGenre();
+//                }
             }
 
             if($genreset){

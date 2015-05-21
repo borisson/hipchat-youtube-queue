@@ -63,9 +63,15 @@ radiowiziServices.factory('videoManager', ['$http', '$q', function ($http, $q) {
                 });
             return deferred.promise;
         },
-        getGenres: function() {
+        getGenres: function(parent) {
             var deferred = $q.defer();
-            $http.get(origin + '/' + folder + '/api/load-genres')
+
+            var path = origin + '/' + folder + '/api/load-genres'
+            if(parent != undefined){
+                path += '/' + parent;
+            }
+
+            $http.get(path)
                 .success(function (data) {
                     deferred.resolve({
                         genres: data

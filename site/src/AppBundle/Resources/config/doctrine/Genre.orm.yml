@@ -1,6 +1,6 @@
 AppBundle\Entity\Genre:
     type: entity
-    table: null
+    table: genre
     repositoryClass: AppBundle\Entity\Repository\GenreRepository
     id:
         genreid:

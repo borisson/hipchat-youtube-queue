@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -19,6 +20,12 @@ class Genre
      */
     private $genre;
 
+    protected $children;
+    private $parent;
+
+    public function __construct() {
+        $this->children = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -51,5 +58,21 @@ class Genre
     public function getGenre()
     {
         return $this->genre;
+    }
+
+    /**
+     * Set parent
+     */
+    public function setParent($parent){
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * Get Parent
+     */
+    public function getParent(){
+        return $this->parent;
     }
 }

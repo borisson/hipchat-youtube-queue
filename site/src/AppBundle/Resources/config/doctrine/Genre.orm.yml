@@ -12,4 +12,17 @@ AppBundle\Entity\Genre:
         genre:
             type: string
             length: 255
+
+    oneToMany:
+        children:
+            targetEntity: Genre
+            mappedBy: parent
+            joinColumn:
+                referencedColumnName: genreid
+    manyToOne:
+        parent:
+            targetEntity: Genre
+            inversedBy: children
+            joinColumn:
+                referencedColumnName: genreid
     lifecycleCallbacks: {  }

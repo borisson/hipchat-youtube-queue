@@ -165,10 +165,10 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/api/load-genres")
+     * @Route("/api/load-genres/{genre}", defaults={"genre" = null})
      * @Method("GET")
      */
-    public function ajaxLoadGenres()
+    public function ajaxLoadGenres($genre)
     {
         /** @var EntityManager $em */
         $em = $this->getDoctrine()->getManager();
@@ -176,7 +176,7 @@ class DefaultController extends Controller
         /** @var EntityRepository $ytRepository */
         $rep = $em->getRepository('AppBundle:Genre');
 
-        $genres = $rep->findAll();
+        $genres = $rep->findByParent($genre);
         $genres_arr = array();
 
         if(is_array($genres)){

@@ -179,7 +179,11 @@ class DefaultController extends Controller
         $genres = $rep->findByParent($genre);
         $genres_arr = array();
 
-        if(is_array($genres)){
+        if(is_array($genres) && count($genres) > 0){
+            if(!is_null($genre)){
+                $genres_arr[] = array('id' => null, 'title' => '<< All genres');
+            }
+
             foreach($genres as $genre){
                 if(is_object($genre)){
                     $genres_arr[] = array(
@@ -189,6 +193,7 @@ class DefaultController extends Controller
                 }
             }
         }
+
         return new JsonResponse($genres_arr);
     }
 
@@ -222,17 +227,15 @@ class DefaultController extends Controller
         if(is_array($videos) && is_object($videos[0])){
 
             $genreset = false;
-
             foreach($videos as $videoobj){
-                $currentGenre = $videoobj->getGenre();
-
-//                if(is_null($currentGenre)) {
+                if(!is_null($genre)) {
                     $videoobj->setGenre($genre);
                     $genreset = true;
                     $genrename = $genre->getGenre();
-//                }else{
-//                    $genrename = $currentGenre->getGenre();
-//                }
+                }else{
+                    $currentGenre = $videoobj->getGenre();
+                    $genrename = $currentGenre->getGenre();
+                }
             }
 
             if($genreset){

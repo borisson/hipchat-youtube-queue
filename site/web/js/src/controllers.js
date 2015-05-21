@@ -44,7 +44,9 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                 data: data,
                 headers: { 'Content-Type': undefined }
             }).success(function(data, status, headers, config) {
-                $scope.video.genre = data.title;
+                if(data.title != null){
+                    $scope.video.genre = data.title;
+                }
                 var genres = videoManager.getGenres(genreid);
                 genres.then(function (data) {
                     $scope.genresselect = data.genres;

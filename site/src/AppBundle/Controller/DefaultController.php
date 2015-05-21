@@ -179,6 +179,11 @@ class DefaultController extends Controller
         $genres = $rep->findByParent($genre);
         $genres_arr = array();
 
+        if(count($genres) == 0){
+            $genre = null;
+            $genres = $rep->findByParent($genre);
+        }
+
         if(is_array($genres) && count($genres) > 0){
             if(!is_null($genre)){
                 $genres_arr[] = array('id' => null, 'title' => '<< All genres');

@@ -51,7 +51,6 @@ radiowiziControllers.controller('MainController', ['$scope', '$http', '$interval
                 genres.then(function (data) {
                     $scope.genresselect = data.genres;
                 });
-
             });
         };
 

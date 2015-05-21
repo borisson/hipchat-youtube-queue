@@ -6,6 +6,8 @@ use Doctrine\ORM\EntityRepository;
 
 class YoutubeMovieRepository extends EntityRepository
 {
+    const minimumSongsInGenre = 10;
+
     public function findRandomTopSong()
     {
         // Find the last played song, so we can do genre checking.
@@ -19,11 +21,7 @@ class YoutubeMovieRepository extends EntityRepository
             if (!in_array($lastPlayedSong->getRequestName(), ['Random top hit', 'Radio wizi', 'Ultra Wizi TOP 10'])) {
                 $compareGenreQuery = "AND genre = " . $lastGenre->getGenreid();
             } else {
-                if ($this->keepPlayingPreviousGenre($lastPlayedSong)) {
-                    $compareGenreQuery = "AND genre = " . $lastGenre->getGenreid();
-                } else {
-                    $compareGenreQuery = "AND genre <> " . $lastGenre->getGenreid();
-                }
+                $compareGenreQuery = $this->appendGenreSpecification($lastPlayedSong);
             }
         }
 
@@ -116,7 +114,7 @@ class YoutubeMovieRepository extends EntityRepository
      * @param \AppBundle\Entity\YoutubeMovie $lastPlayed
      * @return bool
      */
-    private function keepPlayingPreviousGenre(\AppBundle\Entity\YoutubeMovie $lastPlayed)
+    private function appendGenreSpecification(\AppBundle\Entity\YoutubeMovie $lastPlayed)
     {
         $lastGenre = $lastPlayed->getGenre();
         $lastPlayedSongs = $this->findBy([], ['postedTime' => 'DESC'],5,1);
@@ -125,15 +123,41 @@ class YoutubeMovieRepository extends EntityRepository
         foreach ($lastPlayedSongs as $lastSong) {
             // Only if the genre is not the same genre as the previous genre.
             if ($lastGenre !== $lastSong->getGenre()) {
-                return true;
+                return "AND genre = " . $this->findPlayableGenreId($lastGenre);
             }
 
             // If the last song was request by an actual person, use the same genre.
             if (!in_array($lastSong->getRequestName(), ['Random top hit', 'Radio wizi', 'Ultra Wizi TOP 10'])) {
-                return true;
+                return "AND genre = " . $this->findPlayableGenreId($lastGenre);
             }
         }
+        return "AND genre <> " . $lastGenre->getGenreid();
+    }
 
-        return false;
+    /**
+     * Returns a genre id.
+     *
+     * This first checks if this is a parent genre, if it is, return it's id.
+     * If it's not a parent genre, check if there are at least X songs tagged
+     * with this genre, if there arent, return the parent id.
+     *
+     * In all other scenario's, return the current genre's id.
+     *
+     * @param \AppBundle\Entity\Genre $genre
+     * @return int
+     */
+    private function findPlayableGenreId(\AppBundle\Entity\Genre $genre)
+    {
+        if (is_null($genre->getParent())) {
+            return $genre->getGenreid();
+        }
+
+        $songsWithCurrentGenre = $this->findBy(['genre' => $genre]);
+
+        if (count($songsWithCurrentGenre) < self::minimumSongsInGenre) {
+            return $genre->getParent()->getGenreid();
+        }
+
+        return $genre->getGenreid();
     }
 }

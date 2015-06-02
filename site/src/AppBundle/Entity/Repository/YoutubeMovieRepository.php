@@ -18,12 +18,13 @@ class YoutubeMovieRepository extends EntityRepository
         // If the last played song had a genre set
         if (!is_null($lastGenre)) {
             // If the last song was request by an actual person, use the same genre
-            if (!in_array($lastPlayedSong->getRequestName(), ['Random top hit', 'Radio wizi', 'Ultra Wizi TOP 10'])) {
+            if (!in_array(strtolower($lastPlayedSong->getRequestName()), ['random top hit', 'radio wizi', 'ultra wizi top 10'])) {
                 $compareGenreQuery = "AND genre = " . $lastGenre->getGenreid();
             } else {
                 $compareGenreQuery = $this->appendGenreSpecification($lastPlayedSong);
             }
         }
+        $excludeLastSongsQuery = $this->getQueryExcludeSpecification($lastPlayedSong);
 
         $query = "SELECT *
         FROM `youtube_movies`
@@ -34,6 +35,7 @@ class YoutubeMovieRepository extends EntityRepository
             AND requestname <> 'Radio wizi'
             AND requestname <> 'Ultra Wizi TOP 10'
             $compareGenreQuery
+            $excludeLastSongsQuery
         GROUP BY video_id
         ORDER BY RAND()
         LIMIT 1";
@@ -42,6 +44,10 @@ class YoutubeMovieRepository extends EntityRepository
         $statement = $connection->prepare($query);
         $statement->execute();
         $result = $statement->fetch();
+
+        if ($result === false) {
+            return false;
+        }
 
         return $this->find($result['id']);
     }
@@ -155,5 +161,34 @@ class YoutubeMovieRepository extends EntityRepository
         }
 
         return $genre->getGenreid();
+    }
+
+    /**
+     * Make sure query doesn't play the last 5 songs again.
+     *
+     * @param \AppBundle\Entity\YoutubeMovie $lastPlayed
+     * @return string
+     */
+    private function getQueryExcludeSpecification(\AppBundle\Entity\YoutubeMovie $lastPlayed)
+    {
+        $query = "SELECT video_id
+        FROM `youtube_movies`
+        ORDER BY id DESC LIMIT 0,5";
+
+        $connection = $this->getEntityManager()->getConnection();
+        $statement = $connection->prepare($query);
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+        $excludeableVideoIds = [];
+        foreach ($results as $res) {
+            $excludeableVideoIds[] = $res['video_id'];
+        }
+
+        if (count($excludeableVideoIds) > 0) {
+            return "AND video_id NOT IN ('" . implode("','", $excludeableVideoIds) . "')";
+        }
+
+        return "";
     }
 }

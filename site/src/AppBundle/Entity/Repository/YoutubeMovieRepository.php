@@ -46,10 +46,6 @@ class YoutubeMovieRepository extends EntityRepository
         return $this->find($result['id']);
     }
 
-    public function findByVideoId($id){
-
-    }
-
     public function getTop10Songs()
     {
         $query = "SELECT id, COUNT(id) as num

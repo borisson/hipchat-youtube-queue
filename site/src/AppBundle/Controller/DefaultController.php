@@ -46,6 +46,16 @@ class DefaultController extends Controller
 
         }else{
             $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0], ['force' => 'DESC']);
+            if(is_null($yt)){
+                // No results found, play a random song out history.
+                // Keeping in mind history and genres
+                $randomTopSong = $ytRepository->findRandomTopSong();
+
+                if ($randomTopSong instanceof YoutubeMovie){
+                    $this->addVideo('Random top hit', $randomTopSong->getYoutubeKey());
+                }
+                $yt = $ytRepository->findOneBy(['played' => 0, 'skipped' => 0], ['force' => 'DESC']);
+            }
         }
 
         $diff = 0;
@@ -57,14 +67,6 @@ class DefaultController extends Controller
 
         if ($yt instanceof YoutubeMovie){
             return new JsonResponse(array('obj' => $yt->getDataForJson(), 'diff'=>$diff), 200);
-        }
-
-        // No results found, play a random song out history.
-        // Keeping in mind history and genres
-        $randomTopSong = $ytRepository->findRandomTopSong();
-
-        if ($randomTopSong instanceof YoutubeMovie){
-            $this->addVideo('Random top hit', $randomTopSong->getYoutubeKey());
         }
 
         return new JsonResponse(array(),204);
@@ -565,7 +567,8 @@ class DefaultController extends Controller
             'K8GsVLwJIOs',
             'w2cjgThAexc',
             'ukmYnI9M7CY',
-            'u12eGE9m3XA'
+            'u12eGE9m3XA',
+            '5SXMMB_rG1A'
         ];
 
         /** @var EntityManager $entityManager */

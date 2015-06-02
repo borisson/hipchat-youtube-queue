@@ -201,6 +201,35 @@
 }
 
 /**
+ * Genres
+ */
+.genre_list {
+  @extend .clearfix;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li {
+    display: block;
+    @include rem(font-size, 15);
+    float: left;
+    text-align: center;
+    font-family: $title-font;
+  }
+  a {
+    color: #909090;
+    display: block;
+    padding: 5px;
+    @include transition(all .2s ease-in-out);
+    &:hover {
+      background-color: #000;
+      border: none;
+      color: #fff;
+    }
+  }
+}
+
+/**
  * Mediaqueries
  */
 

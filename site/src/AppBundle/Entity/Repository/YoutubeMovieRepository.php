@@ -153,7 +153,14 @@ class YoutubeMovieRepository extends EntityRepository
         $lastGenre = $lastPlayed->getGenre();
         $machineRequestNames = ['random top hit', 'radio wizi', 'ultra wizi top 10'];
 
+        // Load the last 10 played songs.
         $lastPlayedSongs = $this->findBy([], ['postedTime' => 'DESC'], 10, 1);
+
+        /**
+         * @var string[] $excludeableVideoIds
+         *  An array of strings containing unique keys that can't be played by
+         *  the next random song.
+         */
         $excludeableVideoIds = [];
 
         /** @var YoutubeMovie $song */
@@ -161,20 +168,26 @@ class YoutubeMovieRepository extends EntityRepository
             $excludeableVideoIds[] = $song->getYoutubeKey();
         }
 
-
         // Check if the last song was requested by a human or the bot.
         if (!in_array(strtolower($lastPlayed->getRequestName()), $machineRequestNames)) {
             // -- requested by human.
 
-            // Last played song had no genre
+            // Last played song had no genre, so don't check on any specific
+            // genre for the next track.
             if (is_null($lastGenre)) {
                 return " AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
             }
 
+            /**
+             * @var array $songsWithCurrentGenre
+             *  An array containing all songs with this specific genre.
+             */
             $songsWithCurrentGenre = $this->findBy(['genre' => $lastGenre]);
 
-            // Check if this is a parent genre
+            // Check the previous songs 's genre is a root-genre.
             if (is_null($lastGenre->getParent())) {
+                // Check if this root-genre has at least $minimumSongsInGenre
+                // songs tagged with it.
                 if (count($songsWithCurrentGenre) > self::minimumSongsInGenre) {
                     return "AND genre = '".$lastGenre->getGenreid()."' AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
                 } else {
@@ -182,6 +195,7 @@ class YoutubeMovieRepository extends EntityRepository
                 }
             }
 
+            // Only execute this for child-genres.
             $songsWithParentGenre = $this->findBy(['genre' => $lastGenre->getParent()]);
             if (count($songsWithCurrentGenre) > self::minimumSongsInGenre) {
                 return "AND genre = '".$lastGenre->getGenreid()."' AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
@@ -195,16 +209,27 @@ class YoutubeMovieRepository extends EntityRepository
 
         }
 
-        // Requested by bot.
-        // Last played song had no genre
+        // -- Requested by bot.
+
+        // Last played song had no genre, so don't check on any specific genre
+        // for the next track.
         if (is_null($lastGenre)) {
             return " AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
         }
 
+        /**
+         * @var array $songsWithCurrentGenre
+         *  An array containing all songs with this specific genre.
+         */
         $songsWithCurrentGenre = $this->findBy(['genre' => $lastGenre]);
 
-        /** @var YoutubeMovie $song */
+        /**
+         * @var int $song The amount of songs in the previous 10 songs that have
+         * the same genre as the previously played song.
+         */
         $countSameGenres = 0;
+
+        /** @var YoutubeMovie $song */
         foreach ($lastPlayedSongs as $song) {
             if ($song->getGenre() === $lastGenre && !in_array(strtolower($lastPlayed->getRequestName()), $machineRequestNames)) {
                 $countSameGenres++;

@@ -2,29 +2,22 @@
 
 namespace AppBundle\Entity\Repository;
 
+use AppBundle\Entity\Genre;
+use AppBundle\Entity\YoutubeMovie;
 use Doctrine\ORM\EntityRepository;
 
 class YoutubeMovieRepository extends EntityRepository
 {
     const minimumSongsInGenre = 10;
 
+    const maxSameSongsInGenre = 6;
+
     public function findRandomTopSong()
     {
         // Find the last played song, so we can do genre checking.
         $lastPlayedSong = $this->findOneBy([], ['postedTime' => 'DESC']);
-        $lastGenre = $lastPlayedSong->getGenre();
 
-        $compareGenreQuery = "";
-        // If the last played song had a genre set
-        if (!is_null($lastGenre)) {
-            // If the last song was request by an actual person, use the same genre
-            if (!in_array(strtolower($lastPlayedSong->getRequestName()), ['random top hit', 'radio wizi', 'ultra wizi top 10'])) {
-                $compareGenreQuery = "AND genre = " . $lastGenre->getGenreid();
-            } else {
-                $compareGenreQuery = $this->appendGenreSpecification($lastPlayedSong);
-            }
-        }
-        $excludeLastSongsQuery = $this->getQueryExcludeSpecification($lastPlayedSong);
+        $queryFilter = $this->createFilterForRandom($lastPlayedSong);
 
         $query = "SELECT *
         FROM `youtube_movies`
@@ -34,8 +27,7 @@ class YoutubeMovieRepository extends EntityRepository
             AND requestname <> 'Random top hit'
             AND requestname <> 'Radio wizi'
             AND requestname <> 'Ultra Wizi TOP 10'
-            $compareGenreQuery
-            $excludeLastSongsQuery
+            $queryFilter
         GROUP BY video_id
         ORDER BY RAND()
         LIMIT 1";
@@ -103,92 +95,145 @@ class YoutubeMovieRepository extends EntityRepository
     }
 
     /**
-     * We can only automatically play 5 songs following each other
-     * with the same genre. This means, we're now going to check
-     * the songs before $lastPlayedSong.
-     * They have to be checked on:
-     * - requestername = 'Random top hit', 'Radio wizi', 'Ultra Wizi TOP 10'
-     * - genre = $lastGenre
+     * This method holds all business logic related getting a new random song.
      *
-     * If all five previous songs have this, we're going to play a song of a
-     * different genre.
+     * This includes getting a song with the correct genre.
      *
-     * @param \AppBundle\Entity\YoutubeMovie $lastPlayed
-     * @return bool
-     */
-    private function appendGenreSpecification(\AppBundle\Entity\YoutubeMovie $lastPlayed)
-    {
-        $lastGenre = $lastPlayed->getGenre();
-        $lastPlayedSongs = $this->findBy([], ['postedTime' => 'DESC'],5,1);
-
-        /** @var \AppBundle\Entity\YoutubeMovie  $lastSong */
-        foreach ($lastPlayedSongs as $lastSong) {
-            // Only if the genre is not the same genre as the previous genre.
-            if ($lastGenre !== $lastSong->getGenre()) {
-                return "AND genre = " . $this->findPlayableGenreId($lastGenre);
-            }
-
-            // If the last song was request by an actual person, use the same genre.
-            if (!in_array($lastSong->getRequestName(), ['Random top hit', 'Radio wizi', 'Ultra Wizi TOP 10'])) {
-                return "AND genre = " . $this->findPlayableGenreId($lastGenre);
-            }
-        }
-        return "AND genre <> " . $lastGenre->getGenreid();
-    }
-
-    /**
-     * Returns a genre id.
+     * The different branches are:
+     * ----
      *
-     * This first checks if this is a parent genre, if it is, return it's id.
-     * If it's not a parent genre, check if there are at least X songs tagged
-     * with this genre, if there arent, return the parent id.
+     * - is the previous song requested by a human and it had NO genre:
+     * --> just make sure it's not in one of the last 10 songs
      *
-     * In all other scenario's, return the current genre's id.
+     * - is the previous song requested by a human
+     * - and it was from sub genre
+     * - and the sub genre has > minimumSongsInGenre songs
+     * --> make sure it's not in the last 10 songs
+     * --> make sure it plays the same genre
      *
-     * @param \AppBundle\Entity\Genre $genre
-     * @return int
-     */
-    private function findPlayableGenreId(\AppBundle\Entity\Genre $genre)
-    {
-        if (is_null($genre->getParent())) {
-            return $genre->getGenreid();
-        }
-
-        $songsWithCurrentGenre = $this->findBy(['genre' => $genre]);
-
-        if (count($songsWithCurrentGenre) < self::minimumSongsInGenre) {
-            return $genre->getParent()->getGenreid();
-        }
-
-        return $genre->getGenreid();
-    }
-
-    /**
-     * Make sure query doesn't play the last 5 songs again.
+     * - is the previous song requested by a human
+     * - and it was from sub genre
+     * - and the sub genre has < minimumSongsInGenre songs
+     * - and the parent genre has > minimumSongsInGenre songs
+     * --> make sure it's not in the last 10 songs
+     * --> make sure it plays the parent genre
+     *
+     * - is the previous song requested by a human
+     * - and it was from sub genre
+     * - and the sub genre has < minimumSongsInGenre songs
+     * - and the parent genre has < minimumSongsInGenre songs
+     * --> make sure it's not in the last 10 songs
+     * --> make sure it plays a song with no genre.
+     *
+     * - is the previous song requested by a human
+     * - and it was from parent genre
+     * - and the genre has > minimumSongsInGenre songs
+     * --> make sure it's not in the last 10 songs
+     * --> make sure it plays the same genre.
+     *
+     * - is the previous song requested by a human
+     * - and it was from parent genre
+     * - and the parent genre has < minimumSongsInGenre songs
+     * --> make sure it's not in the last 10 songs
+     * --> make sure it plays a song with no genre.
+     *
+     * If the previous song is requested by the robot (random top hit)
+     * we're going to check all the same trees that are check for a human requester.
+     * But not before checking that the previously played songs so we can check
+     * that there are only $maxSameSongsInGenre songs of the same genre played
+     * in succession.
+     *
      *
      * @param \AppBundle\Entity\YoutubeMovie $lastPlayed
      * @return string
      */
-    private function getQueryExcludeSpecification(\AppBundle\Entity\YoutubeMovie $lastPlayed)
+    private function createFilterForRandom(YoutubeMovie $lastPlayed)
     {
-        $query = "SELECT video_id
-        FROM `youtube_movies`
-        ORDER BY id DESC LIMIT 0,5";
+        /** @var Genre $lastGenre */
+        $lastGenre = $lastPlayed->getGenre();
+        $machineRequestNames = ['random top hit', 'radio wizi', 'ultra wizi top 10'];
 
-        $connection = $this->getEntityManager()->getConnection();
-        $statement = $connection->prepare($query);
-        $statement->execute();
-        $results = $statement->fetchAll();
-
+        $lastPlayedSongs = $this->findBy([], ['postedTime' => 'DESC'], 10, 1);
         $excludeableVideoIds = [];
-        foreach ($results as $res) {
-            $excludeableVideoIds[] = $res['video_id'];
+
+        /** @var YoutubeMovie $song */
+        foreach ($lastPlayedSongs as $song) {
+            $excludeableVideoIds[] = $song->getYoutubeKey();
         }
 
-        if (count($excludeableVideoIds) > 0) {
-            return "AND video_id NOT IN ('" . implode("','", $excludeableVideoIds) . "')";
+
+        // Check if the last song was requested by a human or the bot.
+        if (!in_array(strtolower($lastPlayed->getRequestName()), $machineRequestNames)) {
+            // -- requested by human.
+
+            // Last played song had no genre
+            if (is_null($lastGenre)) {
+                return " AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
+            }
+
+            $songsWithCurrentGenre = $this->findBy(['genre' => $lastGenre]);
+
+            // Check if this is a parent genre
+            if (is_null($lastGenre->getParent())) {
+                if (count($songsWithCurrentGenre) > self::minimumSongsInGenre) {
+                    return "AND genre = '".$lastGenre->getGenreid()."' AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
+                } else {
+                    return "AND (genre IS NULL OR genre <> ".$lastGenre->getGenreid().") AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
+                }
+            }
+
+            $songsWithParentGenre = $this->findBy(['genre' => $lastGenre->getParent()]);
+            if (count($songsWithCurrentGenre) > self::minimumSongsInGenre) {
+                return "AND genre = '".$lastGenre->getGenreid()."' AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
+            } else {
+                if (count($songsWithParentGenre) > self::minimumSongsInGenre) {
+                    return "AND genre = '".$lastGenre->getParent()->getGenreId()."' AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
+                } else {
+                    return "AND (genre IS NULL OR genre <> ".$lastGenre->getGenreid().") AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
+                }
+            }
+
         }
 
-        return "";
+        // Requested by bot.
+        // Last played song had no genre
+        if (is_null($lastGenre)) {
+            return " AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
+        }
+
+        $songsWithCurrentGenre = $this->findBy(['genre' => $lastGenre]);
+
+        /** @var YoutubeMovie $song */
+        $countSameGenres = 0;
+        foreach ($lastPlayedSongs as $song) {
+            if ($song->getGenre() === $lastGenre && !in_array(strtolower($lastPlayed->getRequestName()), $machineRequestNames)) {
+                $countSameGenres++;
+            }
+        }
+
+        if ($countSameGenres > self::maxSameSongsInGenre) {
+            return "AND (genre IS NULL OR genre <> ".$lastGenre->getGenreid().") AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
+        }
+
+        // Check if this is a parent genre
+        if (is_null($lastGenre->getParent())) {
+            if (count($songsWithCurrentGenre) > self::minimumSongsInGenre) {
+                return "AND genre = '".$lastGenre->getGenreid()."' AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
+            } else {
+                return "AND (genre IS NULL OR genre <> ".$lastGenre->getGenreid().") AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
+            }
+        }
+
+        $songsWithParentGenre = $this->findBy(['genre' => $lastGenre->getParent()]);
+        if (count($songsWithCurrentGenre) > self::minimumSongsInGenre) {
+            return "AND genre = '".$lastGenre->getGenreid()."' AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
+        } else {
+            if (count($songsWithParentGenre) > self::minimumSongsInGenre) {
+                return "AND genre = '".$lastGenre->getParent()->getGenreId()."' AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
+            } else {
+                return "AND (genre IS NULL OR genre <> ".$lastGenre->getGenreid().") AND video_id NOT IN ('".implode("','", $excludeableVideoIds)."')";
+            }
+        }
     }
+
 }

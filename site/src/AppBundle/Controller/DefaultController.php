@@ -329,11 +329,19 @@ class DefaultController extends Controller
             return new Response("Problem loading youtube video", 422);
         }
 
-        $totalSeconds = $youtubeinfo['duration'];
-
         if (!$youtubeinfo['playable']){
             return new Response("This video can't be added.", 422);
         }
+
+        if (!$youtubeinfo['embeddable']) {
+            return new Response("This video can't be added. It's not embeddable", 422);
+        }
+
+        if ($youtubeinfo['restriction']) {
+            return new Response("This video can't be added. There's some kind of youtube restriction.", 422);
+        }
+
+        $totalSeconds = $youtubeinfo['duration'];
 
         // Get correct filename of a thumbnail before attempting download
         $youtubeFileName = $youtubeinfo['img'];

@@ -292,9 +292,9 @@ class DefaultController extends Controller
             return new Response('Invalid url', 422);
         }
 
-        $requestname = $request->get('requestname');
+        $requestName = $request->get('requestname');
 
-        $this->addVideo($requestname, $video_id);
+        $this->addVideo($requestName, $video_id);
 
         return new Response("ok \n");
     }

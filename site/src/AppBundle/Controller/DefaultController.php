@@ -319,20 +319,20 @@ class DefaultController extends Controller
         /** @var YoutubeMovie $song */
         foreach ($ytMovies as $song) {
             if ($song->getYoutubeKey() == $videoId) {
-                return new Response("This video can't be added. It is already in the last 10 played songs");
+                return new Response("This video can't be added. It is already in the last 10 played songs", 422);
             }
         }
 
         $youtubeinfo = $this->parseYoutubeInfo($videoId);
 
-        if(!isset($youtubeinfo)){
-            return new Response("Problem loading youtube video");
+        if (!isset($youtubeinfo)){
+            return new Response("Problem loading youtube video", 422);
         }
 
         $totalSeconds = $youtubeinfo['duration'];
 
-        if(!$youtubeinfo['playable']){
-            return new Response("This video can't be added. \n");
+        if (!$youtubeinfo['playable']){
+            return new Response("This video can't be added.", 422);
         }
 
         // Get correct filename of a thumbnail before attempting download
